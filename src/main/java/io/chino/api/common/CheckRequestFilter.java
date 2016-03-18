@@ -4,8 +4,10 @@ import org.apache.commons.codec.binary.Base64;
 
 import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.client.ClientRequestFilter;
+import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 
+@Provider
 public class CheckRequestFilter implements ClientRequestFilter {
 
     private String authToken;

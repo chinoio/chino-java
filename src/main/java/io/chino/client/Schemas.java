@@ -79,7 +79,7 @@ public class Schemas extends ChinoBaseAPI{
         schemaRequest.setDescription(description);
         SchemaStructure schemaStructure = new SchemaStructure();
         List<Field> fieldsList= new ArrayList<Field>();
-        java.lang.reflect.Field[] fields = myClass.getFields();
+        java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
         for(java.lang.reflect.Field field : fields){
             fieldsList.add(new Field(field.getName(), checkType(field.getType())));
         }

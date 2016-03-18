@@ -94,7 +94,7 @@ public class UserSchemas extends ChinoBaseAPI{
         UserSchemaRequest schemaRequest= new UserSchemaRequest();
         schemaRequest.setDescription(description);
         List<Field> fieldsList= new ArrayList<Field>();
-        java.lang.reflect.Field[] fields = myClass.getFields();
+        java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
         for(java.lang.reflect.Field field : fields){
             fieldsList.add(new Field(field.getName(), checkType(field.getType())));
         }

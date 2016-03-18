@@ -34,40 +34,7 @@ public class ClientSingleton {
         client = ClientBuilder.newBuilder().sslContext(sc).hostnameVerifier(allHostsValid).build();
         client.register(filter);
     }
-    public static ClientSingleton getInstance() {
-        if(instance == null) {
-            instance = new ClientSingleton();
-        }
-        return instance;
-    }
 
-    public static void setClient(String customerId, String customerKey){
-        isCustomer=true;
-        /*boolean register = false;
-        if(auth==null)
-            register=true;
-        auth=HttpAuthenticationFeature.basic(customerId, customerKey);
-        if (register)
-            client.register(auth);
-        */
-        //filter.setCustomerId(customerId);
-        //filter.setCustomerKey(customerKey);
-    }
-
-    public static void setClient(String accessToken){
-        isCustomer=false;
-        /*boolean register = false;
-        if(auth==null)
-            register=true;
-        auth=HttpAuthenticationFeature.basic("ACCESS_TOKEN", accessToken);
-        instance = new ClientSingleton();
-        client.register(auth);
-        if (register)
-            client.register(auth);
-        */
-
-        //filter.setToken(accessToken);
-    }
     public static Client getClient(){
         return client;
     }
