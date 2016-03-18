@@ -1,6 +1,0 @@
-Getting started with the Chino Java SDK:
-1. Include everything under lib/ in your project/build.
-2. Get authenticate users through the Chino web site.
-3. Create a ChinoAPI object with your session.
-4. Start developing the rest of your Chino API application!
-
