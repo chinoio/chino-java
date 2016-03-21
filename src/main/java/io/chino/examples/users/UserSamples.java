@@ -39,6 +39,11 @@ public class UserSamples {
         userSchema = chino.userSchemas.create("test_description", UserSchemaStructureSample.class);
         USER_SCHEMA_ID = userSchema.getUserSchemaId();
 
+        //This is a method for creating a User passing a String that represents a json of the attributes
+        String attributesStringJson = "\"test_integer\":123, \"test_string\":\"string_value\", \"test_boolean\":true, \"test_date\":\"1992-01-03\", \"test_float\" : 23.2";
+        user = chino.users.create(Constants.USERNAME+"1", Constants.PASSWORD, attributesStringJson, USER_SCHEMA_ID);
+        System.out.println(user);
+
         /*
             Let's try to create an User. You must pass the username, password and attributes of the user you want to create
             in the function ChinoAPI.users.create(String username, String password, HashMap attributes, String userSchemaId).
@@ -51,6 +56,7 @@ public class UserSamples {
         attributes.put("test_boolean", true);
         attributes.put("test_integer", 123);
         attributes.put("test_date", "1990-12-19");
+        attributes.put("test_float", 12.4);
 
         //Check CREATE user
         user = chino.users.create(Constants.USERNAME, Constants.PASSWORD, attributes, USER_SCHEMA_ID);
@@ -69,6 +75,7 @@ public class UserSamples {
         System.out.println("MyUser.test_integer: "+myUser.test_integer);
         System.out.println("MyUser.test_string: "+myUser.test_string);
         System.out.println("MyUser.test_date: "+myUser.test_date);
+        System.out.println("MyUser.test_float: "+myUser.test_float);
 
         //Check UPDATE user
         attributes.put("test_string", "changedVersion");

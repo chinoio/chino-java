@@ -47,6 +47,7 @@ public class PermissionSamples {
         attributes.put("test_boolean", true);
         attributes.put("test_integer", 123);
         attributes.put("test_date", "1993-09-08");
+        attributes.put("test_float", 12.4);
         User user = chino.users.create(USERNAME, PASSWORD, attributes, USER_SCHEMA_ID);
         USER_ID = user.getUserId();
 

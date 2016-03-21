@@ -88,6 +88,29 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
+     * Used to create a User
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes a String that represents a json of the attributes
+     * @param userSchemaId the id of the UserSchema
+     * @return an User Object
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public User create(String username, String password, String attributes, String userSchemaId) throws IOException, ChinoApiException {
+        CreateUserRequest createUserRequest=new CreateUserRequest();
+        createUserRequest.setAttributes(fromStringToHashMap(attributes));
+        createUserRequest.setUsername(username);
+        createUserRequest.setPassword(password);
+
+        JsonNode data = postResource("/user_schemas/"+userSchemaId+"/users", createUserRequest);
+        if(data!=null)
+            return mapper.readValue(data, GetUserResponse.class).getUser();
+
+        return null;
+    }
+
+    /**
      * Used to update a User
      * @param userId the id of the User
      * @param username the username of the User
@@ -100,6 +123,29 @@ public class Users extends ChinoBaseAPI {
     public User update(String userId, String username, String password, HashMap attributes) throws IOException, ChinoApiException {
         CreateUserRequest createUserRequest= new CreateUserRequest();
         createUserRequest.setAttributes(attributes);
+        createUserRequest.setUsername(username);
+        createUserRequest.setPassword(password);
+
+        JsonNode data = putResource("/users/"+userId, createUserRequest);
+        if(data!=null)
+            return mapper.readValue(data, GetUserResponse.class).getUser();
+
+        return null;
+    }
+
+    /**
+     * Used to update a User
+     * @param userId the id of the User
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes a String that represents a json of the attributes
+     * @return an User Object
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public User update(String userId, String username, String password, String attributes) throws IOException, ChinoApiException {
+        CreateUserRequest createUserRequest= new CreateUserRequest();
+        createUserRequest.setAttributes(fromStringToHashMap(attributes));
         createUserRequest.setUsername(username);
         createUserRequest.setPassword(password);
 

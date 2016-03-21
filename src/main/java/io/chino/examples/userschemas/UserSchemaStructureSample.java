@@ -7,4 +7,5 @@ public class UserSchemaStructureSample {
     public String test_string;
     public boolean test_boolean;
     public Date test_date;
+    public float test_float;
 }

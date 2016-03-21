@@ -91,6 +91,24 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
+     * Used to create a new Document
+     * @param schemaId the id of the Schema
+     * @param content a String that represents a json of the content
+     * @return a Document Object
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public Document create(String schemaId, String content) throws IOException, ChinoApiException {
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
+        createDocumentRequest.setContent(fromStringToHashMap(content));
+        JsonNode data = postResource("schemas/"+schemaId+"/documents", createDocumentRequest);
+        if(data!=null)
+            return mapper.readValue(data, GetDocumentResponse.class).getDocument();
+
+        return null;
+    }
+
+    /**
      * Used to update a Document
      * @param documentId the id of the Document
      * @param content an HashMap of the content
@@ -101,6 +119,24 @@ public class Documents extends ChinoBaseAPI {
     public Document update(String documentId, HashMap content) throws IOException, ChinoApiException {
         CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
         createDocumentRequest.setContent(content);
+        JsonNode data = putResource("/documents/"+documentId, createDocumentRequest);
+        if(data!=null)
+            return mapper.readValue(data, GetDocumentResponse.class).getDocument();
+
+        return null;
+    }
+
+    /**
+     * Used to update a Document
+     * @param documentId the id of the Document
+     * @param content a String that represents a json of the content
+     * @return a Document Object
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public Document update(String documentId, String content) throws IOException, ChinoApiException {
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
+        createDocumentRequest.setContent(fromStringToHashMap(content));
         JsonNode data = putResource("/documents/"+documentId, createDocumentRequest);
         if(data!=null)
             return mapper.readValue(data, GetDocumentResponse.class).getDocument();

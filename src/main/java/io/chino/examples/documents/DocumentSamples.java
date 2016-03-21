@@ -37,7 +37,12 @@ public class DocumentSamples {
         content.put("test_boolean", true);
         content.put("test_date", "1994-02-03");
 
-        Document document = chino.documents.create(SCHEMA_ID, content);
+        //This is a method for creating a Document passing a String that represents a json of the content
+        String contentStringJson = "\"test_integer\":456, \"test_string\":\"string_value_json_method\", \"test_boolean\":true, \"test_date\":\"1992-01-03\"";
+        Document document = chino.documents.create(SCHEMA_ID, contentStringJson);
+        System.out.println(chino.documents.read(document.getDocumentId()));
+
+        document = chino.documents.create(SCHEMA_ID, content);
         DOCUMENT_ID = document.getDocumentId();
         System.out.println(chino.documents.read(DOCUMENT_ID));
 

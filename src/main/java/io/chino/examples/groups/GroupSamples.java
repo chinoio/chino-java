@@ -37,6 +37,7 @@ public class GroupSamples {
         attributes.put("test_boolean", true);
         attributes.put("test_integer", 123);
         attributes.put("test_date", "1992-12-11");
+        attributes.put("test_float", 12.4);
         User user = chino.users.create(Constants.USERNAME, Constants.PASSWORD, attributes, USER_SCHEMA_ID);
         USER_ID = user.getUserId();
 
@@ -48,6 +49,7 @@ public class GroupSamples {
         attributes.put("test_boolean", true);
         attributes.put("test_integer", 123);
         attributes.put("test_date", "1989-03-06");
+        attributes.put("test_float", 12.4);
         user = chino.users.create(Constants.USERNAME+"1", Constants.PASSWORD, attributes, USER_SCHEMA_ID);
         USER_ID = user.getUserId();
 
@@ -71,6 +73,7 @@ public class GroupSamples {
         attributes.put("test_boolean", true);
         attributes.put("test_integer", 123);
         attributes.put("test_date", "1991-05-07");
+        attributes.put("test_float", 12.4);
         user = chino.users.create(Constants.USERNAME+"2", Constants.PASSWORD, attributes, USER_SCHEMA_ID);
         USER_ID = user.getUserId();
         System.out.println(chino.users.read(USER_ID));

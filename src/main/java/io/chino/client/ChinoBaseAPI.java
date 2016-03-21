@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.HashMap;
 
 //This Class is extended by the other classes (except for ChinoAPI) because it has some variables and functions used by all classes
 public class ChinoBaseAPI {
@@ -119,5 +120,28 @@ public class ChinoBaseAPI {
         } else {
             throw new ChinoApiException("error, invalid type: "+type+".");
         }
+    }
+
+    protected HashMap<String, Object> fromStringToHashMap(String value){
+        HashMap<String, Object> map = new HashMap<String, Object>();
+        value = value.replaceAll("\\s", "");
+        value = value.replaceAll("\"", "");
+        String[] pairs = value.split(",");
+        for (String pair : pairs) {
+            String[] keyValue = pair.split(":");
+            //To check if it's a digit
+            if(keyValue[1].matches("^-?\\d+$"))
+                map.put(keyValue[0], Integer.parseInt(keyValue[1]));
+                //To check if it is a double
+            else if(keyValue[1].matches("^[-+]?[0-9]*\\.?[0-9]+$"))
+                map.put(keyValue[0], Double.parseDouble(keyValue[1]));
+            else if (keyValue[1].equals("true"))
+                map.put(keyValue[0], true);
+            else if (keyValue[1].equals("false"))
+                map.put(keyValue[0], false);
+            else
+                map.put(keyValue[0], keyValue[1]);
+        }
+        return map;
     }
 }
