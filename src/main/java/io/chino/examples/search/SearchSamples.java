@@ -84,7 +84,7 @@ public class SearchSamples {
         System.out.println(chino.search.searchDocuments(SCHEMA_ID, "FULL_CONTENT", "or", sortOptionList, filterOptionList));
 
         //Let's try to apply a search with this method
-        GetDocumentsResponse documents = chino.search.where("test_integer").gt(123).and("test_date").eq("1994-02-04").sortAscBy("test_string").search(SCHEMA_ID);
+        GetDocumentsResponse documents = chino.search.where("test_integer").gt(123).and("test_date").eq("1994-02-04").sortAscBy("test_string").searchDocuments(SCHEMA_ID);
         System.out.println(documents);
 
         System.out.println(chino.documents.delete(DOCUMENT_ID_1, true));

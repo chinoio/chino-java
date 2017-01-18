@@ -26,7 +26,7 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        OkHttpClient.Builder clientBuilder = ChinoAPI.getOkHttpClientBuilder();
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         clientBuilder.authenticator(new Authenticator() {
             @Override
             public Request authenticate(Route route, Response response) throws IOException {
