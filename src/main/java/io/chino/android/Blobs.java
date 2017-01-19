@@ -8,6 +8,7 @@ import io.chino.api.common.SHA1Calc;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
 import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -21,12 +22,12 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Used to upload an entire File
+     * It uploads an entire File
      * @param path the path of the file to upload (without the name of the file)
-     * @param documentId the id of the Document
-     * @param field the name of the Field of the Document
+     * @param documentId the id of the Document to which upload the file
+     * @param field the name of the Field in the Document
      * @param fileName the name of the file to upload
-     * @return a CommitBlobUploadResponse Object
+     * @return CommitBlobUploadResponse Object which contains the status of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -60,17 +61,16 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a Blob
-     * @param blobId the id of the blob to get
-     * @param destination the path used to save the file
-     * @return a GetBlobResponse Object
+     * Returns the Blob requested
+     * @param blobId the id of the blob to retrieve
+     * @param destination the path where to save the file
+     * @return GetBlobResponse Object which contains the Blob Object
      * @throws IOException
      * @throws ChinoApiException
      * @throws NoSuchAlgorithmException
      */
     public GetBlobResponse get(String blobId, String destination) throws IOException, ChinoApiException, NoSuchAlgorithmException {
         GetBlobResponse getBlobResponse=new  GetBlobResponse();
-        System.out.println("getting file..");
 
         Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
         Response response = client.newCall(request).execute();
@@ -81,10 +81,11 @@ public class Blobs extends ChinoBaseAPI {
         InputStream returnStream = response.body().byteStream();
 
         File file = new File(getBlobResponse.getPath());
+        file.getParentFile().mkdirs();
         FileOutputStream fileOutputStream = new FileOutputStream(file);
 
         int read;
-        byte[] bytes = new byte[10240000];
+        byte[] bytes = new byte[8*1024];
 
         MessageDigest MD5Digest = MessageDigest.getInstance("MD5");
         MessageDigest SHA1Digest = MessageDigest.getInstance("SHA1");
@@ -94,7 +95,6 @@ public class Blobs extends ChinoBaseAPI {
 
             MD5Digest.update(bytes, 0, read);
             SHA1Digest.update(bytes, 0, read);
-
         }
 
         fileOutputStream.close();
@@ -114,11 +114,11 @@ public class Blobs extends ChinoBaseAPI {
 
 
     /**
-     * Used to init the upload
-     * @param documentId the id of the Document
-     * @param field the name of the Field of the Document
+     * It initialize the upload
+     * @param documentId the id of the Document to which upload the file
+     * @param field the name of the Field in the Document
      * @param fileName the name of the file to upload
-     * @return a CreateBlobUploadResponse Object that has the uploadId as one of the parameters
+     * @return CreateBlobUploadResponse Object which contains the upload_id used for the upload of the Blob
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -136,12 +136,12 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Used to upload a chunk of data
-     * @param uploadId the uploadId
+     * It uploads a chunk of data
+     * @param uploadId the upload_id created on the initialization of the upload
      * @param chunkData an array of bytes that represents a chunk
-     * @param offset the offset
-     * @param length the length
-     * @return a CreateBlobUploadResponse Object
+     * @param offset the offset of the chunk
+     * @param length the length of the chunk
+     * @return CreateBlobUploadResponse Object which contains the status of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -155,9 +155,9 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Used to commit when all the chunks are uploaded
-     * @param uploadId the uploadId
-     * @return a CommitBlobUploadResponse
+     * It does the final commit when all the chunks are uploaded
+     * @param uploadId the upload_id created on the initialization of the upload
+     * @return CommitBlobUploadResponse Object which contains the status of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -173,27 +173,14 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a Blob
-     * @param blobId the blobId to delete
-     * @param force the boolean force
-     * @return a String that represents the status of the operation
+     * It deletes a Blob
+     * @param blobId the id of the Blob to delete
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
     public String delete(String blobId, boolean force) throws IOException, ChinoApiException {
         return deleteResource("/blobs/"+blobId, force);
     }
-
-    //An override of the function specifically to put an array of bytes
-    /*private JsonNode putResource(String path, byte[] resource, int offset, int length) throws IOException, ChinoApiException {
-        Response response = client.target(host).path(path).request(MediaType.APPLICATION_JSON_TYPE).header("offset", offset).header("length", length).put(Entity.json(resource));
-
-        if(response.getStatus()==200){
-            return mapper.readTree(response.readEntity(String.class)).get("data");
-        }else{
-            throw new ChinoApiException(mapper.readValue(response.readEntity(String.class), ErrorResponse.class));
-        }
-
-        return null;
-    }*/
 }

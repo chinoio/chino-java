@@ -44,7 +44,7 @@ Class that manages the auth, `chino.auth`
 - `loginUser` to login as user
 - `setCustomer` to set the auth as admin
 - `checkUserStatus` to check the status of the user logged
-- `logoutUser` to logout as user
+- `logoutUser` to logoutRequest as user
 
 ### User
 Class to manage the user, `chino.users`

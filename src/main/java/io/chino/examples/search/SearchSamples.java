@@ -4,10 +4,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.document.Document;
 import io.chino.api.document.GetDocumentsResponse;
 import io.chino.api.repository.Repository;
-import io.chino.api.schema.Field;
 import io.chino.api.schema.Schema;
-import io.chino.api.schema.SchemaRequest;
-import io.chino.api.schema.SchemaStructure;
 import io.chino.api.search.FilterOption;
 import io.chino.api.search.SearchRequest;
 import io.chino.api.search.SortOption;
@@ -26,7 +23,7 @@ public class SearchSamples {
     String DOCUMENT_ID_1 = "";
     String DOCUMENT_ID_2 = "";
 
-    public void testSearch() throws IOException, ChinoApiException {
+    public void testSearch() throws IOException, ChinoApiException, InterruptedException {
 
         //You must first initialize your ChinoAPI variable with your customerId and your customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
@@ -35,17 +32,7 @@ public class SearchSamples {
         Repository repository = chino.repositories.create("test_repository");
         REPOSITORY_ID = repository.getRepositoryId();
 
-        SchemaRequest schemaRequest = new SchemaRequest();
-        schemaRequest.setDescription("sample_description");
-        SchemaStructure schemaStructure = new SchemaStructure();
-        List<Field> fields = new ArrayList<Field>();
-        fields.add(new Field("test_string", "string", true));
-        fields.add(new Field("test_integer", "integer", true));
-        fields.add(new Field("test_boolean", "boolean", true));
-        fields.add(new Field("test_date", "date", true));
-        schemaStructure.setFields(fields);
-        schemaRequest.setStructure(schemaStructure);
-        Schema schema = chino.schemas.create(REPOSITORY_ID, schemaRequest);
+        Schema schema = chino.schemas.create(REPOSITORY_ID, "sample_description", SchemaStructureSample.class);
         SCHEMA_ID = schema.getSchemaId();
 
         HashMap<String, Object> content = new HashMap<String, Object>();
@@ -60,7 +47,7 @@ public class SearchSamples {
         content = new HashMap<String, Object>();
         content.put("test_string", "new_test_string_value");
         content.put("test_integer", 1234);
-        content.put("test_boolean", false);
+        content.put("test_boolean", true);
         content.put("test_date", "1994-02-04");
         document = chino.documents.create(SCHEMA_ID, content);
         DOCUMENT_ID_2 = document.getDocumentId();
@@ -76,6 +63,10 @@ public class SearchSamples {
         List<FilterOption> filterOptionList = new ArrayList<FilterOption>();
         filterOptionList.add(new FilterOption("test_integer","gt", 123));
         searchRequest.setFilter(filterOptionList);
+
+        //It is mandatory because the server needs 2 seconds to index the fields on the schema. If the documents are searched
+        //before the fields are indexed, the result would be null
+        Thread.sleep(5000);
 
         System.out.println(chino.search.searchDocuments(searchRequest, SCHEMA_ID));
 

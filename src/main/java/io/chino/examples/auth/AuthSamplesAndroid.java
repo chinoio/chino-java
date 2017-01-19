@@ -8,13 +8,14 @@ import io.chino.api.userschema.UserSchema;
 import io.chino.android.ChinoAPI;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;
+import io.chino.examples.util.DeleteAll;
+
 import java.io.IOException;
 import java.util.HashMap;
 
 public class AuthSamplesAndroid {
     public String USER_SCHEMA_ID = "";
     public String USER_ID = "";
-    public String TOKEN = "";
     public ChinoAPI chino;
 
     public void testAuth() throws IOException, ChinoApiException {
@@ -37,30 +38,19 @@ public class AuthSamplesAndroid {
 
         Application application = chino.applications.create("ApplicationTest1", "password", "http://127.0.0.1/");
 
-        LoggedUser loggedUser = chino.auth.login(Constants.USERNAME, Constants.PASSWORD, application.getAppId(), application.getAppSecret());
-        chino.initClient(loggedUser.getAccessToken(), Constants.HOST);
+        LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
 
         User user2 = chino.auth.checkUserStatus();
         System.out.println(user2);
 
-        /*LoggedUser loggedUser = chino.auth.loginUser(Constants.USERNAME, Constants.PASSWORD, Constants.CUSTOMER_ID);
-        System.out.println(TOKEN = loggedUser.getAccessToken());
-        chino.initClient(TOKEN, Constants.HOST);
+        loggedUser = chino.auth.refreshToken(loggedUser.getRefreshToken(), application.getAppId(), application.getAppSecret());
+        System.out.println(loggedUser);
 
-        //Now we logout
-        System.out.println(chino.auth.logoutUser());
-        chino.initClient(Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY, Constants.HOST);
+        System.out.println(chino.auth.logout(loggedUser.getAccessToken(), application.getAppId(), application.getAppSecret()));
+        chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
+        DeleteAll deleteAll = new DeleteAll();
+        deleteAll.deleteAll(chino);
 
-        //Now we try to create a new ChinoAPI and login as a user
-        chino = new ChinoAPI(Constants.HOST);
-
-        loggedUser = chino.auth.loginUser(Constants.USERNAME, Constants.PASSWORD, Constants.CUSTOMER_ID);
-        System.out.println(TOKEN = loggedUser.getAccessToken());
-        chino.initClient(TOKEN, Constants.HOST);
-
-        //And we logout again
-        System.out.println(chino.auth.logoutUser());
-        chino.initClient(Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY, Constants.HOST);*/
     }
 }

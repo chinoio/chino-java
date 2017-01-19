@@ -3,6 +3,7 @@ package io.chino.api.schema;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.common.Field;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "description", "structure" })

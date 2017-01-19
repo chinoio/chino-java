@@ -3,10 +3,10 @@ package io.chino.android;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
 import io.chino.api.userschema.*;
 import okhttp3.OkHttpClient;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserSchemas extends ChinoBaseAPI {
@@ -15,23 +15,37 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of UserSchemas
-     * @param offset the offset
-     * @return a GetUserSchemasResponse Object
+     * Returns a list of UserSchemas
+     * @param offset the offset from which it retrieves the UserSchemas
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetUserSchemasResponse Object with the list of UserSchemas
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetUserSchemasResponse list(int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/user_schemas", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetUserSchemasResponse list(int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/user_schemas", offset, limit);
         if(data!=null)
             return getMapper().convertValue(data, GetUserSchemasResponse.class);
         return null;
     }
 
     /**
-     * Used to read a specific UserSchema
+     * Returns a list of UserSchemas
+     * @return GetUserSchemasResponse Object with the list of UserSchemas
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetUserSchemasResponse list() throws IOException, ChinoApiException {
+        JsonNode data = getResource("/user_schemas", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return getMapper().convertValue(data, GetUserSchemasResponse.class);
+        return null;
+    }
+
+    /**
+     * It reads a specific UserSchema
      * @param userSchemaId the id of the UserSchema
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -43,10 +57,10 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new UserSchema
+     * It creates a new UserSchema
      * @param description the description
      * @param userSchemaStructure the UserSchemaStructure Object
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -63,9 +77,9 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new UserSchema
+     * It creates a new UserSchema
      * @param userSchemaRequest the UserSchemaRequest Object
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -78,23 +92,17 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new UserSchema
+     * It creates a new UserSchema based on the variables in the class "myClass"
      * @param description the description
      * @param myClass the Class that represents the structure of the UserSchema
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
      public UserSchema create(String description, Class myClass) throws IOException, ChinoApiException {
         UserSchemaRequest schemaRequest= new UserSchemaRequest();
         schemaRequest.setDescription(description);
-        List<Field> fieldsList= new ArrayList<Field>();
-        java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
-        for(java.lang.reflect.Field field : fields){
-            String temp = checkType(field.getType());
-            if(temp!=null)
-                fieldsList.add(new Field(field.getName(), temp));
-        }
+        List<Field> fieldsList = returnFields(myClass);
         UserSchemaStructure schemaStructure = new UserSchemaStructure();
         schemaStructure.setFields(fieldsList);
         schemaRequest.setStructure(schemaStructure);
@@ -107,11 +115,11 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a UserSchema
+     * It updates a UserSchema
      * @param userSchemaId the id of the UserSchema
      * @param description the description
      * @param userSchemaStructure the UserSchemaStructure Object
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -127,10 +135,10 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a UserSchema
+     * It updates a UserSchema
      * @param userSchemaId the id of the UserSchema
      * @param userSchemaRequest the UserSchemaRequest Object
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -142,24 +150,18 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a UserSchema
+     * It updates a UserSchema based on the variables in the class "myClass"
      * @param userSchemaId the id of the UserSchema
      * @param description the description
      * @param myClass the Class that represents the structure of the UserSchema
-     * @return a UserSchema Object
+     * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException
      */
     public UserSchema update(String userSchemaId, String description, Class myClass) throws IOException, ChinoApiException {
         UserSchemaRequest userSchemaRequest= new UserSchemaRequest();
         userSchemaRequest.setDescription(description);
-        List<Field> fieldsList= new ArrayList<Field>();
-        java.lang.reflect.Field[] fields = myClass.getFields();
-        for(java.lang.reflect.Field field : fields){
-            String temp = checkType(field.getType());
-            if(temp!=null)
-                fieldsList.add(new Field(field.getName(), temp));
-        }
+        List<Field> fieldsList = returnFields(myClass);
         UserSchemaStructure userSchemaStructure = new UserSchemaStructure();
         userSchemaStructure.setFields(fieldsList);
         userSchemaRequest.setStructure(userSchemaStructure);
@@ -171,10 +173,10 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a UserSchema
+     * It deletes a UserSchema
      * @param userSchemaId the id of the UserSchema
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

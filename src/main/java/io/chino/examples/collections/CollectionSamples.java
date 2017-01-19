@@ -58,7 +58,7 @@ public class CollectionSamples {
         System.out.println(chino.collections.addDocument(COLLECTION_ID, DOCUMENT_ID));
 
         //And now we try to read the list of Documents in the Collection
-        GetDocumentsResponse documents = chino.collections.listDocuments(COLLECTION_ID, 0);
+        GetDocumentsResponse documents = chino.collections.listDocuments(COLLECTION_ID);
         List<Document> documentList = documents.getDocuments();
         for(Document documentObject : documentList){
             System.out.println(documentObject.toString());
@@ -77,7 +77,7 @@ public class CollectionSamples {
         //Let's try to remove the last Document and then read the list of Documents in the Collection again
         System.out.println(chino.collections.removeDocument(COLLECTION_ID, DOCUMENT_ID));
 
-        documents = chino.collections.listDocuments(COLLECTION_ID, 0);
+        documents = chino.collections.listDocuments(COLLECTION_ID);
         documentList = documents.getDocuments();
         for(Document documentObject : documentList){
             System.out.println(documentObject.toString());

@@ -1,5 +1,4 @@
-
-package io.chino.api.userschema;
+package io.chino.api.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

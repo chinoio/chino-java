@@ -24,8 +24,10 @@ public class CommitBlobUploadResponse {
 	public void setBlob(CommitBlobUploadResponseContent blob) {
 		this.blob = blob;
 	}
-    
-    
+
+	public String toString(){
+		return blob.toString();
+	}
     
     
 }

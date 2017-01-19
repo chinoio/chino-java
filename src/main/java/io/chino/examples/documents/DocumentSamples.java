@@ -76,7 +76,7 @@ public class DocumentSamples {
         DOCUMENT_ID = document.getDocumentId();
 
         System.out.println("");
-        GetDocumentsResponse documentsResponse = chino.documents.list(SCHEMA_ID, 0);
+        GetDocumentsResponse documentsResponse = chino.documents.list(SCHEMA_ID);
         List<Document> documentList = documentsResponse.getDocuments();
         for(Document documentObject : documentList){
             System.out.println(documentObject);
@@ -86,7 +86,7 @@ public class DocumentSamples {
         System.out.println(chino.documents.delete(DOCUMENT_ID, true));
 
         System.out.println("");
-        documentsResponse = chino.documents.list(SCHEMA_ID, 0);
+        documentsResponse = chino.documents.list(SCHEMA_ID);
         documentList = documentsResponse.getDocuments();
         for(Document documentObject : documentList){
             System.out.println(documentObject);

@@ -19,23 +19,37 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of Groups
-     * @param offset the offset
-     * @return a GetGroupsResponse Object
+     * Returns a list of Groups
+     * @param offset the offset from which it retrieves the Groups
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetGroupsResponse Object which contains the list of Groups
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetGroupsResponse list(int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/groups", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetGroupsResponse list(int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/groups", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetGroupsResponse.class);
         return null;
     }
 
     /**
-     * Used to get a specific Group
+     * Returns a list of Groups
+     * @return GetGroupsResponse Object which contains the list of Groups
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetGroupsResponse list() throws IOException, ChinoApiException {
+        JsonNode data = getResource("/groups", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetGroupsResponse.class);
+        return null;
+    }
+
+    /**
+     * It retrieves a specific Group
      * @param groupId the id of the Group
-     * @return a Group Object
+     * @return Group Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -48,10 +62,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Group
+     * It creates a new Group
      * @param groupName the name of the Group
      * @param attributes an HashMap of the attributes
-     * @return a Group Object
+     * @return Group Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -70,11 +84,11 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Group
+     * It updates a Group
      * @param groupId the id of the Group
      * @param groupName the name of the new Group
      * @param attributes an HashMap of the new attributes
-     * @return a Group Object
+     * @return Group Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -91,10 +105,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a Group
+     * It deletes a Group
      * @param groupId the id of the Group
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -105,10 +119,10 @@ public class Groups extends ChinoBaseAPI {
     //--------------------------- Group Membership ----------------------------------
 
     /**
-     * Used to add a User to a Group
+     * It adds a User to a Group
      * @param userId the id of the User
      * @param groupId the id of the Group
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -118,10 +132,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to remove a User from a Group
+     * It removes a User from a Group
      * @param userId the id of the User
      * @param groupId the id of the Group
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -131,10 +145,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to add a UserSchema to a Group
+     * It adds a UserSchema to a Group
      * @param userSchemaId the id of the UserSchema
      * @param groupId the id of the Group
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -144,10 +158,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Used to remove a UserSchema from a Group
+     * It removes a UserSchema from a Group
      * @param userSchemaId the id of the UserSchema
      * @param groupId the id of the Group
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

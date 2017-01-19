@@ -16,14 +16,15 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of Repositories
-     * @param offset the offset
-     * @return a GetRepositoriesResponse Object
+     * Returns a list of Repositories
+     * @param offset the offset from which it retrieves the Repositories
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetRepositoriesResponse Object which contains the list of Repositories
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetRepositoriesResponse list(int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/repositories", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetRepositoriesResponse list(int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/repositories", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetRepositoriesResponse.class);
 
@@ -31,9 +32,23 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Used to read a Repository
+     * Returns a list of Repositories
+     * @return GetRepositoriesResponse Object which contains the list of Repositories
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetRepositoriesResponse list() throws IOException, ChinoApiException {
+        JsonNode data = getResource("/repositories", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetRepositoriesResponse.class);
+
+        return null;
+    }
+
+    /**
+     * It retrieves a Repository
      * @param repositoryId the id of the Repository
-     * @return a Repository Object
+     * @return Repository Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -46,9 +61,9 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a Repository
+     * It creates a Repository
      * @param description the description of the Repository
-     * @return a Repository Object
+     * @return Repository Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -63,10 +78,10 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Repository
+     * It updates a Repository
      * @param repositoryId the id of the Repository
      * @param description the description of the new Repository
-     * @return a Repository Object
+     * @return Repository Object updated
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -81,10 +96,10 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a Repository
+     * It deletes a Repository
      * @param repositoryId the id o the Repository
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

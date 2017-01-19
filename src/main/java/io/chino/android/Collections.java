@@ -17,23 +17,37 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of Collections
-     * @param offset the offset
-     * @return a GetCollectionsResponse Object
+     * Returns a list of Collections
+     * @param offset the offset from which it retrieves the Collections
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetCollectionsResponse Object which contains the list of Collections
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetCollectionsResponse list(int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/collections", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetCollectionsResponse list(int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/collections", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetCollectionsResponse.class);
         return null;
     }
 
     /**
-     * Used to get a single Collection
+     * Returns a list of Collections
+     * @return GetCollectionsResponse Object which contains the list of Collections
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetCollectionsResponse list() throws IOException, ChinoApiException {
+        JsonNode data = getResource("/collections", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetCollectionsResponse.class);
+        return null;
+    }
+
+    /**
+     * It retrieves a single Collection
      * @param collectionId the id of the Collection to read
-     * @return a Collection Object
+     * @return Collection Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -46,9 +60,9 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Collection
+     * It creates a new Collection
      * @param name the name of the Collection
-     * @return a Collection Object
+     * @return Collection Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -63,10 +77,10 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Collection
+     * It updates a Collection
      * @param collectionId the id of the Collection to update
      * @param name the name of the new Collection
-     * @return a Collection Object
+     * @return Collection Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -81,25 +95,40 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of Documents in a Collection
+     * Returns a list of Documents in a Collection
      * @param collectionId the id of the Collection
-     * @param offset the offset
-     * @return a GetDocumentsResponse Object
+     * @param offset the offset from which it retrieves the Collections
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetDocumentsResponse Object which contains the list of Documents
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetDocumentsResponse listDocuments(String collectionId, int offset)throws IOException, ChinoApiException {
-        JsonNode data = getResource("/collections/"+collectionId+"/documents", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetDocumentsResponse listDocuments(String collectionId, int offset, int limit)throws IOException, ChinoApiException {
+        JsonNode data = getResource("/collections/"+collectionId+"/documents", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
         return null;
     }
 
     /**
-     * Used to add a new Document to the Collection
+     * Returns a list of Documents in a Collection
+     * @param collectionId the id of the Collection
+     * @return GetDocumentsResponse Object which contains the list of Documents
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetDocumentsResponse listDocuments(String collectionId)throws IOException, ChinoApiException {
+        JsonNode data = getResource("/collections/"+collectionId+"/documents", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetDocumentsResponse.class);
+        return null;
+    }
+
+    /**
+     * It adds a new Document to a Collection
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -109,10 +138,10 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Used to remove a Document from a Collection
+     * It removes a Document from a Collection
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -122,10 +151,10 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a Collection
-     * @param collectionId the id of the Collection
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * It deletes a Collection
+     * @param collectionId the id of the Collection to delete
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

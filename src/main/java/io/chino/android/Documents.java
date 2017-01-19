@@ -18,27 +18,51 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of Documents
+     * Returns a list of Documents
      * @param schemaId the id of the Schema
-     * @param offset the offset
-     * @return a GetDocumentsResponse Object
+     * @param offset the offset from which it retrieves the Documents
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetDocumentsResponse Object which contains the list of Documents
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetDocumentsResponse list(String schemaId, int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/schemas/" + schemaId + "/documents", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetDocumentsResponse list(String schemaId, int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/schemas/" + schemaId + "/documents", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
         return null;
     }
 
+    /**
+     * Returns a list of Documents
+     * @param schemaId the id of the Schema
+     * @return GetDocumentsResponse Object which contains the list of Documents
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetDocumentsResponse list(String schemaId) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/schemas/" + schemaId + "/documents", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetDocumentsResponse.class);
+        return null;
+    }
 
-    public GetDocumentsResponse list(String schemaId, int offset, boolean fullDocument) throws IOException, ChinoApiException {
+    /**
+     * Returns a list of Documents
+     * @param schemaId the id of the Schema
+     * @param offset the offset from which it retrieves the Documents
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @param fullDocument if true it returns a list of Documents with full content
+     * @return GetDocumentsResponse Object which contains the list of Documents
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetDocumentsResponse list(String schemaId, int offset, int limit, boolean fullDocument) throws IOException, ChinoApiException {
         JsonNode data;
         if(fullDocument) {
             data = getResource("/schemas/" + schemaId + "/documents?full_document=true");
         } else {
-            data = getResource("/schemas/" + schemaId + "/documents", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+            data = getResource("/schemas/" + schemaId + "/documents", offset, limit);
         }
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -46,9 +70,29 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a Document
+     * Returns a list of Documents
+     * @param schemaId the id of the Schema
+     * @param fullDocument if true it returns a list of Documents with full content
+     * @return GetDocumentsResponse Object which contains the list of Documents
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetDocumentsResponse list(String schemaId, boolean fullDocument) throws IOException, ChinoApiException {
+        JsonNode data;
+        if(fullDocument) {
+            data = getResource("/schemas/" + schemaId + "/documents?full_document=true");
+        } else {
+            data = getResource("/schemas/" + schemaId + "/documents", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        }
+        if(data!=null)
+            return mapper.convertValue(data, GetDocumentsResponse.class);
+        return null;
+    }
+
+    /**
+     * It retrieves a Document
      * @param documentId the id of the Document
-     * @return a Document Object
+     * @return Document Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -61,10 +105,10 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to read a Document
+     * It reads a Document and converts it to an Object of the class "myClass"
      * @param documentId the id of the Document
      * @param myClass the Class that represents the structure of the Document
-     * @return an Object of the Class passed
+     * @return Object of the Class passed as argument
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -78,10 +122,10 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Document
+     * It creates a new Document
      * @param schemaId the id of the Schema
      * @param content an HashMap of the content
-     * @return a Document Object
+     * @return Document Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -96,10 +140,10 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Document
+     * It creates a new Document
      * @param schemaId the id of the Schema
      * @param content a String that represents a json of the content
-     * @return a Document Object
+     * @return Document Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -114,10 +158,10 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Document
+     * It updates a Document
      * @param documentId the id of the Document
      * @param content an HashMap of the content
-     * @return a Document Object
+     * @return Document Object updated
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -132,10 +176,10 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Document
+     * It updates a Document
      * @param documentId the id of the Document
      * @param content a String that represents a json of the content
-     * @return a Document Object
+     * @return Document Object updated
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -150,10 +194,10 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a Document
+     * It deletes a Document
      * @param documentId the id of the Document
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

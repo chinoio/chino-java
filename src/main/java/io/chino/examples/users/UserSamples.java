@@ -1,8 +1,8 @@
 package io.chino.examples.users;
 
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
 import io.chino.api.user.User;
-import io.chino.api.userschema.Field;
 import io.chino.api.userschema.UserSchema;
 import io.chino.api.userschema.UserSchemaStructure;
 import io.chino.android.ChinoAPI;

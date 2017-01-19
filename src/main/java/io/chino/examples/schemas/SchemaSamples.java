@@ -1,8 +1,8 @@
 package io.chino.examples.schemas;
 
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
 import io.chino.api.repository.Repository;
-import io.chino.api.schema.Field;
 import io.chino.api.schema.Schema;
 import io.chino.api.schema.SchemaRequest;
 import io.chino.api.schema.SchemaStructure;
@@ -87,7 +87,7 @@ public class SchemaSamples {
         System.out.println(chino.schemas.update(SCHEMA_ID3, "schema_description3_updated", SchemaStructureSampleUpdated.class));
 
         //Check LIST Schemas
-        System.out.println(chino.schemas.list(REPOSITORY_ID, 0));
+        System.out.println(chino.schemas.list(REPOSITORY_ID));
 
         //Check DELETE Schemas
         System.out.println(chino.schemas.delete(SCHEMA_ID1, true));

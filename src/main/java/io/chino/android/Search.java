@@ -1,6 +1,7 @@
 package io.chino.android;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.document.GetDocumentsResponse;
 import io.chino.api.search.FilterOption;
@@ -24,35 +25,104 @@ public class Search extends ChinoBaseAPI {
     }
 
     /**
-     * Used to search Documents
+     * It searches Documents
      * @param searchRequest the SearchRequest Object
-     * @return a GetDocumentsResponse Object
+     * @param schemaId the id of the Schema
+     * @param offset the offset from which it retrieves the Documents
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetDocumentsResponse Object with the list of Documents
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId) throws IOException, ChinoApiException {
-        JsonNode data = postResource("/search/documents/"+schemaId, searchRequest);
+    public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId, int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
 
         return null;
     }
 
-    public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId) throws IOException, ChinoApiException {
-        JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest);
+    /**
+     * It searches Documents
+     * @param searchRequest the SearchRequest Object
+     * @param schemaId the id of the schema
+     * @return GetDocumentsResponse Object with the list of Documents
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId) throws IOException, ChinoApiException {
+        JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetDocumentsResponse.class);
+
+        return null;
+    }
+
+    /**
+     * It searches Users
+     * @param searchRequest the SearchRequest Object
+     * @param userSchemaId the id of the UserSchema
+     * @param offset the offset from which it retrieves the Documents
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetUsersResponse Object with the list of Users
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
 
         return null;
     }
+
     /**
-     * Used to search Documents
+     * It searches Users
+     * @param searchRequest the SearchRequest Object
+     * @param userSchemaId the id of the UserSchema
+     * @return GetUsersResponse Object with the list of Users
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId) throws IOException, ChinoApiException {
+        JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetUsersResponse.class);
+
+        return null;
+    }
+
+    /**
+     * It searches Documents
      * @param schemaId the id of the Schema
-     * @param resultType the type of result wanted in response
+     * @param resultType the type of result of the response
      * @param filterType the type of filter
-     * @param sort the List of SortOption
+     * @param sort the list of SortOption
      * @param filter the list of FilterOption
-     * @return a GetDocumentsResponse Object
+     * @param offset the offset from which it retrieves the Applications
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetDocumentsResponse Object which contains the list of Documents
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.setResultType(resultType);
+        searchRequest.setFilterType(filterType);
+        searchRequest.setSort(sort);
+        searchRequest.setFilter(filter);
+
+        return searchDocuments(searchRequest, schemaId, offset, limit);
+    }
+
+    /**
+     * It searches Documents
+     * @param schemaId the id of the Schema
+     * @param resultType the type of result of the response
+     * @param filterType the type of filter
+     * @param sort the list of SortOption
+     * @param filter the list of FilterOption
+     * @return GetDocumentsResponse Object which contains the list of Documents
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -63,9 +133,20 @@ public class Search extends ChinoBaseAPI {
         searchRequest.setSort(sort);
         searchRequest.setFilter(filter);
 
-        return searchDocuments(searchRequest, schemaId);
+        return searchDocuments(searchRequest, schemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
 
+    /**
+     * It searches Users
+     * @param userSchemaId the id of the Schema
+     * @param resultType the type of result of the response
+     * @param filterType the type of filter
+     * @param sort the list of SortOption
+     * @param filter the list of FilterOption
+     * @return GetUsersResponse Object which contains the list of Users
+     * @throws IOException
+     * @throws ChinoApiException
+     */
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
         SearchRequest searchRequest = new SearchRequest();
         searchRequest.setResultType(resultType);
@@ -73,12 +154,35 @@ public class Search extends ChinoBaseAPI {
         searchRequest.setSort(sort);
         searchRequest.setFilter(filter);
 
-        return searchUsers(searchRequest, userSchemaId);
+        return searchUsers(searchRequest, userSchemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    }
+
+    /**
+     * It searches Users
+     * @param userSchemaId the id of the Schema
+     * @param resultType the type of result of the response
+     * @param filterType the type of filter
+     * @param sort the list of SortOption
+     * @param filter the list of FilterOption
+     * @param offset the offset from which it retrieves the Applications
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetUsersResponse Object which contains the list of Users
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
+        SearchRequest searchRequest = new SearchRequest();
+        searchRequest.setResultType(resultType);
+        searchRequest.setFilterType(filterType);
+        searchRequest.setSort(sort);
+        searchRequest.setFilter(filter);
+
+        return searchUsers(searchRequest, userSchemaId, offset, limit);
     }
 
     /*
-         * Those functions below are used to make a search in a different way
-         */
+     * Those functions below are used to make a search in a different way
+     */
 
     //This is called when you want to make a sort of a certain field in an ascending order
     public Search sortAscBy(String field)
@@ -86,7 +190,7 @@ public class Search extends ChinoBaseAPI {
         //This simply adds a new SortOption to the private List "sort" of the class
         SortOption sortOption = new SortOption(field, "asc");
         sort.add(sortOption);
-        //Everytime you add a new SortOption you have to store the List in the searchRequest variable, which will be finally used to make the request
+        //Every time you add a new SortOption you have to store the List in the searchRequest variable, which will be finally used to make the request
         searchRequest.setSort(sort);
         return this;
     }
@@ -122,16 +226,27 @@ public class Search extends ChinoBaseAPI {
      * This is the last function called which sets filter_type to "or" if there is only one FilterOption (initialized by the where(...) function)
      * It sets the schemaId and finally performs the search request, calling the function searchDocuments passing the class variable searchRequest
      */
+    public GetDocumentsResponse searchDocuments(String schemaId, int offset, int limit) throws IOException, ChinoApiException {
+        if (searchRequest.getFilterType() == null)
+            searchRequest.setFilterType("or");
+        return searchDocuments(searchRequest, schemaId, offset, limit);
+    }
     public GetDocumentsResponse searchDocuments(String schemaId) throws IOException, ChinoApiException {
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
-        return searchDocuments(searchRequest, schemaId);
+        return searchDocuments(searchRequest, schemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
 
     public GetUsersResponse searchUsers(String userSchemaId) throws IOException, ChinoApiException {
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
-        return searchUsers(searchRequest, userSchemaId);
+        return searchUsers(searchRequest, userSchemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    }
+
+    public GetUsersResponse searchUsers(String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
+        if (searchRequest.getFilterType() == null)
+            searchRequest.setFilterType("or");
+        return searchUsers(searchRequest, userSchemaId, offset, limit);
     }
 
     //This function is called if you want to make a request with filter_type set to "and"

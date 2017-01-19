@@ -3,6 +3,8 @@ package io.chino.android;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
+import io.chino.api.common.indexed;
 import io.chino.api.schema.*;
 import okhttp3.OkHttpClient;
 import java.io.IOException;
@@ -16,24 +18,39 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of Schemas
+     * Returns a list of Schemas
      * @param repositoryId the id of the Repository
-     * @param offset the offset
-     * @return a GetSchemasResponse
+     * @param offset the offset from which it retrieves the Schemas
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetSchemasResponse Object which contains the list of Schemas
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetSchemasResponse list(String repositoryId, int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/repositories/"+repositoryId+"/schemas", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetSchemasResponse list(String repositoryId, int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/repositories/"+repositoryId+"/schemas", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetSchemasResponse.class);
         return null;
     }
 
     /**
-     * Used to get a specific Schema
+     * Returns a list of Schemas
+     * @param repositoryId the id of the Repository
+     * @return GetSchemasResponse Object which contains the list of Schemas
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetSchemasResponse list(String repositoryId) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/repositories/"+repositoryId+"/schemas", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetSchemasResponse.class);
+        return null;
+    }
+
+    /**
+     * It retrieves a specific Schema
      * @param schemaId the id of the Schema
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -46,10 +63,10 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Schema
+     * It creates a new Schema
      * @param repositoryId the id of the Repository
      * @param schemaRequest the SchemaRequest Object
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -62,11 +79,11 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Schema
+     * It creates a new Schema based on the variables in the class "myClass"
      * @param repositoryId the id of the Repository
      * @param description the description
      * @param myClass the Class that represents the structure of the Schema
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -74,13 +91,7 @@ public class Schemas extends ChinoBaseAPI {
         SchemaRequest schemaRequest = new SchemaRequest();
         schemaRequest.setDescription(description);
         SchemaStructure schemaStructure = new SchemaStructure();
-        List<Field> fieldsList= new ArrayList<Field>();
-        java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
-        for(java.lang.reflect.Field field : fields){
-            String temp = checkType(field.getType());
-            if(temp!=null)
-                fieldsList.add(new Field(field.getName(), temp));
-        }
+        List<Field> fieldsList = returnFields(myClass);
         schemaStructure.setFields(fieldsList);
         schemaRequest.setStructure(schemaStructure);
 
@@ -92,11 +103,11 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a new Schema
+     * It creates a new Schema
      * @param repositoryId the id of the Repository
      * @param description the description
      * @param schemaStructure the SchemaStructure Object
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -109,11 +120,11 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Schema
+     * It updates a Schema
      * @param schemaId the id of the Schema
      * @param description the description
      * @param schemaStructure the SchemaStructure Object
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -130,10 +141,10 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Schema
+     * It updates a Schema
      * @param schemaId the id of the Schema
      * @param schemaRequest the SchemaRequest Object
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -146,11 +157,11 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a Schema
+     * It updates a Schema based on the variables in the class "myClass"
      * @param schemaId the id of the Schema
      * @param description the description
      * @param myClass the Class that represents the structure of the Schema
-     * @return a Schema Object
+     * @return Schema Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -158,11 +169,7 @@ public class Schemas extends ChinoBaseAPI {
         SchemaRequest schemaRequest = new SchemaRequest();
         schemaRequest.setDescription(description);
         SchemaStructure schemaStructure = new SchemaStructure();
-        List<Field> fieldsList= new ArrayList<Field>();
-        java.lang.reflect.Field[] fields = myClass.getFields();
-        for(java.lang.reflect.Field field : fields){
-            fieldsList.add(new Field(field.getName(), checkType(field.getType())));
-        }
+        List<Field> fieldsList = returnFields(myClass);
         schemaStructure.setFields(fieldsList);
         schemaRequest.setStructure(schemaStructure);
 
@@ -174,10 +181,10 @@ public class Schemas extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a Schema
+     * It deletes a Schema
      * @param schemaId the id of the Schema
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

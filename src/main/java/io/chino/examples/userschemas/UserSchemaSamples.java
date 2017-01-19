@@ -1,6 +1,7 @@
 package io.chino.examples.userschemas;
 
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
 import io.chino.api.userschema.*;
 import io.chino.android.ChinoAPI;
 import io.chino.examples.util.Constants;
@@ -80,7 +81,7 @@ public class UserSchemaSamples {
         System.out.println(chino.userSchemas.update(USER_SCHEMA_ID3, "user_schema_description3_updated", UserSchemaStructureSampleUpdated.class));
 
         //Check LIST UserSchemas
-        System.out.println(chino.userSchemas.list(0));
+        System.out.println(chino.userSchemas.list());
 
         //Check DELETE UserSchemas
         System.out.println(chino.userSchemas.delete(USER_SCHEMA_ID1, true));

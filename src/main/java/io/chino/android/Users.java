@@ -17,15 +17,16 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a list of User
-     * @param offset the offset
+     * Returns a list of Users
+     * @param offset the offset from which it retrieves the Users
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @param userSchemaId the id of the UserSchema
-     * @return a GetUsersResponse Object
+     * @return GetUsersResponse Object which contains the list of Users
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetUsersResponse list(int offset, String userSchemaId) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/user_schemas/"+userSchemaId+"/users", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetUsersResponse list(String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/user_schemas/"+userSchemaId+"/users", offset, limit);
         if(data!=null) {
             return mapper.convertValue(data, GetUsersResponse.class);
         }
@@ -34,9 +35,25 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a specific User
+     * Returns a list of Users
+     * @param userSchemaId the id of the UserSchema
+     * @return GetUsersResponse Object which contains the list of Users
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetUsersResponse list(String userSchemaId) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/user_schemas/"+userSchemaId+"/users", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null) {
+            return mapper.convertValue(data, GetUsersResponse.class);
+        }
+
+        return null;
+    }
+
+    /**
+     * It retrieves a specific User
      * @param userId the id of the User
-     * @return a User Object
+     * @return User Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -49,10 +66,10 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to get a specific User
+     * It retrieves a specific User creating an Object of the class "myClass"
      * @param userId the id of the User
      * @param myClass the Class that represents the structure of the User
-     * @return an Object of the Class passed
+     * @return Object of the Class passed as argument
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -67,12 +84,12 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a User
+     * It creates a User
      * @param username the username of the User
      * @param password the password of the User
      * @param attributes an HashMap of the attributes
      * @param userSchemaId the id of the UserSchema
-     * @return an User Object
+     * @return User Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -90,12 +107,12 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create a User
+     * It creates a User
      * @param username the username of the User
      * @param password the password of the User
      * @param attributes a String that represents a json of the attributes
      * @param userSchemaId the id of the UserSchema
-     * @return an User Object
+     * @return User Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -112,6 +129,14 @@ public class Users extends ChinoBaseAPI {
         return null;
     }
 
+    /**
+     * It updates the User
+     * @param userId the id of the User
+     * @param attributes an HashMap with the attributes of the user
+     * @return User Object
+     * @throws IOException
+     * @throws ChinoApiException
+     */
     public User update(String userId, HashMap attributes) throws IOException, ChinoApiException {
         CreateUserRequest createUserRequest= new CreateUserRequest();
         createUserRequest.setAttributes(attributes);
@@ -123,12 +148,12 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a User
+     * It updates a User
      * @param userId the id of the User
      * @param username the username of the User
      * @param password the password of the User
      * @param attributes an HashMap of the new attributes
-     * @return an User Object
+     * @return User Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -146,12 +171,12 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to update a User
+     * It updates a User
      * @param userId the id of the User
      * @param username the username of the User
      * @param password the password of the User
      * @param attributes a String that represents a json of the attributes
-     * @return an User Object
+     * @return User Object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -169,10 +194,10 @@ public class Users extends ChinoBaseAPI {
     }
 
     /**
-     * Used to delete a User
+     * It deletes a User
      * @param userId the id of the User
-     * @param force the boolean force
-     * @return a String that represents the result of the operation
+     * @param force if true, the resource cannot be restored
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

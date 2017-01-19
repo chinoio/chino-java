@@ -1,9 +1,9 @@
 package io.chino.examples.documents;
 
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
 import io.chino.api.document.Document;
 import io.chino.api.repository.Repository;
-import io.chino.api.schema.Field;
 import io.chino.api.schema.Schema;
 import io.chino.api.schema.SchemaStructure;
 import io.chino.android.ChinoAPI;

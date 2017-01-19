@@ -83,7 +83,7 @@ public class PermissionSamples {
 
         Application application = chino.applications.create("TestApp", "password", "http://127.0.0.1/");
 
-        LoggedUser loggedUser = chino.auth.login(USERNAME, PASSWORD, application.getAppId(), application.getAppSecret());
+        LoggedUser loggedUser = chino.auth.loginWithPassword(USERNAME, PASSWORD, application.getAppId(), application.getAppSecret());
         System.out.println(TOKEN = loggedUser.getAccessToken());
 
         //Let's try to read the status of the User
@@ -100,11 +100,11 @@ public class PermissionSamples {
 
         //Let's read the permissions of the User
         System.out.println("Permissions of the User:");
-        System.out.println(chino.permissions.readPermissionsOfaUser(USER_ID, 0));
+        System.out.println(chino.permissions.readPermissionsOfaUser(USER_ID));
 
         //And now let's read the permissions on the Document
         System.out.println("Permissions of the Document:");
-        GetPermissionsResponse permissionsResponse = chino.permissions.readPermissionsOnaDocument(DOCUMENT_ID, 0);
+        GetPermissionsResponse permissionsResponse = chino.permissions.readPermissionsOnaDocument(DOCUMENT_ID);
         System.out.println(permissionsResponse);
         for(Permission permission : permissionsResponse.getPermissions()){
             List<?> authorizeList = (List<?>)permission.getPermission().get("Authorize");
@@ -115,7 +115,7 @@ public class PermissionSamples {
 
         //Let's try to read all permissions
         System.out.println("");
-        System.out.println(chino.permissions.readPermissions(0));
+        System.out.println(chino.permissions.readPermissions());
 
 
         //Now we create a Group and we'll add and read permissions on it
@@ -131,6 +131,6 @@ public class PermissionSamples {
         chino.permissions.permissionsOnResourceChildren(PermissionValues.GRANT, PermissionValues.REPOSITORIES, REPOSITORY_ID, PermissionValues.SCHEMAS, PermissionValues.GROUPS, GROUP_ID, rule);
 
         System.out.println("");
-        System.out.println(chino.permissions.readPermissionsOfaGroup(GROUP_ID, 0));
+        System.out.println(chino.permissions.readPermissionsOfaGroup(GROUP_ID));
     }
 }

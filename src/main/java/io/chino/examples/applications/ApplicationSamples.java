@@ -22,7 +22,7 @@ public class ApplicationSamples {
 
         System.out.println(chino.applications.read(application.getAppId()));
 
-        System.out.println(chino.applications.list(0));
+        System.out.println(chino.applications.list());
 
         System.out.println(chino.applications.delete(application.getAppId(), true));
     }

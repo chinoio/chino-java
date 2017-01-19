@@ -15,14 +15,15 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Used to read all Permissions
-     * @param offset the offset
-     * @return a GetPermissionsResponse Object
+     * It reads Permissions on all Resources
+     * @param offset the offset from which it retrieves the Permissions
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetPermissionsResponse Object with a list of Permissions
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetPermissionsResponse readPermissions(int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/perms", offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetPermissionsResponse readPermissions(int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/perms", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
 
@@ -30,15 +31,46 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Used to read Permissions on a Document
-     * @param documentId the id of the Document
-     * @param offset the offset
-     * @return a GetPermissionsResponse Object
+     * It reads Permissions on all Resources
+     * @return GetPermissionsResponse Object with a list of Permissions
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetPermissionsResponse readPermissionsOnaDocument(String documentId, int offset) throws IOException, ChinoApiException {
-        JsonNode data = getResource("/perms/documents/"+documentId, offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetPermissionsResponse readPermissions() throws IOException, ChinoApiException {
+        JsonNode data = getResource("/perms", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetPermissionsResponse.class);
+
+        return null;
+    }
+
+
+    /**
+     * It reads Permissions on a Document
+     * @param documentId the id of the Document
+     * @param offset the offset from which it retrieves the Permissions
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetPermissionsResponse Object with a list of Permissions
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetPermissionsResponse readPermissionsOnaDocument(String documentId, int offset, int limit) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/perms/documents/"+documentId, offset, limit);
+        if(data!=null) {
+            return mapper.convertValue(data, GetPermissionsResponse.class);
+        }
+        return null;
+    }
+
+    /**
+     * It reads Permissions on a Document
+     * @param documentId the id of the Document
+     * @return GetPermissionsResponse Object with a list of Permissions
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetPermissionsResponse readPermissionsOnaDocument(String documentId) throws IOException, ChinoApiException {
+        JsonNode data = getResource("/perms/documents/"+documentId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null) {
             return mapper.convertValue(data, GetPermissionsResponse.class);
         }
@@ -48,13 +80,29 @@ public class Permissions extends ChinoBaseAPI {
     /**
      * Used to read Permissions of a User
      * @param userId the id of the User
-     * @param offset the offset
-     * @return a GetPermissionsResponse Object
+     * @param offset the offset from which it retrieves the Permissions
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetPermissionsResponse Object with a list of Permissions
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetPermissionsResponse readPermissionsOfaUser(String userId, int offset) throws IOException, ChinoApiException{
-        JsonNode data = getResource("/perms/users/"+userId, offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetPermissionsResponse readPermissionsOfaUser(String userId, int offset, int limit) throws IOException, ChinoApiException{
+        JsonNode data = getResource("/perms/users/"+userId, offset, limit);
+        if(data!=null)
+            return mapper.convertValue(data, GetPermissionsResponse.class);
+
+        return null;
+    }
+
+    /**
+     * Used to read Permissions of a User
+     * @param userId the id of the User
+     * @return GetPermissionsResponse Object with a list of Permissions
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetPermissionsResponse readPermissionsOfaUser(String userId) throws IOException, ChinoApiException{
+        JsonNode data = getResource("/perms/users/"+userId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
 
@@ -64,13 +112,14 @@ public class Permissions extends ChinoBaseAPI {
     /**
      * Used to read Permissions of a Group
      * @param groupId the id of the Group
-     * @param offset the offset
-     * @return a GetPermissionsResponse Object
+     * @param offset the offset from which it retrieves the Permissions
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @return GetPermissionsResponse Object with a list of Permissions
      * @throws IOException
      * @throws ChinoApiException
      */
-    public GetPermissionsResponse readPermissionsOfaGroup(String groupId, int offset) throws IOException, ChinoApiException{
-        JsonNode data = getResource("/perms/groups/"+groupId, offset, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+    public GetPermissionsResponse readPermissionsOfaGroup(String groupId, int offset, int limit) throws IOException, ChinoApiException{
+        JsonNode data = getResource("/perms/groups/"+groupId, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
 
@@ -78,13 +127,28 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create Permissions on Resources
+     * Used to read Permissions of a Group
+     * @param groupId the id of the Group
+     * @return GetPermissionsResponse Object with a list of Permissions
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public GetPermissionsResponse readPermissionsOfaGroup(String groupId) throws IOException, ChinoApiException{
+        JsonNode data = getResource("/perms/groups/"+groupId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        if(data!=null)
+            return mapper.convertValue(data, GetPermissionsResponse.class);
+
+        return null;
+    }
+
+    /**
+     * It creates Permissions on Resources
      * @param action a String that specifies the action
      * @param resourceType the type of the Resources
      * @param subjectType the type of the Subject
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRule Object
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -94,14 +158,14 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create Permissions on a Resource
+     * It creates Permissions on a Resource
      * @param action a String that specifies the action
      * @param resourceType the type of the Resource
      * @param resourceId the id of the Resource
      * @param subjectType the type of the Subject
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRule Object
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -111,7 +175,7 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create Permissions on a Resource Children
+     * It creates Permissions on a Resource Children
      * @param action a String that specifies the action
      * @param resourceType the type of the Resource
      * @param resourceId the id of the Resource
@@ -119,7 +183,7 @@ public class Permissions extends ChinoBaseAPI {
      * @param subjectType the type of the Subject
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRule Object
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -129,7 +193,7 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Used to create Permissions on a Resource Children
+     * It creates Permissions on a Resource Children
      * @param action a String that specifies the action
      * @param resourceType the type of the Resource
      * @param resourceId the id of the Resource
@@ -137,7 +201,7 @@ public class Permissions extends ChinoBaseAPI {
      * @param subjectType the type of the Subject
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRuleCreatedDocument Object
-     * @return a String that represents the result of the operation
+     * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */

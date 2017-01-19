@@ -26,7 +26,7 @@ public class RepositorySamples {
 
         //Check LIST Repository
         chino.repositories.create("new_test_repository");
-        System.out.println(chino.repositories.list(0));
+        System.out.println(chino.repositories.list());
 
         //Check DELETE Repository
         System.out.println(chino.repositories.delete(REPOSITORY_ID, true));

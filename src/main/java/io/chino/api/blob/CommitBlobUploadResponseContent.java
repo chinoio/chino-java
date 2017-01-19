@@ -70,8 +70,16 @@ public class CommitBlobUploadResponseContent {
 	public void setMd5(String md5) {
 		this.md5 = md5;
 	}
-	
-	
+
+	public String toString(){
+		String s="";
+		s+="bytes: "+bytes;
+		s+=", blob_id: "+blobId;
+		s+=", sha1: "+sha1;
+		s+=", md5: "+md5;
+		s+=", document_id: "+documentId;
+		return s;
+	}
 	
 
 }

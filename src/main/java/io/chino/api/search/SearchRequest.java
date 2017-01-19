@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class SearchRequest {
 
-
     @JsonProperty("result_type")
     private String resultType;
     @JsonProperty("filter_type")
@@ -25,7 +24,6 @@ public class SearchRequest {
     private List<SortOption> sort = new ArrayList<SortOption>();
     @JsonProperty("filter")
     private List<FilterOption> filter = new ArrayList<FilterOption>();
-
 
     /**
      *

@@ -21,10 +21,11 @@ public class BlobSamples {
     int chunkSize=100*1024;
     final String FILE_NAME = "003.pdf";
     final String FILE_NAME_2 = "0008mb.pdf";
-    final String PATH = "attachements";
+    final String PATH = "attachments";
     String REPOSITORY_ID = "";
     String SCHEMA_ID = "";
     String DOCUMENT_ID = "";
+    String DOCUMENT_ID_2 = "";
     String UPLOAD_ID = "";
     String FIRST_BLOB_ID = "";
     String SECOND_BLOB_ID = "";
@@ -57,12 +58,16 @@ public class BlobSamples {
         Document document = chino.documents.create(SCHEMA_ID, content);
         DOCUMENT_ID = document.getDocumentId();
 
+        document = chino.documents.create(SCHEMA_ID, content);
+        DOCUMENT_ID_2 = document.getDocumentId();
+
         //Now we try two way to upload a Blob, the first is very simple and is as follow
         CommitBlobUploadResponse commitBlobUploadResponse = chino.blobs.uploadBlob(PATH, DOCUMENT_ID, "test_file", FILE_NAME);
+        System.out.println(commitBlobUploadResponse);
         FIRST_BLOB_ID = commitBlobUploadResponse.getBlob().getBlobId();
 
         //That's it! Now the second way, a bit more difficult and we try it with another document
-        CreateBlobUploadResponse blobResponse = chino.blobs.initUpload(DOCUMENT_ID, "test_file", FILE_NAME_2);
+        CreateBlobUploadResponse blobResponse = chino.blobs.initUpload(DOCUMENT_ID_2, "test_file", FILE_NAME_2);
         UPLOAD_ID = blobResponse.getBlob().getUploadId();
 
         //We have instantiated the upload, and now we need to upload one chunk at time
@@ -89,18 +94,25 @@ public class BlobSamples {
 
         //Finally we commit the upload to end the connection
         commitBlobUploadResponse = chino.blobs.commitUpload(UPLOAD_ID);
+        System.out.println(commitBlobUploadResponse);
         SECOND_BLOB_ID = commitBlobUploadResponse.getBlob().getBlobId();
 
         //And now we try to get the last Blob already created saving it in another folder
-        GetBlobResponse getBlobResponse = null;
+        GetBlobResponse getBlobResponse;
         try {
+            getBlobResponse = chino.blobs.get(FIRST_BLOB_ID, PATH+"/get");
+            System.out.println(getBlobResponse);
             getBlobResponse = chino.blobs.get(SECOND_BLOB_ID, PATH+"/get");
+            System.out.println(getBlobResponse);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        if(getBlobResponse!=null)
-            System.out.println(getBlobResponse.toString());
-        //Finally we delete the Blob created
+        //Finally we delete everything we created
+        System.out.println(chino.blobs.delete(FIRST_BLOB_ID, true));
         System.out.println(chino.blobs.delete(SECOND_BLOB_ID, true));
+        System.out.println(chino.documents.delete(DOCUMENT_ID_2, true));
+        System.out.println(chino.documents.delete(DOCUMENT_ID, true));
+        System.out.println(chino.schemas.delete(SCHEMA_ID, true));
+        System.out.println(chino.repositories.delete(REPOSITORY_ID, true));
     }
 }

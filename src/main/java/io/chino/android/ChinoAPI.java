@@ -1,12 +1,10 @@
 package io.chino.android;
 
+import io.chino.api.common.LoggingInterceptor;
 import okhttp3.*;
 
-import javax.net.ssl.*;
-import java.io.IOException;
-import java.security.cert.CertificateException;
-
 public class ChinoAPI {
+    private LoggingInterceptor interceptor;
     OkHttpClient client;
     public Applications applications;
     public Auth auth;
@@ -21,42 +19,30 @@ public class ChinoAPI {
     public Permissions permissions;
     public Blobs blobs;
 
-    //There are two constructors for ChinoAPI. The first is needed to initialize a customer, the second one is for the user
+    /**
+     * The constructor for the developer
+     * @param hostUrl the url of the server
+     * @param customerId the id of the customer
+     * @param customerKey the key of the customer
+     */
     public ChinoAPI(String hostUrl, String customerId, String customerKey){
-        initClient(customerId, customerKey, hostUrl);
+        interceptor = new LoggingInterceptor();
+        client = new OkHttpClient.Builder()
+                .addNetworkInterceptor(interceptor).build();
+        interceptor.setCustomer(customerId, customerKey);
+        initObjects(hostUrl);
     }
 
+    /**
+     * The constructor for the user
+     * @param hostUrl the url of the server
+     */
     public ChinoAPI(String hostUrl) {
         client = new OkHttpClient();
         initObjects(hostUrl);
     }
 
-    public void initClient(final String token, String hostUrl){
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.authenticator(new Authenticator() {
-            @Override
-            public Request authenticate(Route route, Response response) throws IOException {
-                return response.request().newBuilder().header("Authorization", "Bearer ".concat(token)).build();
-            }
-        });
-        client = clientBuilder.build();
-        initObjects(hostUrl);
-    }
-
-    public void initClient(final String customerId, final String customerKey, String hostUrl){
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
-        clientBuilder.authenticator(new Authenticator() {
-            @Override
-            public Request authenticate(Route route, Response response) throws IOException {
-                String credential = Credentials.basic(customerId, customerKey);
-                return response.request().newBuilder().header("Authorization", credential).build();
-            }
-        });
-        client = clientBuilder.build();
-        initObjects(hostUrl);
-    }
-
-    public void initObjects(String hostUrl){
+    private void initObjects(String hostUrl){
         applications = new Applications(hostUrl, client);
         userSchemas = new UserSchemas(hostUrl, client);
         documents = new Documents(hostUrl, client);
@@ -66,7 +52,7 @@ public class ChinoAPI {
         collections = new Collections(hostUrl, client);
         users = new Users(hostUrl, client);
         search = new Search(hostUrl, client);
-        auth = new Auth(hostUrl, client);
+        auth = new Auth(hostUrl, client, interceptor);
         permissions = new Permissions(hostUrl, client);
         blobs = new Blobs(hostUrl, client);
     }
