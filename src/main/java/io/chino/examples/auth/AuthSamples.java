@@ -5,6 +5,7 @@ import io.chino.api.auth.LoggedUser;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
+import io.chino.examples.util.DeleteAll;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;
@@ -23,6 +24,9 @@ public class AuthSamples {
 
         //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
+
+        DeleteAll deleteAll = new DeleteAll();
+        deleteAll.deleteAll(chino);
 
         //First of all we need a UserSchema in which we create the User
         UserSchema userSchema = chino.userSchemas.create("test_description", UserSchemaStructureSample.class);
@@ -45,7 +49,7 @@ public class AuthSamples {
         APPLICATION_ID = application.getAppId();
 
         //Now we log in with the username and password of the User created
-        LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, application.getAppId(), application.getAppSecret());
+        LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, "lello", application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
 
         //Let's try to read the User status

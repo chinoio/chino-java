@@ -86,10 +86,11 @@ public class Applications extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
-    public Application update(String applicationId, String name, String grantType) throws IOException, ChinoApiException {
-        UpdateApplicationRequest applicationRequest = new UpdateApplicationRequest();
+    public Application update(String applicationId, String name, String grantType, String redirectUrl) throws IOException, ChinoApiException {
+        CreateApplicationRequest applicationRequest = new CreateApplicationRequest();
         applicationRequest.setName(name);
         applicationRequest.setGrantType(grantType);
+        applicationRequest.setRedirectUrl(redirectUrl);
         JsonNode data = putResource("/auth/applications/"+applicationId, applicationRequest);
         if(data!=null)
             return mapper.convertValue(data, GetApplicationResponse.class).getApplication();

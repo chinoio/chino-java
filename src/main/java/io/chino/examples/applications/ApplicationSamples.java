@@ -22,14 +22,14 @@ public class ApplicationSamples {
             Since we're using the "password" method the third parameter (the redirection_url) is useless, therefore we pass to
             the function the value "http://127.0.0.1/"
          */
-        Application application = chino.applications.create("ApplicationTest1", "password", "http://127.0.0.1/");
+        Application application = chino.applications.create("ApplicationTest1", "passwordsad asdasdasda", "http://127.0.0.1/");
         APPLICATION_ID_1 = application.getAppId();
 
         //We print the resulting Object
         System.out.println(application);
 
         //We try to update the Application already created
-        chino.applications.update(APPLICATION_ID_1, "ApplicationTest2", "password");
+        chino.applications.update(APPLICATION_ID_1, "ApplicationTest2", "authorization-code", "http://127.0.0.1/");
 
         //We try to read the application updated and print it in the console
         System.out.println(chino.applications.read(APPLICATION_ID_1));

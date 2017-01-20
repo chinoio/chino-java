@@ -38,8 +38,12 @@ public class Auth extends ChinoBaseAPI {
                 .build();
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().addInterceptor(interceptor);
         clientBuilder.authenticator(new Authenticator() {
+            private int mCounter = 0;
             @Override
             public Request authenticate(Route route, Response response) throws IOException {
+                if (mCounter++ > 0) {
+                    return null;
+                }
                 String credential = Credentials.basic(applicationId, applicationSecret);
                 return response.request().newBuilder().header("Authorization", credential).build();
             }
