@@ -9,6 +9,7 @@ import io.chino.api.schema.Schema;
 import io.chino.android.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
 import io.chino.examples.util.Constants;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -19,10 +20,11 @@ public class CollectionSamples {
     String COLLECTION_ID = "";
     String REPOSITORY_ID = "";
     String SCHEMA_ID = "";
-    String DOCUMENT_ID = "";
+    String DOCUMENT_ID_1 = "";
+    String DOCUMENT_ID_2 = "";
 
     public void testCollections() throws IOException, ChinoApiException {
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         Collection collection = chino.collections.create("test_collection");
@@ -41,10 +43,10 @@ public class CollectionSamples {
         content.put("test_date", "1994-02-03");
 
         Document document = chino.documents.create(SCHEMA_ID, content);
-        DOCUMENT_ID = document.getDocumentId();
+        DOCUMENT_ID_1 = document.getDocumentId();
 
         //We try to add a Document to the Collection
-        System.out.println(chino.collections.addDocument(COLLECTION_ID, DOCUMENT_ID));
+        System.out.println(chino.collections.addDocument(COLLECTION_ID, DOCUMENT_ID_1));
 
         //We create a new Document
         content = new HashMap<String, Object>();
@@ -53,9 +55,9 @@ public class CollectionSamples {
         content.put("test_boolean", false);
         content.put("test_date", "1994-02-04");
         document = chino.documents.create(SCHEMA_ID, content);
-        DOCUMENT_ID = document.getDocumentId();
+        DOCUMENT_ID_2 = document.getDocumentId();
 
-        System.out.println(chino.collections.addDocument(COLLECTION_ID, DOCUMENT_ID));
+        System.out.println(chino.collections.addDocument(COLLECTION_ID, DOCUMENT_ID_2));
 
         //And now we try to read the list of Documents in the Collection
         GetDocumentsResponse documents = chino.collections.listDocuments(COLLECTION_ID);
@@ -75,7 +77,7 @@ public class CollectionSamples {
         System.out.println("");
 
         //Let's try to remove the last Document and then read the list of Documents in the Collection again
-        System.out.println(chino.collections.removeDocument(COLLECTION_ID, DOCUMENT_ID));
+        System.out.println(chino.collections.removeDocument(COLLECTION_ID, DOCUMENT_ID_2));
 
         documents = chino.collections.listDocuments(COLLECTION_ID);
         documentList = documents.getDocuments();
@@ -83,6 +85,13 @@ public class CollectionSamples {
             System.out.println(documentObject.toString());
             System.out.println("Content of the document: "+chino.documents.read(documentObject.getDocumentId()).getContent());
         }
+
+        //Finally we delete everything we created
+        System.out.println(chino.documents.delete(DOCUMENT_ID_1, true));
+        System.out.println(chino.documents.delete(DOCUMENT_ID_2, true));
+        System.out.println(chino.schemas.delete(SCHEMA_ID, true));
+        System.out.println(chino.repositories.delete(REPOSITORY_ID, true));
+        System.out.println(chino.collections.delete(COLLECTION_ID, true));
     }
 
 }

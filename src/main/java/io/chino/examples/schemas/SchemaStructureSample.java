@@ -6,6 +6,7 @@ import java.io.File;
 import java.util.Date;
 
 public class SchemaStructureSample {
+    //Use this annotation if you want the targeted field indexed in the server
     @indexed
     public int test_integer;
     @indexed

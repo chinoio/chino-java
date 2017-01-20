@@ -25,7 +25,7 @@ public class SearchSamples {
 
     public void testSearch() throws IOException, ChinoApiException, InterruptedException {
 
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //Now we need to add some Documents
@@ -78,6 +78,7 @@ public class SearchSamples {
         GetDocumentsResponse documents = chino.search.where("test_integer").gt(123).and("test_date").eq("1994-02-04").sortAscBy("test_string").searchDocuments(SCHEMA_ID);
         System.out.println(documents);
 
+        //Finally we delete everything we created
         System.out.println(chino.documents.delete(DOCUMENT_ID_1, true));
         System.out.println(chino.documents.delete(DOCUMENT_ID_2, true));
         System.out.println(chino.schemas.delete(SCHEMA_ID, true));

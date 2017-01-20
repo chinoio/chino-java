@@ -14,6 +14,8 @@ import io.chino.android.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;
+import io.chino.examples.util.DeleteAll;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,7 @@ public class PermissionSamples {
 
     public void testPermissions() throws IOException, ChinoApiException {
 
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //We try first with a Repository and a User to apply the Permissions
@@ -117,6 +119,9 @@ public class PermissionSamples {
         System.out.println("");
         System.out.println(chino.permissions.readPermissions());
 
+        //We log out as a User and log in as a Developer
+        chino.auth.logout(TOKEN, application.getAppId(), application.getAppSecret());
+        chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //Now we create a Group and we'll add and read permissions on it
         attributes = new HashMap<String, Object>();
@@ -132,5 +137,9 @@ public class PermissionSamples {
 
         System.out.println("");
         System.out.println(chino.permissions.readPermissionsOfaGroup(GROUP_ID));
+
+        //Finally we delete everything
+        DeleteAll deleteAll = new DeleteAll();
+        deleteAll.deleteAll(chino);
     }
 }

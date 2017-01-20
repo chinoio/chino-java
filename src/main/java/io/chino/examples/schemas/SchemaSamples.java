@@ -21,7 +21,7 @@ public class SchemaSamples {
     ChinoAPI chino;
 
     public void testSchemas() throws IOException, ChinoApiException {
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //First we need to create a Repository
@@ -93,5 +93,8 @@ public class SchemaSamples {
         System.out.println(chino.schemas.delete(SCHEMA_ID1, true));
         System.out.println(chino.schemas.delete(SCHEMA_ID2, true));
         System.out.println(chino.schemas.delete(SCHEMA_ID3, true));
+
+        //Finally we delete the Repository too
+        System.out.println(chino.repositories.delete(REPOSITORY_ID, true));
     }
 }

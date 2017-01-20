@@ -8,25 +8,27 @@ import io.chino.api.userschema.UserSchema;
 import io.chino.android.ChinoAPI;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;
-import io.chino.examples.util.DeleteAll;
 
 import java.io.IOException;
 import java.util.HashMap;
 
-public class AuthSamplesAndroid {
+public class AuthSamples {
+
+    public String APPLICATION_ID = "";
     public String USER_SCHEMA_ID = "";
     public String USER_ID = "";
     public ChinoAPI chino;
 
     public void testAuth() throws IOException, ChinoApiException {
 
-        //We try to initialize ChinoAPI with a customerId and a customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
-        //And now we create a user and then we try to login with the credentials of the User created
+        //First of all we need a UserSchema in which we create the User
         UserSchema userSchema = chino.userSchemas.create("test_description", UserSchemaStructureSample.class);
         USER_SCHEMA_ID = userSchema.getUserSchemaId();
 
+        //Now we create the User under the UserSchema newly created
         HashMap<String, Object> attributes = new HashMap<String, Object>();
         attributes.put("test_string", "test_string_value");
         attributes.put("test_boolean", true);
@@ -36,21 +38,30 @@ public class AuthSamplesAndroid {
         User user = chino.users.create(Constants.USERNAME, Constants.PASSWORD, attributes, USER_SCHEMA_ID);
         USER_ID = user.getUserId();
 
-        Application application = chino.applications.create("ApplicationTest1", "password", "http://127.0.0.1/");
+        //Let's approach with the authentication of the User
 
+        //First of all we need to create an Application with the "password" method for the authentication
+        Application application = chino.applications.create("ApplicationTest1", "password", "http://127.0.0.1/");
+        APPLICATION_ID = application.getAppId();
+
+        //Now we log in with the username and password of the User created
         LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
 
-        User user2 = chino.auth.checkUserStatus();
-        System.out.println(user2);
+        //Let's try to read the User status
+        user = chino.auth.checkUserStatus();
+        System.out.println(user);
 
+        //We also try to refresh the token for the authentication and we print in the console the user with updated fields
         loggedUser = chino.auth.refreshToken(loggedUser.getRefreshToken(), application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
 
+        //Finally we log out, we create a new ChinoAPI Object with the customerId and customerKey and we delete everything we created
         System.out.println(chino.auth.logout(loggedUser.getAccessToken(), application.getAppId(), application.getAppSecret()));
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
-        DeleteAll deleteAll = new DeleteAll();
-        deleteAll.deleteAll(chino);
 
+        System.out.println(chino.users.delete(USER_ID, true));
+        System.out.println(chino.userSchemas.delete(USER_SCHEMA_ID, true));
+        System.out.println(chino.applications.delete(APPLICATION_ID, true));
     }
 }

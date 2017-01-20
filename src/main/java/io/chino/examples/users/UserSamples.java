@@ -85,5 +85,12 @@ public class UserSamples {
         //Check DELETE user
         String deleteResult = chino.users.delete(USER_ID, true);
         System.out.println(deleteResult);
+
+        //Finally we delete everything we created
+        List<User> users = chino.users.list(USER_SCHEMA_ID).getUsers();
+        for(User u : users){
+            System.out.println(chino.users.delete(u.getUserId(), true));
+        }
+        System.out.println(chino.userSchemas.delete(USER_SCHEMA_ID, true));
     }
 }

@@ -21,7 +21,7 @@ public class DocumentSamples {
 
     public void testDocuments() throws IOException, ChinoApiException {
 
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //We need a Repository and a Schema to create the Document
@@ -91,5 +91,12 @@ public class DocumentSamples {
         for(Document documentObject : documentList){
             System.out.println(documentObject);
         }
+
+        //Finally we delete everything we created
+        for(Document documentObject : documentList){
+            System.out.println(chino.documents.delete(documentObject.getDocumentId(), true));
+        }
+        System.out.println(chino.schemas.delete(SCHEMA_ID, true));
+        System.out.println(chino.repositories.delete(REPOSITORY_ID, true));
     }
 }

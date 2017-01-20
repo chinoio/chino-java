@@ -9,6 +9,7 @@ import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class GroupSamples {
 
@@ -19,7 +20,7 @@ public class GroupSamples {
 
     public void testGroups() throws IOException, ChinoApiException {
 
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //We create a group
@@ -81,5 +82,12 @@ public class GroupSamples {
         //Now we remove the UserSchema from the Group
         System.out.println(chino.groups.removeUserSchemaFromGroup(USER_SCHEMA_ID, GROUP_ID));
 
+        //Finally we delete everything we created
+        List<User> users = chino.users.list(USER_SCHEMA_ID).getUsers();
+        for(User u : users){
+            System.out.println(chino.users.delete(u.getUserId(), true));
+        }
+        System.out.println(chino.userSchemas.delete(USER_SCHEMA_ID, true));
+        System.out.println(chino.groups.delete(GROUP_ID, true));
     }
 }

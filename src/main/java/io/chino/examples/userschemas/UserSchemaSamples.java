@@ -19,7 +19,7 @@ public class UserSchemaSamples {
 
     public void testUserSchemas() throws IOException, ChinoApiException {
 
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //Check CREATE UerSchema with all three methods

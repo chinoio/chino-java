@@ -33,22 +33,22 @@ public class BlobSamples {
 
     public void testBlobs() throws IOException, ChinoApiException {
 
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
-        //First we need a repository
+        //First of all we need a repository
         Repository repository = chino.repositories.create("test_repository");
         REPOSITORY_ID = repository.getRepositoryId();
 
         /*
             Then we need to create a Schema with a field of type "blob". In this case we try to construct it passing a Class
-            in which there are some public variables that are used to construct the fields of the Schema
+            in which there are some public variables that are used to construct the fields of the Schema.
+            In this case the field "File" will automatically create a "blob" type field on the server
         */
         Schema schema = chino.schemas.create(REPOSITORY_ID, "sample_description", SchemaStructureSample.class);
         SCHEMA_ID = schema.getSchemaId();
 
         //And finally we want a Document
-
         HashMap<String, Object> content = new HashMap<String, Object>();
         content.put("test_string", "test_string_value");
         content.put("test_integer", 123);
@@ -67,6 +67,7 @@ public class BlobSamples {
         FIRST_BLOB_ID = commitBlobUploadResponse.getBlob().getBlobId();
 
         //That's it! Now the second way, a bit more difficult and we try it with another document
+        //We recommend to use this second way only if there is the necessity to manage how the file is divided in chunk and uploaded to the server
         CreateBlobUploadResponse blobResponse = chino.blobs.initUpload(DOCUMENT_ID_2, "test_file", FILE_NAME_2);
         UPLOAD_ID = blobResponse.getBlob().getUploadId();
 

@@ -15,12 +15,12 @@ import java.util.List;
 
 public class HelloWorldDocument {
 
-    ChinoAPI chino;
-    String REPOSITORY_ID = "";
-    String SCHEMA_ID = "";
-    String DOCUMENT_ID = "";
+    static ChinoAPI chino;
+    static String REPOSITORY_ID = "";
+    static String SCHEMA_ID = "";
+    static String DOCUMENT_ID = "";
 
-    public void createDocument() throws IOException, ChinoApiException {
+    public static void main(String args[]) throws IOException, ChinoApiException{
 
         /*
             You must first initialize your ChinoAPI variable with your customerId and your customerKey
@@ -76,5 +76,10 @@ public class HelloWorldDocument {
 
         //Let's try to read and print the Document created
         System.out.println(chino.documents.read(DOCUMENT_ID));
+
+        //Finally we delete everything we created
+        System.out.println(chino.documents.delete(DOCUMENT_ID, true));
+        System.out.println(chino.schemas.delete(SCHEMA_ID, true));
+        System.out.println(chino.repositories.delete(REPOSITORY_ID, true));
     }
 }

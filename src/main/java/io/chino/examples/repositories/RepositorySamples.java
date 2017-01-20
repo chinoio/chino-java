@@ -10,10 +10,11 @@ import java.io.IOException;
 public class RepositorySamples {
 
     String REPOSITORY_ID = "";
+    String REPOSITORY_ID_2 = "";
     ChinoAPI chino;
 
     public void testRepositories() throws IOException, ChinoApiException {
-        //You must first initialize your ChinoAPI variable with your customerId and your customerKey
+        //We initialize the ChinoAPI variable with the customerId and customerKey
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //Check CREATE Repository
@@ -25,10 +26,11 @@ public class RepositorySamples {
         System.out.println(chino.repositories.update(REPOSITORY_ID, "test_repository_updated"));
 
         //Check LIST Repository
-        chino.repositories.create("new_test_repository");
+        REPOSITORY_ID_2 = chino.repositories.create("new_test_repository").getRepositoryId();
         System.out.println(chino.repositories.list());
 
         //Check DELETE Repository
         System.out.println(chino.repositories.delete(REPOSITORY_ID, true));
+        System.out.println(chino.repositories.delete(REPOSITORY_ID_2, true));
     }
 }

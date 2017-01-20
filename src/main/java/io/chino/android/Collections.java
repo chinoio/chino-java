@@ -80,17 +80,17 @@ public class Collections extends ChinoBaseAPI {
      * It updates a Collection
      * @param collectionId the id of the Collection to update
      * @param name the name of the new Collection
-     * @return Collection Object
+     * @return GetCollection Object which contains the Collection object
      * @throws IOException
      * @throws ChinoApiException
      */
-    public Collection update(String collectionId, String name) throws IOException, ChinoApiException {
+    public GetCollectionResponse update(String collectionId, String name) throws IOException, ChinoApiException {
         CreateCollectionRequest collectionRequest = new CreateCollectionRequest();
         collectionRequest.setName(name);
 
         JsonNode data = putResource("/collections/"+collectionId, collectionRequest);
         if(data!=null)
-            return mapper.convertValue(data, Collection.class);
+            return mapper.convertValue(data, GetCollectionResponse.class);
         return null;
     }
 

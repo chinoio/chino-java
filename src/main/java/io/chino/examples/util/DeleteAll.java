@@ -2,8 +2,10 @@ package io.chino.examples.util;
 
 import io.chino.android.ChinoAPI;
 import io.chino.api.application.Application;
+import io.chino.api.collection.Collection;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.document.Document;
+import io.chino.api.group.Group;
 import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
 import io.chino.api.user.User;
@@ -15,6 +17,14 @@ import java.util.List;
 public class DeleteAll {
 
     public void deleteAll(ChinoAPI temp) throws IOException, ChinoApiException {
+        List<Group> groups = temp.groups.list().getGroups();
+        for(Group g : groups){
+            temp.groups.delete(g.getGroupId(), true);
+        }
+        List<Collection> collections = temp.collections.list().getCollections();
+        for(Collection c : collections){
+            temp.collections.delete(c.getCollectionId(), true);
+        }
         List<Application> applications = temp.applications.list().getApplications();
         for(Application a : applications){
             temp.applications.delete(a.getAppId(), true);
