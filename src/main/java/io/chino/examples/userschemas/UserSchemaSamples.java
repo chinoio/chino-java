@@ -3,7 +3,7 @@ package io.chino.examples.userschemas;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
 import io.chino.api.userschema.*;
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.examples.util.Constants;
 
 import java.io.IOException;

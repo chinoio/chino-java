@@ -1,6 +1,6 @@
 package io.chino.examples.tutorial;
 
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 
 public class Main {
 

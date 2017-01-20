@@ -10,7 +10,7 @@ import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;

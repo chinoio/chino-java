@@ -1,6 +1,6 @@
 package io.chino.examples.util;
 
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.api.application.Application;
 import io.chino.api.collection.Collection;
 import io.chino.api.common.ChinoApiException;

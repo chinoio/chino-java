@@ -5,7 +5,7 @@ import io.chino.api.common.Field;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.api.userschema.UserSchemaStructure;
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.util.Constants;
 import java.io.IOException;

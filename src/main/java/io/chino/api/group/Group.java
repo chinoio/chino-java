@@ -4,7 +4,7 @@ package io.chino.api.group;
 import java.util.Date;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import io.chino.android.ChinoBaseAPI;
+import io.chino.java.ChinoBaseAPI;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

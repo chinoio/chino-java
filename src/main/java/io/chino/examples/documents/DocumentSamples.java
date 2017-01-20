@@ -5,7 +5,7 @@ import io.chino.api.document.Document;
 import io.chino.api.document.GetDocumentsResponse;
 import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
 import io.chino.examples.util.Constants;
 import java.io.IOException;

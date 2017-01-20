@@ -8,7 +8,7 @@ import io.chino.api.schema.Schema;
 import io.chino.api.search.FilterOption;
 import io.chino.api.search.SearchRequest;
 import io.chino.api.search.SortOption;
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.examples.util.Constants;
 import java.io.IOException;
 import java.util.ArrayList;

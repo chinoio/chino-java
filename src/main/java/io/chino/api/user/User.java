@@ -4,7 +4,7 @@ package io.chino.api.user;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.chino.android.ChinoBaseAPI;
+import io.chino.java.ChinoBaseAPI;
 
 import java.util.*;
 

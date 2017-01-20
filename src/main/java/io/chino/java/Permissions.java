@@ -1,4 +1,4 @@
-package io.chino.android;
+package io.chino.java;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;

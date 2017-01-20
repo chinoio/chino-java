@@ -2,7 +2,7 @@ package io.chino.examples.repositories;
 
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.repository.Repository;
-import io.chino.android.ChinoAPI;
+import io.chino.java.ChinoAPI;
 import io.chino.examples.util.Constants;
 
 import java.io.IOException;

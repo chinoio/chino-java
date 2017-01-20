@@ -1,4 +1,4 @@
-package io.chino.android;
+package io.chino.java;
 
 import io.chino.api.application.*;
 import io.chino.api.common.ChinoApiConstants;
