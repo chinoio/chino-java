@@ -15,11 +15,22 @@ public class CommitBlobUploadRequest {
 	@JsonProperty("upload_id")
 	private String uploadId;
 
+	public CommitBlobUploadRequest(){
+
+	}
+
+	public CommitBlobUploadRequest(String uploadId){
+		setUploadId(uploadId);
+	}
+
 	public String getUploadId() {
 		return uploadId;
 	}
 
 	public void setUploadId(String uploadId) {
+		if(uploadId == null){
+			throw new NullPointerException("upload_id");
+		}
 		this.uploadId = uploadId;
 	}
 	

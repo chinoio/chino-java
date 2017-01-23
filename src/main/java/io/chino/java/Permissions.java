@@ -55,6 +55,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetPermissionsResponse readPermissionsOnaDocument(String documentId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(documentId, "document_id");
         JsonNode data = getResource("/perms/documents/"+documentId, offset, limit);
         if(data!=null) {
             return mapper.convertValue(data, GetPermissionsResponse.class);
@@ -70,6 +71,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetPermissionsResponse readPermissionsOnaDocument(String documentId) throws IOException, ChinoApiException {
+        checkNotNull(documentId, "document_id");
         JsonNode data = getResource("/perms/documents/"+documentId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null) {
             return mapper.convertValue(data, GetPermissionsResponse.class);
@@ -87,6 +89,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetPermissionsResponse readPermissionsOfaUser(String userId, int offset, int limit) throws IOException, ChinoApiException{
+        checkNotNull(userId, "user_id");
         JsonNode data = getResource("/perms/users/"+userId, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
@@ -102,6 +105,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetPermissionsResponse readPermissionsOfaUser(String userId) throws IOException, ChinoApiException{
+        checkNotNull(userId, "user_id");
         JsonNode data = getResource("/perms/users/"+userId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
@@ -119,6 +123,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetPermissionsResponse readPermissionsOfaGroup(String groupId, int offset, int limit) throws IOException, ChinoApiException{
+        checkNotNull(groupId, "group_id");
         JsonNode data = getResource("/perms/groups/"+groupId, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
@@ -134,6 +139,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetPermissionsResponse readPermissionsOfaGroup(String groupId) throws IOException, ChinoApiException{
+        checkNotNull(groupId, "group_id");
         JsonNode data = getResource("/perms/groups/"+groupId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetPermissionsResponse.class);
@@ -153,6 +159,11 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String permissionsOnResources(String action, String resourceType, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
+        checkNotNull(action, "action");
+        checkNotNull(resourceType, "resource_type");
+        checkNotNull(subjectType, "subject_type");
+        checkNotNull(subjectId, "subject_id");
+        checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+subjectType+"/"+subjectId, permissionRule);
         return "success";
     }
@@ -170,6 +181,12 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String permissionsOnaResource(String action, String resourceType, String resourceId, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
+        checkNotNull(action, "action");
+        checkNotNull(resourceType, "resource_type");
+        checkNotNull(resourceId, "resource_id");
+        checkNotNull(subjectType, "subject_type");
+        checkNotNull(subjectId, "subject_id");
+        checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+subjectType+"/"+subjectId, permissionRule);
         return "success";
     }
@@ -188,6 +205,8 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String permissionsOnResourceChildren(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
+        auxFunction(action, resourceType, resourceId, resourceChildren, subjectType, subjectId);
+        checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+resourceChildren+"/"+subjectType+"/"+subjectId, permissionRule);
         return "success";
     }
@@ -206,8 +225,20 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String permissionsOnResourceChildren(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId, PermissionRuleCreatedDocument permissionRule) throws IOException, ChinoApiException {
+        auxFunction(action, resourceType, resourceId, resourceChildren, subjectType, subjectId);
+        checkNotNull(permissionRule, "permission_rule_created_document");
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+resourceChildren+"/"+subjectType+"/"+subjectId, permissionRule);
         return "success";
     }
 
+
+
+    private void auxFunction(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId){
+        checkNotNull(action, "action");
+        checkNotNull(resourceType, "resource_type");
+        checkNotNull(resourceId, "resource_id");
+        checkNotNull(resourceChildren, "resource_children");
+        checkNotNull(subjectType, "subject_type");
+        checkNotNull(subjectId, "subject_id");
+    }
 }

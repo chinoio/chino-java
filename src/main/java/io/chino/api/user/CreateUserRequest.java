@@ -23,6 +23,16 @@ public class CreateUserRequest {
     @JsonProperty("attributes")
     private HashMap attributes;
 
+    public CreateUserRequest(){
+
+    }
+
+    public CreateUserRequest(String username, String password, HashMap attributes){
+        setUsername(username);
+        setPassword(password);
+        setAttributes(attributes);
+    }
+
     /**
      * 
      * @return
@@ -40,6 +50,9 @@ public class CreateUserRequest {
      */
     @JsonProperty("username")
     public void setUsername(String username) {
+        if(username == null){
+            throw new NullPointerException("username");
+        }
         this.username = username;
     }
 
@@ -60,6 +73,9 @@ public class CreateUserRequest {
      */
     @JsonProperty("password")
     public void setPassword(String password) {
+        if(password == null){
+            throw new NullPointerException("password");
+        }
         this.password = password;
     }
 
@@ -80,6 +96,9 @@ public class CreateUserRequest {
      */
     @JsonProperty("attributes")
     public void setAttributes(HashMap attributes) {
+        if(attributes == null){
+            throw new NullPointerException("attributes");
+        }
         this.attributes = attributes;
     }
 

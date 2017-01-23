@@ -53,6 +53,7 @@ public class Repositories extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Repository read(String repositoryId) throws IOException, ChinoApiException{
+        checkNotNull(repositoryId, "repository_id");
         JsonNode data = getResource("/repositories/"+repositoryId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetRepositoryResponse.class).getRepository();
@@ -68,6 +69,7 @@ public class Repositories extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Repository create(String description) throws IOException, ChinoApiException {
+        checkNotNull(description, "description");
         String createRepoRequest="{\"description\": \""+description+"\"}";
         JsonNode createRepoRequestNode= mapper.readValue(createRepoRequest, JsonNode.class);
         JsonNode data = postResource("/repositories", createRepoRequestNode);
@@ -86,6 +88,8 @@ public class Repositories extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Repository update(String repositoryId, String description) throws IOException, ChinoApiException {
+        checkNotNull(repositoryId, "repository_id");
+        checkNotNull(description, "description");
         String createRepoRequest="{\"description\": \""+description+"\"}";
         JsonNode createRepoRequestNode= mapper.readValue(createRepoRequest, JsonNode.class);
 
@@ -104,6 +108,7 @@ public class Repositories extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String repositoryId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(repositoryId, "repository_id");
         return deleteResource("/repositories/"+repositoryId, force);
     }
 }

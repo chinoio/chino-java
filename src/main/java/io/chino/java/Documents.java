@@ -27,6 +27,7 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse list(String schemaId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         JsonNode data = getResource("/schemas/" + schemaId + "/documents", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -41,6 +42,7 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse list(String schemaId) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         JsonNode data = getResource("/schemas/" + schemaId + "/documents", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -58,6 +60,7 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse list(String schemaId, int offset, int limit, boolean fullDocument) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         JsonNode data;
         if(fullDocument) {
             data = getResource("/schemas/" + schemaId + "/documents?full_document=true");
@@ -78,6 +81,7 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse list(String schemaId, boolean fullDocument) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         JsonNode data;
         if(fullDocument) {
             data = getResource("/schemas/" + schemaId + "/documents?full_document=true");
@@ -97,6 +101,7 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Document read(String documentId) throws IOException, ChinoApiException{
+        checkNotNull(documentId, "document_id");
         JsonNode data = getResource("/documents/"+documentId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
@@ -113,6 +118,8 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Object read(String documentId, Class myClass) throws IOException, ChinoApiException{
+        checkNotNull(documentId, "document_id");
+        checkNotNull(myClass, "my_class");
         JsonNode data = getResource("/documents/"+documentId, 0 , ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null) {
             Document document = mapper.convertValue(data, GetDocumentResponse.class).getDocument();
@@ -130,8 +137,8 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Document create(String schemaId, HashMap content) throws IOException, ChinoApiException {
-        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
-        createDocumentRequest.setContent(content);
+        checkNotNull(schemaId, "schema_id");
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(content);
         JsonNode data = postResource("/schemas/"+schemaId+"/documents", createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
@@ -148,8 +155,8 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Document create(String schemaId, String content) throws IOException, ChinoApiException {
-        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
-        createDocumentRequest.setContent(fromStringToHashMap(content));
+        checkNotNull(schemaId, "schema_id");
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(fromStringToHashMap(content));
         JsonNode data = postResource("/schemas/"+schemaId+"/documents", createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
@@ -166,8 +173,8 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Document update(String documentId, HashMap content) throws IOException, ChinoApiException {
-        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
-        createDocumentRequest.setContent(content);
+        checkNotNull(documentId, "document_id");
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(content);
         JsonNode data = putResource("/documents/"+documentId, createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
@@ -184,8 +191,8 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Document update(String documentId, String content) throws IOException, ChinoApiException {
-        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest();
-        createDocumentRequest.setContent(fromStringToHashMap(content));
+        checkNotNull(documentId, "document_id");
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(fromStringToHashMap(content));
         JsonNode data = putResource("/documents/"+documentId, createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
@@ -202,6 +209,7 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String documentId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(documentId, "document_id");
         return deleteResource("/documents/"+documentId, force);
     }
 }

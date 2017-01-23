@@ -35,6 +35,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(searchRequest, "search_request");
+        checkNotNull(schemaId, "schema_id");
         JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -51,6 +53,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId) throws IOException, ChinoApiException {
+        checkNotNull(searchRequest, "search_request");
+        checkNotNull(schemaId, "schema_id");
         JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -69,6 +73,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(searchRequest, "search_request");
+        checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
@@ -85,6 +91,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId) throws IOException, ChinoApiException {
+        checkNotNull(searchRequest, "search_request");
+        checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
@@ -106,11 +114,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setResultType(resultType);
-        searchRequest.setFilterType(filterType);
-        searchRequest.setSort(sort);
-        searchRequest.setFilter(filter);
+        checkNotNull(schemaId, "schema_id");
+        SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
 
         return searchDocuments(searchRequest, schemaId, offset, limit);
     }
@@ -127,11 +132,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setResultType(resultType);
-        searchRequest.setFilterType(filterType);
-        searchRequest.setSort(sort);
-        searchRequest.setFilter(filter);
+        checkNotNull(schemaId, "schema_id");
+        SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
 
         return searchDocuments(searchRequest, schemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
@@ -148,11 +150,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setResultType(resultType);
-        searchRequest.setFilterType(filterType);
-        searchRequest.setSort(sort);
-        searchRequest.setFilter(filter);
+        checkNotNull(userSchemaId, "user_schema_id");
+        SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
 
         return searchUsers(searchRequest, userSchemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
@@ -171,11 +170,8 @@ public class Search extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
-        SearchRequest searchRequest = new SearchRequest();
-        searchRequest.setResultType(resultType);
-        searchRequest.setFilterType(filterType);
-        searchRequest.setSort(sort);
-        searchRequest.setFilter(filter);
+        checkNotNull(userSchemaId, "user_schema_id");
+        SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
 
         return searchUsers(searchRequest, userSchemaId, offset, limit);
     }
@@ -227,23 +223,27 @@ public class Search extends ChinoBaseAPI {
      * It sets the schemaId and finally performs the search request, calling the function searchDocuments passing the class variable searchRequest
      */
     public GetDocumentsResponse searchDocuments(String schemaId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
         return searchDocuments(searchRequest, schemaId, offset, limit);
     }
     public GetDocumentsResponse searchDocuments(String schemaId) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
         return searchDocuments(searchRequest, schemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
 
     public GetUsersResponse searchUsers(String userSchemaId) throws IOException, ChinoApiException {
+        checkNotNull(userSchemaId, "user_schema_id");
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
         return searchUsers(searchRequest, userSchemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
 
     public GetUsersResponse searchUsers(String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(userSchemaId, "user_schema_id");
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
         return searchUsers(searchRequest, userSchemaId, offset, limit);

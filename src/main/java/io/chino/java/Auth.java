@@ -27,6 +27,10 @@ public class Auth extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public LoggedUser loginWithPassword(String username, String password, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
+        checkNotNull(username, "username");
+        checkNotNull(password, "password");
+        checkNotNull(applicationId, "application_id");
+        checkNotNull(applicationSecret, "application_secret");
         RequestBody formBody = new FormBody.Builder()
                 .add("grant_type", "password")
                 .add("username", username)
@@ -65,6 +69,10 @@ public class Auth extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public LoggedUser loginWithAuthenticationCode(String code, String redirectUrl, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
+        checkNotNull(code, "code");
+        checkNotNull(redirectUrl, "redirect_url");
+        checkNotNull(applicationId, "application_id");
+        checkNotNull(applicationSecret, "application_secret");
         RequestBody formBody = new FormBody.Builder()
                 .add("grant_type", "authorization_code")
                 .add("code", code)
@@ -106,6 +114,9 @@ public class Auth extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public LoggedUser refreshToken(String refreshToken, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
+        checkNotNull(refreshToken, "refresh_token");
+        checkNotNull(applicationId, "application_id");
+        checkNotNull(applicationSecret, "application_secret");
         RequestBody formBody = new FormBody.Builder()
                 .add("grant_type", "refresh_token")
                 .add("refresh_token", refreshToken)
@@ -145,6 +156,9 @@ public class Auth extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String logout(String token, String applicationId, String applicationSecret) throws IOException, ChinoApiException {
+        checkNotNull(token, "token");
+        checkNotNull(applicationId, "application_id");
+        checkNotNull(applicationSecret, "application_secret");
         RequestBody formBody = new FormBody.Builder()
                 .add("token", token)
                 .add("client_id", applicationId)

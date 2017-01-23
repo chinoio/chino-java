@@ -15,6 +15,15 @@ public class CreateApplicationRequest {
     @JsonProperty("redirect_url")
     private String redirectUrl;
 
+    public CreateApplicationRequest(){
+    }
+
+    public CreateApplicationRequest(String name, String grantType, String redirectUrl){
+        setName(name);
+        setGrantType(grantType);
+        setRedirectUrl(redirectUrl);
+    }
+
     /**
      *
      * @return The name
@@ -31,6 +40,9 @@ public class CreateApplicationRequest {
      */
     @JsonProperty("name")
     public void setName(String name) {
+        if(name==null){
+            throw new NullPointerException("name");
+        }
         this.name = name;
     }
 
@@ -50,6 +62,9 @@ public class CreateApplicationRequest {
      */
     @JsonProperty("grant_type")
     public void setGrantType(String grantType) {
+        if(grantType==null){
+            throw new NullPointerException("grant_type");
+        }
         this.grantType = grantType;
     }
 
@@ -69,6 +84,9 @@ public class CreateApplicationRequest {
      */
     @JsonProperty("redirect_url")
     public void setRedirectUrl(String redirectUrl) {
+        if(redirectUrl==null){
+            throw new NullPointerException("redirect_url");
+        }
         this.redirectUrl = redirectUrl;
     }
 }

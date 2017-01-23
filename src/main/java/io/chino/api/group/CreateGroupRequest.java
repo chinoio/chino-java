@@ -3,6 +3,7 @@ package io.chino.api.group;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.blob.CreateBlobUploadRequest;
 
 import java.util.HashMap;
 
@@ -14,6 +15,15 @@ public class CreateGroupRequest {
 	private String groupName;
 	@JsonProperty("attributes")
 	private HashMap attributes;
+
+    public CreateGroupRequest(){
+
+    }
+
+    public CreateGroupRequest(String groupName, HashMap attributes){
+        setGroupName(groupName);
+        setAttributes(attributes);
+    }
 
 	/**
 	 * 
@@ -31,6 +41,9 @@ public class CreateGroupRequest {
 	 */
 	@JsonProperty("group_name")
 	public void setGroupName(String groupName) {
+		if(groupName == null){
+			throw new NullPointerException("group_name");
+		}
 		this.groupName = groupName;
 	}
 
@@ -50,6 +63,9 @@ public class CreateGroupRequest {
 	 */
 	@JsonProperty("attributes")
 	public void setAttributes(HashMap attributes) {
+		if(attributes == null){
+			throw new NullPointerException("attributes");
+		}
 		this.attributes = attributes;
 	}
 

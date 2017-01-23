@@ -54,6 +54,7 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Group read(String groupId) throws IOException, ChinoApiException{
+        checkNotNull(groupId, "group_id");
         JsonNode data = getResource("/groups/"+groupId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetGroupResponse.class).getGroup();
@@ -70,9 +71,7 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Group create(String groupName, HashMap attributes) throws IOException, ChinoApiException {
-        CreateGroupRequest createGroupRequest=new CreateGroupRequest();
-        createGroupRequest.setGroupName(groupName);
-        createGroupRequest.setAttributes(attributes);
+        CreateGroupRequest createGroupRequest=new CreateGroupRequest(groupName, attributes);
 
         System.out.println(mapper.writeValueAsString(createGroupRequest));
 
@@ -93,9 +92,8 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Group update(String groupId, String groupName, HashMap attributes) throws IOException, ChinoApiException {
-        CreateGroupRequest createGroupRequest=new CreateGroupRequest();
-        createGroupRequest.setGroupName(groupName);
-        createGroupRequest.setAttributes(attributes);
+        checkNotNull(groupId, "group_id");
+        CreateGroupRequest createGroupRequest=new CreateGroupRequest(groupName, attributes);
 
         JsonNode data = putResource("/groups/"+groupId, createGroupRequest);
         if(data!=null)
@@ -113,6 +111,7 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String groupId, boolean force) throws IOException , ChinoApiException {
+        checkNotNull(groupId, "group_id");
         return deleteResource("/groups/"+groupId, force);
     }
 
@@ -127,6 +126,8 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String addUserToGroup(String userId, String groupId) throws IOException, ChinoApiException {
+        checkNotNull(groupId, "group_id");
+        checkNotNull(userId, "user_id");
         postResource("/groups/"+groupId+"/users/"+userId, null);
         return "success";
     }
@@ -140,6 +141,8 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String removeUserFromGroup(String userId, String groupId) throws IOException, ChinoApiException {
+        checkNotNull(groupId, "group_id");
+        checkNotNull(userId, "user_id");
         deleteResource("/groups/"+groupId+"/users/"+userId, false);
         return "success";
     }
@@ -153,6 +156,8 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String addUserSchemaToGroup(String userSchemaId, String groupId) throws IOException, ChinoApiException {
+        checkNotNull(groupId, "group_id");
+        checkNotNull(userSchemaId, "user_schema_id");
         postResource("/groups/"+groupId+"/user_schemas/"+userSchemaId, null);
         return "success";
     }
@@ -166,6 +171,8 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String removeUserSchemaFromGroup(String userSchemaId, String groupId) throws IOException, ChinoApiException {
+        checkNotNull(groupId, "group_id");
+        checkNotNull(userSchemaId, "user_schema_id");
         deleteResource("/groups/"+groupId+"/user_schemas/"+userSchemaId, false);
         return "success";
     }

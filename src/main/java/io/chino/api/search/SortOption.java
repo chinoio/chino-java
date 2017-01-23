@@ -22,8 +22,8 @@ public class SortOption {
     }
     
 	public SortOption(String field, String order){
-		this.field=field;
-		this.order=order;
+		setField(field);
+		setOrder(order);
 	}
 
     /**
@@ -43,6 +43,9 @@ public class SortOption {
      */
     @JsonProperty("field")
     public void setField(String field) {
+        if(field == null){
+            throw new NullPointerException("field");
+        }
         this.field = field;
     }
 
@@ -63,6 +66,9 @@ public class SortOption {
      */
     @JsonProperty("order")
     public void setOrder(String order) {
+        if(order == null){
+            throw new NullPointerException("order");
+        }
         this.order = order;
     }
 }

@@ -26,6 +26,9 @@ public class PermissionRule {
     }
 
     public void setManage(String... strings) {
+        if(strings == null){
+            throw new NullPointerException("manage");
+        }
         manage = new ArrayList<String>();
         Collections.addAll(manage, strings);
     }
@@ -35,6 +38,9 @@ public class PermissionRule {
     }
 
     public void setAuthorize(String... strings) {
+        if(strings == null){
+            throw new NullPointerException("authorize");
+        }
         authorize = new ArrayList<String>();
         Collections.addAll(authorize, strings);
     }

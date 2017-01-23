@@ -50,6 +50,7 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public UserSchema read(String userSchemaId) throws IOException, ChinoApiException{
+        checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = getResource("/user_schemas/"+userSchemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return getMapper().convertValue(data, GetUserSchemaResponse.class).getUserSchema();
@@ -65,9 +66,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public UserSchema create(String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
-        UserSchemaRequest userSchemaRequest= new UserSchemaRequest();
-        userSchemaRequest.setDescription(description);
-        userSchemaRequest.setStructure(userSchemaStructure);
+        checkNotNull(userSchemaStructure, "user_schema_structure");
+        UserSchemaRequest userSchemaRequest= new UserSchemaRequest(description, userSchemaStructure);
 
         JsonNode data = postResource("/user_schemas", userSchemaRequest);
         if(data!=null)
@@ -84,6 +84,7 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public UserSchema create(UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
+        checkNotNull(userSchemaRequest, "user_schema_request");
         JsonNode data = postResource("/user_schemas", userSchemaRequest);
         if(data!=null)
             return getMapper().convertValue(data, GetUserSchemaResponse.class).getUserSchema();
@@ -100,12 +101,9 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
      public UserSchema create(String description, Class myClass) throws IOException, ChinoApiException {
-        UserSchemaRequest schemaRequest= new UserSchemaRequest();
-        schemaRequest.setDescription(description);
         List<Field> fieldsList = returnFields(myClass);
-        UserSchemaStructure schemaStructure = new UserSchemaStructure();
-        schemaStructure.setFields(fieldsList);
-        schemaRequest.setStructure(schemaStructure);
+        UserSchemaStructure userSchemaStructure = new UserSchemaStructure(fieldsList);
+        UserSchemaRequest schemaRequest= new UserSchemaRequest(description, userSchemaStructure);
 
         JsonNode data = postResource("/user_schemas", schemaRequest);
         if(data!=null)
@@ -124,9 +122,9 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public UserSchema update(String userSchemaId, String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
-        UserSchemaRequest userSchemaRequest= new UserSchemaRequest();
-        userSchemaRequest.setDescription(description);
-        userSchemaRequest.setStructure(userSchemaStructure);
+        checkNotNull(userSchemaId, "user_schema_id");
+        checkNotNull(userSchemaStructure, "user_schema_structure");
+        UserSchemaRequest userSchemaRequest= new UserSchemaRequest(description, userSchemaStructure);
 
         JsonNode data = putResource("/user_schemas/"+userSchemaId, userSchemaRequest);
         if(data!=null)
@@ -143,6 +141,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
      public UserSchema update(String userSchemaId, UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
+         checkNotNull(userSchemaId, "user_schema_id");
+         checkNotNull(userSchemaRequest, "user_schema_request");
          JsonNode data = putResource("/user_schemas/"+userSchemaId, userSchemaRequest);
          if(data!=null)
              return getMapper().convertValue(data, GetUserSchemaResponse.class).getUserSchema();
@@ -159,12 +159,10 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public UserSchema update(String userSchemaId, String description, Class myClass) throws IOException, ChinoApiException {
-        UserSchemaRequest userSchemaRequest= new UserSchemaRequest();
-        userSchemaRequest.setDescription(description);
+        checkNotNull(userSchemaId, "user_schema_id");
         List<Field> fieldsList = returnFields(myClass);
-        UserSchemaStructure userSchemaStructure = new UserSchemaStructure();
-        userSchemaStructure.setFields(fieldsList);
-        userSchemaRequest.setStructure(userSchemaStructure);
+        UserSchemaStructure userSchemaStructure = new UserSchemaStructure(fieldsList);
+        UserSchemaRequest userSchemaRequest= new UserSchemaRequest(description, userSchemaStructure);
 
         JsonNode data = putResource("/user_schemas/"+userSchemaId, userSchemaRequest);
         if(data!=null)
@@ -181,6 +179,7 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String userSchemaId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(userSchemaId, "user_schema_id");
         return deleteResource("/user_schemas/"+userSchemaId, force);
     }
 }

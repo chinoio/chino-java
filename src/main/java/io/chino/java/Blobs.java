@@ -32,7 +32,7 @@ public class Blobs extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public CommitBlobUploadResponse uploadBlob(String path, String documentId, String field, String fileName) throws IOException, ChinoApiException{
-
+        checkNotNull(path, "path");
         CreateBlobUploadResponse blobResponse = initUpload(documentId, field, fileName);
         String upload_id = blobResponse.getBlob().getUploadId();
 
@@ -70,6 +70,8 @@ public class Blobs extends ChinoBaseAPI {
      * @throws NoSuchAlgorithmException
      */
     public GetBlobResponse get(String blobId, String destination) throws IOException, ChinoApiException, NoSuchAlgorithmException {
+        checkNotNull(blobId, "blob_id");
+        checkNotNull(destination, "destination");
         GetBlobResponse getBlobResponse=new  GetBlobResponse();
 
         Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
@@ -123,10 +125,7 @@ public class Blobs extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public CreateBlobUploadResponse initUpload(String documentId, String field, String fileName) throws IOException, ChinoApiException {
-        CreateBlobUploadRequest createBlobUploadRequest=new CreateBlobUploadRequest();
-        createBlobUploadRequest.setDocumentId(documentId);
-        createBlobUploadRequest.setField(field);
-        createBlobUploadRequest.setFileName(fileName);
+        CreateBlobUploadRequest createBlobUploadRequest=new CreateBlobUploadRequest(documentId, field, fileName);
 
         JsonNode data = postResource("/blobs", createBlobUploadRequest);
         if(data!=null)
@@ -146,7 +145,6 @@ public class Blobs extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset ,int length) throws IOException, ChinoApiException {
-
         JsonNode data = putResource("/blobs/"+uploadId, chunkData, offset, length);
         if(data!=null)
             return mapper.convertValue(data, CreateBlobUploadResponse.class);
@@ -162,8 +160,7 @@ public class Blobs extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public CommitBlobUploadResponse commitUpload(String uploadId) throws IOException, ChinoApiException {
-        CommitBlobUploadRequest commitBlobUploadRequest = new CommitBlobUploadRequest();
-        commitBlobUploadRequest.setUploadId(uploadId);
+        CommitBlobUploadRequest commitBlobUploadRequest = new CommitBlobUploadRequest(uploadId);
 
         JsonNode data = postResource("/blobs/commit", commitBlobUploadRequest);
         if(data!=null)
@@ -181,6 +178,7 @@ public class Blobs extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String blobId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(blobId, "blob_id");
         return deleteResource("/blobs/"+blobId, force);
     }
 }

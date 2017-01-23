@@ -16,7 +16,14 @@ public class SchemaStructure {
 
     @JsonProperty("fields")
     private List<Field> fields = new ArrayList<Field>();
-   
+
+    public SchemaStructure(){
+
+    }
+
+    public SchemaStructure(List<Field> fields){
+        setFields(fields);
+    }
     /**
      * 
      * @return
@@ -34,6 +41,9 @@ public class SchemaStructure {
      */
     @JsonProperty("fields")
     public void setFields(List<Field> fields) {
+        if(fields == null){
+            throw new NullPointerException("fields");
+        }
         this.fields = fields;
     }
 

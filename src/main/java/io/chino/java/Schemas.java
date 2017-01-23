@@ -86,6 +86,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema create(String repositoryId, String description, Class myClass) throws IOException, ChinoApiException {
+        checkNotNull(repositoryId, "repository_id");
         SchemaRequest schemaRequest = new SchemaRequest();
         schemaRequest.setDescription(description);
         SchemaStructure schemaStructure = new SchemaStructure();
@@ -110,9 +111,8 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema create(String repositoryId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
-        SchemaRequest schemaRequest= new SchemaRequest();
-        schemaRequest.setDescription(description);
-        schemaRequest.setStructure(schemaStructure);
+        checkNotNull(repositoryId, "repository_id");
+        SchemaRequest schemaRequest= new SchemaRequest(description, schemaStructure);
 
         return create(repositoryId, schemaRequest);
     }
@@ -127,9 +127,8 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema update(String schemaId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
-        SchemaRequest schemaRequest = new SchemaRequest();
-        schemaRequest.setDescription(description);
-        schemaRequest.setStructure(schemaStructure);
+        checkNotNull(schemaId, "schema_id");
+        SchemaRequest schemaRequest = new SchemaRequest(description, schemaStructure);
 
         JsonNode data = putResource("/schemas/"+schemaId, schemaRequest);
         if(data!=null)
@@ -147,6 +146,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema update(String schemaId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         JsonNode data = putResource("/schemas/"+schemaId, schemaRequest);
         if(data!=null)
             return mapper.convertValue(data, GetSchemaResponse.class).getSchema();
@@ -164,6 +164,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema update(String schemaId, String description, Class myClass) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         SchemaRequest schemaRequest = new SchemaRequest();
         schemaRequest.setDescription(description);
         SchemaStructure schemaStructure = new SchemaStructure();
@@ -187,6 +188,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String schemaId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
         return deleteResource("/schemas/"+schemaId, force);
     }
 

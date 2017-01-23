@@ -16,6 +16,14 @@ public class CreateDocumentRequest {
     @JsonProperty("content")
     private HashMap content;
 
+    public CreateDocumentRequest(){
+
+    }
+
+    public CreateDocumentRequest(HashMap content){
+        setContent(content);
+    }
+
     /**
      * 
      * @return
@@ -33,6 +41,9 @@ public class CreateDocumentRequest {
      */
     @JsonProperty("content")
     public void setContent(HashMap content) {
+        if(content == null){
+            throw new NullPointerException("content");
+        }
         this.content = content;
     }
 

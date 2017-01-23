@@ -13,6 +13,15 @@ public class UserSchemaRequest {
 	@JsonProperty("structure")
 	private UserSchemaStructure structure;
 
+    public UserSchemaRequest(){
+
+    }
+
+    public UserSchemaRequest(String description, UserSchemaStructure structure){
+        setDescription(description);
+        setStructure(structure);
+    }
+
 	/**
 	 * 
 	 * @return The description
@@ -29,6 +38,9 @@ public class UserSchemaRequest {
 	 */
 	@JsonProperty("description")
 	public void setDescription(String description) {
+		if(description == null){
+			throw new NullPointerException("description");
+		}
 		this.description = description;
 	}
 
@@ -48,7 +60,10 @@ public class UserSchemaRequest {
 	 */
 	@JsonProperty("structure")
 	public void setStructure(UserSchemaStructure structure) {
-		this.structure = structure;
+        if(structure == null){
+            throw new NullPointerException("structure");
+        }
+        this.structure = structure;
 	}
 
 }

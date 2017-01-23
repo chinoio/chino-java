@@ -25,6 +25,17 @@ public class SearchRequest {
     @JsonProperty("filter")
     private List<FilterOption> filter = new ArrayList<FilterOption>();
 
+    public SearchRequest(){
+
+    }
+
+    public SearchRequest(String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter){
+        setResultType(resultType);
+        setFilterType(filterType);
+        setSort(sort);
+        setFilter(filter);
+    }
+
     /**
      *
      * @return
@@ -42,6 +53,9 @@ public class SearchRequest {
      */
     @JsonProperty("result_type")
     public void setResultType(String resultType) {
+        if(resultType == null){
+            throw new NullPointerException("result_type");
+        }
         this.resultType = resultType;
     }
 
@@ -62,6 +76,9 @@ public class SearchRequest {
      */
     @JsonProperty("filter_type")
     public void setFilterType(String filterType) {
+        if(filterType == null){
+            throw new NullPointerException("filter_type");
+        }
         this.filterType = filterType;
     }
 
@@ -82,6 +99,9 @@ public class SearchRequest {
      */
     @JsonProperty("sort")
     public void setSort(List<SortOption> sort) {
+        if(sort == null){
+            throw new NullPointerException("sort");
+        }
         this.sort = sort;
     }
 
@@ -102,6 +122,9 @@ public class SearchRequest {
      */
     @JsonProperty("filter")
     public void setFilter(List<FilterOption> filter) {
+        if(filter == null){
+            throw new NullPointerException("filter");
+        }
         this.filter = filter;
     }
 

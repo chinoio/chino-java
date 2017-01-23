@@ -49,7 +49,7 @@ public class AuthSamples {
         APPLICATION_ID = application.getAppId();
 
         //Now we log in with the username and password of the User created
-        LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, "lello", application.getAppId(), application.getAppSecret());
+        LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
 
         //Let's try to read the User status

@@ -52,6 +52,7 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Collection read(String collectionId) throws IOException, ChinoApiException{
+        checkNotNull(collectionId, "collection_id");
         JsonNode data = getResource("/collections/"+collectionId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetCollectionResponse.class).getCollection();
@@ -67,8 +68,7 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Collection create(String name) throws IOException, ChinoApiException {
-        CreateCollectionRequest collectionRequest = new CreateCollectionRequest();
-        collectionRequest.setName(name);
+        CreateCollectionRequest collectionRequest = new CreateCollectionRequest(name);
         JsonNode data = postResource("/collections", collectionRequest);
         if(data!=null)
             return mapper.convertValue(data, GetCollectionResponse.class).getCollection();
@@ -85,9 +85,8 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetCollectionResponse update(String collectionId, String name) throws IOException, ChinoApiException {
-        CreateCollectionRequest collectionRequest = new CreateCollectionRequest();
-        collectionRequest.setName(name);
-
+        checkNotNull(collectionId, "collection_id");
+        CreateCollectionRequest collectionRequest = new CreateCollectionRequest(name);
         JsonNode data = putResource("/collections/"+collectionId, collectionRequest);
         if(data!=null)
             return mapper.convertValue(data, GetCollectionResponse.class);
@@ -104,6 +103,7 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse listDocuments(String collectionId, int offset, int limit)throws IOException, ChinoApiException {
+        checkNotNull(collectionId, "collection_id");
         JsonNode data = getResource("/collections/"+collectionId+"/documents", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -118,6 +118,7 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetDocumentsResponse listDocuments(String collectionId)throws IOException, ChinoApiException {
+        checkNotNull(collectionId, "collection_id");
         JsonNode data = getResource("/collections/"+collectionId+"/documents", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
@@ -133,6 +134,8 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String addDocument(String collectionId, String documentId)throws IOException, ChinoApiException {
+        checkNotNull(collectionId, "collection_id");
+        checkNotNull(documentId, "document_id");
         postResource("/collections/"+collectionId+"/documents/"+documentId, null);
         return "success";
     }
@@ -146,6 +149,8 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String removeDocument(String collectionId, String documentId)throws IOException, ChinoApiException {
+        checkNotNull(collectionId, "collection_id");
+        checkNotNull(documentId, "document_id");
         deleteResource("/collections/"+collectionId+"/documents/"+documentId, false);
         return "success";
     }
@@ -159,6 +164,7 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String collectionId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(collectionId, "collection_id");
         return deleteResource("/collections/"+collectionId, force);
     }
 

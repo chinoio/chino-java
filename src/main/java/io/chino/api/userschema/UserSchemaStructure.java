@@ -16,7 +16,15 @@ public class UserSchemaStructure {
 
     @JsonProperty("fields")
     private List<Field> fields = new ArrayList<Field>();
-   
+
+    public UserSchemaStructure(){
+
+    }
+
+    public UserSchemaStructure(List<Field> fields){
+        setFields(fields);
+    }
+
     /**
      * 
      * @return
@@ -34,6 +42,9 @@ public class UserSchemaStructure {
      */
     @JsonProperty("fields")
     public void setFields(List<Field> fields) {
+        if(fields == null){
+            throw new NullPointerException("fields");
+        }
         this.fields = fields;
     }
 

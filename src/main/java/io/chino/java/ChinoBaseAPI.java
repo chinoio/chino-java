@@ -278,6 +278,7 @@ public class ChinoBaseAPI {
 
     //Used for the Reflection operation when a custom class is passed as argument to create or update a Schema or a UserSchema to retrieve the fields in the class
     protected List<Field> returnFields(Class myClass) throws ChinoApiException{
+        checkNotNull(myClass, "my_class");
         java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
         List<Field> fieldsList= new ArrayList<Field>();
         for(java.lang.reflect.Field field : fields){
@@ -295,6 +296,7 @@ public class ChinoBaseAPI {
 
     //Function used to convert a String to a HashMap
     protected HashMap<String, Object> fromStringToHashMap(String value){
+        checkNotNull(value, "content/attributes");
         HashMap<String, Object> map = new HashMap<String, Object>();
         value = value.replaceAll("\\s", "");
         value = value.replaceAll("\"", "");
@@ -315,5 +317,11 @@ public class ChinoBaseAPI {
                 map.put(keyValue[0], keyValue[1]);
         }
         return map;
+    }
+
+    protected void checkNotNull(Object object, String name){
+        if(object == null){
+            throw new NullPointerException(name);
+        }
     }
 }

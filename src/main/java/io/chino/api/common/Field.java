@@ -23,16 +23,14 @@ public class Field {
     }
 
     public Field(String name, String type){
-        this.name=name;
-        this.type=type;
+        setName(name);
+        setType(type);
     }
 
     public Field(String name, String type, Boolean indexed){
-        this.name=name;
-        this.type=type;
-        if(indexed) {
-            this.indexed = true;
-        }
+        setName(name);
+        setType(type);
+        setIndexed(indexed);
     }
 
     /**
@@ -52,6 +50,9 @@ public class Field {
      */
     @JsonProperty("type")
     public void setType(String type) {
+        if(type == null){
+            throw new NullPointerException("type");
+        }
         this.type = type;
     }
 
@@ -72,6 +73,9 @@ public class Field {
      */
     @JsonProperty("name")
     public void setName(String name) {
+        if(name == null){
+            throw new NullPointerException("name");
+        }
         this.name = name;
     }
 
@@ -80,6 +84,9 @@ public class Field {
     }
 
     public void setIndexed(Boolean indexed) {
+        if(indexed == null){
+            throw new NullPointerException("indexed");
+        }
         this.indexed = indexed;
     }
 }

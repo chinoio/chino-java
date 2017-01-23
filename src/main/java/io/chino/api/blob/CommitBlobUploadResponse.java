@@ -12,8 +12,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "blob"
 })
 public class CommitBlobUploadResponse {
-	
-   
+
     @JsonProperty("blob")
     private CommitBlobUploadResponseContent blob;
 

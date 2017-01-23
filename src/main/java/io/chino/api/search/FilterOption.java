@@ -25,9 +25,9 @@ public class FilterOption {
 	}
     
     public FilterOption(String field, String type, Object value){
-    	this.field=field;
-    	this.type=type;
-    	this.value=value;
+    	setField(field);
+    	setType(type);
+    	setValue(value);
     }
 
     /**
@@ -47,6 +47,9 @@ public class FilterOption {
      */
     @JsonProperty("field")
     public void setField(String field) {
+        if(field == null){
+            throw new NullPointerException("field");
+        }
         this.field = field;
     }
 
@@ -67,6 +70,9 @@ public class FilterOption {
      */
     @JsonProperty("type")
     public void setType(String type) {
+        if(type == null){
+            throw new NullPointerException("type");
+        }
         this.type = type;
     }
 
@@ -87,6 +93,9 @@ public class FilterOption {
      */
     @JsonProperty("value")
     public void setValue(Object value) {
+        if(value == null){
+            throw new NullPointerException("value");
+        }
         this.value = value;
     }
 

@@ -14,6 +14,14 @@ public class CreateCollectionRequest {
     @JsonProperty("name")
     private String name;
 
+    public CreateCollectionRequest(){
+
+    }
+
+    public CreateCollectionRequest(String name){
+        setName(name);
+    }
+
     /**
      *
      * @return
@@ -31,6 +39,9 @@ public class CreateCollectionRequest {
      */
     @JsonProperty("name")
     public void setName(String name) {
+        if(name == null){
+            throw new NullPointerException("name");
+        }
         this.name = name;
     }
 

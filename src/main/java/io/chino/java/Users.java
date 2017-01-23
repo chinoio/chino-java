@@ -94,10 +94,7 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public User create(String username, String password, HashMap attributes, String userSchemaId) throws IOException, ChinoApiException {
-        CreateUserRequest createUserRequest=new CreateUserRequest();
-        createUserRequest.setAttributes(attributes);
-        createUserRequest.setUsername(username);
-        createUserRequest.setPassword(password);
+        CreateUserRequest createUserRequest=new CreateUserRequest(username, password, attributes);
 
         JsonNode data = postResource("/user_schemas/"+userSchemaId+"/users", createUserRequest);
         if(data!=null)
@@ -117,10 +114,7 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public User create(String username, String password, String attributes, String userSchemaId) throws IOException, ChinoApiException {
-        CreateUserRequest createUserRequest=new CreateUserRequest();
-        createUserRequest.setAttributes(fromStringToHashMap(attributes));
-        createUserRequest.setUsername(username);
-        createUserRequest.setPassword(password);
+        CreateUserRequest createUserRequest=new CreateUserRequest(username, password, fromStringToHashMap(attributes));
 
         JsonNode data = postResource("/user_schemas/"+userSchemaId+"/users", createUserRequest);
         if(data!=null)
@@ -138,6 +132,7 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public User update(String userId, HashMap attributes) throws IOException, ChinoApiException {
+        checkNotNull(userId, "user_id");
         CreateUserRequest createUserRequest= new CreateUserRequest();
         createUserRequest.setAttributes(attributes);
         JsonNode data = patchResource("/users/"+userId, createUserRequest);
@@ -158,10 +153,8 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public User update(String userId, String username, String password, HashMap attributes) throws IOException, ChinoApiException {
-        CreateUserRequest createUserRequest= new CreateUserRequest();
-        createUserRequest.setAttributes(attributes);
-        createUserRequest.setUsername(username);
-        createUserRequest.setPassword(password);
+        checkNotNull(userId, "user_id");
+        CreateUserRequest createUserRequest= new CreateUserRequest(username, password, attributes);
 
         JsonNode data = putResource("/users/"+userId, createUserRequest);
         if(data!=null)
@@ -181,10 +174,8 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public User update(String userId, String username, String password, String attributes) throws IOException, ChinoApiException {
-        CreateUserRequest createUserRequest= new CreateUserRequest();
-        createUserRequest.setAttributes(fromStringToHashMap(attributes));
-        createUserRequest.setUsername(username);
-        createUserRequest.setPassword(password);
+        checkNotNull(userId, "user_id");
+        CreateUserRequest createUserRequest= new CreateUserRequest(username, password, fromStringToHashMap(attributes));
 
         JsonNode data = putResource("/users/"+userId, createUserRequest);
         if(data!=null)
@@ -202,6 +193,7 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String userId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(userId, "user_id");
         return deleteResource("/users/"+userId, force);
     }
 }

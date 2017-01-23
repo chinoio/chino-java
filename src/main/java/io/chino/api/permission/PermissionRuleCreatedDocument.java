@@ -21,6 +21,9 @@ public class PermissionRuleCreatedDocument extends PermissionRule{
     }
 
     public void setCreatedDocument(PermissionRule createdDocument) {
+        if(createdDocument == null){
+            throw new NullPointerException("created_document");
+        }
         this.createdDocument = createdDocument;
     }
 

@@ -26,6 +26,9 @@ public class ChinoAPI {
      * @param customerKey the key of the customer
      */
     public ChinoAPI(String hostUrl, String customerId, String customerKey){
+        checkNotNull(hostUrl, "host_url");
+        checkNotNull(customerId, "customer_id");
+        checkNotNull(customerKey, "customer_key");
         interceptor = new LoggingInterceptor();
         client = new OkHttpClient.Builder()
                 .addNetworkInterceptor(interceptor).build();
@@ -38,6 +41,7 @@ public class ChinoAPI {
      * @param hostUrl the url of the server
      */
     public ChinoAPI(String hostUrl) {
+        checkNotNull(hostUrl, "host_url");
         client = new OkHttpClient();
         initObjects(hostUrl);
     }
@@ -57,4 +61,9 @@ public class ChinoAPI {
         blobs = new Blobs(hostUrl, client);
     }
 
+    private void checkNotNull(Object object, String name){
+        if(object == null){
+            throw new NullPointerException(name);
+        }
+    }
 }

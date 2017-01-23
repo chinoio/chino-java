@@ -49,6 +49,7 @@ public class Applications extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Application read(String applicationId) throws IOException, ChinoApiException{
+        checkNotNull(applicationId, "application_id");
         JsonNode data = getResource("/auth/applications/"+applicationId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetApplicationResponse.class).getApplication();
@@ -66,10 +67,7 @@ public class Applications extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Application create(String name, String grantType, String redirectUrl) throws IOException, ChinoApiException {
-        CreateApplicationRequest applicationRequest = new CreateApplicationRequest();
-        applicationRequest.setName(name);
-        applicationRequest.setGrantType(grantType);
-        applicationRequest.setRedirectUrl(redirectUrl);
+        CreateApplicationRequest applicationRequest = new CreateApplicationRequest(name, grantType, redirectUrl);
         JsonNode data = postResource("/auth/applications", applicationRequest);
         if(data!=null)
             return mapper.convertValue(data, GetApplicationResponse.class).getApplication();
@@ -87,10 +85,8 @@ public class Applications extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Application update(String applicationId, String name, String grantType, String redirectUrl) throws IOException, ChinoApiException {
-        CreateApplicationRequest applicationRequest = new CreateApplicationRequest();
-        applicationRequest.setName(name);
-        applicationRequest.setGrantType(grantType);
-        applicationRequest.setRedirectUrl(redirectUrl);
+        checkNotNull(applicationId, "application_id");
+        CreateApplicationRequest applicationRequest = new CreateApplicationRequest(name, grantType, redirectUrl);
         JsonNode data = putResource("/auth/applications/"+applicationId, applicationRequest);
         if(data!=null)
             return mapper.convertValue(data, GetApplicationResponse.class).getApplication();
@@ -107,6 +103,7 @@ public class Applications extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public String delete(String applicationId, boolean force) throws IOException, ChinoApiException {
+        checkNotNull(applicationId, "application_id");
         return deleteResource("/auth/applications/"+applicationId, force);
     }
 }

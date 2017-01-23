@@ -14,6 +14,15 @@ public class SchemaRequest {
 	@JsonProperty("structure")
 	private SchemaStructure structure = new SchemaStructure();
 
+    public SchemaRequest(){
+
+    }
+
+    public SchemaRequest(String description, SchemaStructure structure){
+        setDescription(description);
+        setStructure(structure);
+    }
+
 	/**
 	 * 
 	 * @return The description
@@ -30,6 +39,9 @@ public class SchemaRequest {
 	 */
 	@JsonProperty("description")
 	public void setDescription(String description) {
+		if(description == null){
+            throw new NullPointerException("description");
+        }
 		this.description = description;
 	}
 
@@ -49,7 +61,10 @@ public class SchemaRequest {
 	 */
 	@JsonProperty("structure")
 	public void setStructure(SchemaStructure structure) {
-		this.structure = structure;
+		if(structure == null){
+            throw new NullPointerException("structure");
+        }
+        this.structure = structure;
 	}
 
 	public void addSchemaField(String name, String type) {
