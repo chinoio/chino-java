@@ -25,6 +25,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetSchemasResponse list(String repositoryId, int offset, int limit) throws IOException, ChinoApiException {
+        checkNotNull(repositoryId, "repository_id");
         JsonNode data = getResource("/repositories/"+repositoryId+"/schemas", offset, limit);
         if(data!=null)
             return mapper.convertValue(data, GetSchemasResponse.class);
@@ -39,6 +40,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public GetSchemasResponse list(String repositoryId) throws IOException, ChinoApiException {
+        checkNotNull(repositoryId, "repository_id");
         JsonNode data = getResource("/repositories/"+repositoryId+"/schemas", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetSchemasResponse.class);
@@ -53,6 +55,7 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema read(String schemaId) throws IOException, ChinoApiException{
+        checkNotNull(schemaId, "schema_id");
         JsonNode data = getResource("/schemas/"+schemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
             return mapper.convertValue(data, GetSchemaResponse.class).getSchema();
@@ -69,6 +72,8 @@ public class Schemas extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Schema create(String repositoryId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
+        checkNotNull(repositoryId, "repository_id");
+        checkNotNull(schemaRequest, "schema_request");
         JsonNode data = postResource("/repositories/"+repositoryId+"/schemas", schemaRequest);
         if(data!=null)
             return mapper.convertValue(data, GetSchemaResponse.class).getSchema();
