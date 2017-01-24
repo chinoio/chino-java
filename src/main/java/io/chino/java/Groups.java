@@ -73,8 +73,6 @@ public class Groups extends ChinoBaseAPI {
     public Group create(String groupName, HashMap attributes) throws IOException, ChinoApiException {
         CreateGroupRequest createGroupRequest=new CreateGroupRequest(groupName, attributes);
 
-        System.out.println(mapper.writeValueAsString(createGroupRequest));
-
         JsonNode data = postResource("/groups", createGroupRequest);
         if(data!=null)
             return mapper.convertValue(data, GetGroupResponse.class).getGroup();
