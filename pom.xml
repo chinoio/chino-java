@@ -42,7 +42,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-      <github.maven.repository>file:///C:/Users/Paolo/Desktop/temp/chino-java/</github.maven.repository>
   </properties>
 
     <distributionManagement>
