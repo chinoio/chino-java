@@ -3,6 +3,13 @@
 
 Docs is available [here](http://docs.chino.io)
 
+###Setup
+If you're using Maven, then edit your project's "pom.xml" and add this to the `<dependencies>` section:
+
+` <groupId>io.chino.library</groupId>
+   <artifactId>chino-java-library</artifactId>
+  <version>0.0.1-SNAPSHOT</version>`
+
 ##How to use it
 First create a variable from the `ChinoAPI` class
 
