@@ -3,6 +3,38 @@
 
 Docs is available [here](http://docs.chino.io)
 
+###Setup
+If you're using Maven, then edit your project's "pom.xml" and add this to the `<dependencies>` section:
+
+```xml
+<dependency>
+	<groupId>com.github.chinoio</groupId>
+	    <artifactId>chino-java</artifactId>
+	<version>v1.0</version>
+</dependency>
+```
+
+If you are using Gradle, then edit your project's "build.gradle" and add this to the `dependencies` section:
+
+```groovy
+dependencies {
+    // ...
+    compile 'com.github.chinoio:chino-java:v1.0'
+}
+```
+
+You can also download the Java SDK JAR and and its required dependencies directly from the [latest release page](https://github.com/chinoio/chino-java/releases/latest).
+
+## Building from source
+
+```
+git clone https://github.com/chinoio/chino-java.git
+cd chino-java
+./gradlew build
+```
+
+The output will be in "build/".
+
 ##How to use it
 First create a variable from the `ChinoAPI` class
 
@@ -16,8 +48,10 @@ or if you want to init as a User
 
 passing only the `host_url`, then you have to call the function
 
-`LoggedUser loggedUser = chino.auth.loginUser(<username>, <password>, <customer_id>);`
-`String ACCESS_TOKEN = loggedUser.getAccessToken()`
+```
+LoggedUser loggedUser = chino.auth.loginUser(<username>, <password>, <customer_id>);
+String ACCESS_TOKEN = loggedUser.getAccessToken();
+```
 
 you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN
 
