@@ -6,9 +6,10 @@ Docs is available [here](http://docs.chino.io)
 ###Setup
 If you're using Maven, then edit your project's "pom.xml" and add this to the `<dependencies>` section:
 
-` <groupId>io.chino.library</groupId>\n
-         <artifactId>chino-java-library</artifactId>\n
-  <version>0.0.1-SNAPSHOT</version>`
+``` <groupId>io.chino.library</groupId>
+         <artifactId>chino-java-library</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+```
 
 ##How to use it
 First create a variable from the `ChinoAPI` class
@@ -23,8 +24,10 @@ or if you want to init as a User
 
 passing only the `host_url`, then you have to call the function
 
-`LoggedUser loggedUser = chino.auth.loginUser(<username>, <password>, <customer_id>);`
-`String ACCESS_TOKEN = loggedUser.getAccessToken()`
+```
+LoggedUser loggedUser = chino.auth.loginUser(<username>, <password>, <customer_id>);
+String ACCESS_TOKEN = loggedUser.getAccessToken();
+```
 
 you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN
 
