@@ -4,7 +4,7 @@
 Docs are available [here](http://docs.chino.io)
 
 ###Setup
-If you're using Maven, then edit your project's "pom.xml" and add this to the `<dependencies>` section:
+If you're using Maven, then edit your project's "pom.xml" and add this:
 
 ```xml
 <repositories>
@@ -21,7 +21,7 @@ If you're using Maven, then edit your project's "pom.xml" and add this to the `<
 </dependency>
 ```
 
-If you are using Gradle, then edit your project's "build.gradle" and add this to the `dependencies` section:
+If you are using Gradle, then edit your project's "build.gradle" and add this:
 
 ```groovy
 allprojects {
