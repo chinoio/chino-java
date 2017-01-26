@@ -80,107 +80,155 @@ you have to create a new LoggedUser variable and then you can access the ACCESS_
 ###HelloWorldDocument
 To create a simple Document follow these steps:
 
--Create a ChinoAPI variable with your  `customer_id` and `customer_key`
-`ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)`
+-Create a ChinoAPI variable with your `customer_id` and `customer_key`
+```
+ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)
+```
 
--Create a Repository (which is the container for Schemas)   
- `chino.repositories.create(<repository_description>)`
+-Create a Repository (which is the container for Schemas)
+
+```
+chino.repositories.create(<repository_description>)
+```
 
 -Create a Schema (which is the container for Documents)
- `chino.schemas.create(<repository_id>, <schema_description>, <SchemaStructure variable>)`
+
+```
+chino.schemas.create(<repository_id>, <schema_description>, <SchemaStructure variable>)
+```
 
 -Finally create a Document
- `chino.documents.create(<schema_id>, <HashMap or String of the content>)`
+
+```
+chino.documents.create(<schema_id>, <HashMap or String of the content>)
+```
 
 See io.chino.examples.documents.HelloWorldDocument for full documentation example
     
 ### Auth
-Class that manages the auth, `chino.auth`
+Class to manage authentication, `chino.auth`
 
-- `loginUser` to login as user
-- `setCustomer` to set the auth as admin
-- `checkUserStatus` to check the status of the user logged
-- `logoutUser` to logoutRequest as user
+- `loginWithPassword(<username>, <password>, <application_id>, <application_secret>)`
+    log in as a User with the "password" method
+- `loginWithAuthenticationCode(<code>, <redirect_url>, <application_id>, <application_secret>)`
+    log in as a User with the "authentication-code" method
+- `refreshToken(<refresh_token>, <application_id>, <application_secret>)`
+- `checkUserStatus()`
+- `logout(<token>, <application_id>, <application_secret>)`
+
+### Application
+Class to manage applications, `chino.applications`
+
+- `list()`
+- `list(<offset>, <limit>)`
+- `read(<application_id>)`
+- `create(<name>, <grant_type>, <redirect_url>)`
+    `grant_type` can be "password" or "authentication-code" and defines the authentication method for the users
+- `update(<application_id>, <name>, <grant_type>, <redirect_url>)`
+- `delete(<application_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
 
 ### User
-Class to manage the user, `chino.users`
+Class to manage users, `chino.users`
 
-- `list`
-- `read`
-- `create`
-- `update`
-- `delete`
+- `list(<user_schema_id>, <offset>, <limit>)`
+- `list(<user_schema_id>)`
+- `read(<user_id>)`
+- `create(<username>, <password>, <attributes>, <user_schema_id>)`
+- `update(<user_id>, <username>, <password>, <attributes>)`
+- `update(<user_id>, <attributes>)`
+    This is for a partial update (for example one attribute)
+- `delete(<user_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
 
 ### Group
-`chino.groups`
+Class to mange groups, `chino.groups`
 
-- `list`
-- `read`
-- `create`
-- `update`
-- `delete`
-- `addUserToGroup`
-- `removeUserFromGroup`
-- `addUserSchemaToGroup`
-- `removeUserSchemaFromGroup`
+- `list()`
+- `list(<offset>, <limit>)`
+- `read(<group_id>)`
+- `create(<group_name>, <attributes>)`
+- `update(<group_id>, <group_name>, <attributes>)`
+- `delete(<group_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
+- `addUserToGroup(<user_id>, <group_id>)`
+- `removeUserFromGroup(<user_id>, <group_id>)`
+- `addUserSchemaToGroup(<user_schema_id>, <group_id>)`
+- `removeUserSchemaFromGroup(<user_schema_id>, <group_id>)`
 
 ### Permission
-`chino.permissions`
+Class to mange permissions, `chino.permissions`
 
-- `readPermissions`
-- `readPermissionsOnaDocument`
-- `readPermissionsOfaUser`
-- `readPermissionsOfaGroup`
-- `permissionsOnResources`
-- `permissionsOnaResource`
-- `permissionsOnResourceChildren`
+- `readPermissions()`
+- `readPermissions(<offset>, <limit>)`
+- `readPermissionsOnaDocument(<document_id>)`
+- `readPermissionsOfaUser(<user_id>)`
+- `readPermissionsOfaGroup(<group_id>)`
+- `permissionsOnResources(<action>, <resource_type>, <subject_type>, <subject_id>, <permission_rules>)`
+- `permissionsOnaResource(<action>, <resource_type>, <resource_id>, <subject_type>, <subject_id>, <permission_rules>)`
+- `permissionsOnResourceChildren(<action>, <resource_type>, <resource_id>, <resource_children>, <subject_type>, <subject_id>, <permission_rules>)`
 
 ### Repository
-`chino.repotiories`
+Class to mange repositories, `chino.repositories`
 
-- `list`
-- `create`
-- `read`
-- `update`
-- `delete`
+- `list()`
+- `list(<offset>, <limit>)`
+- `read(<repository_id>)`
+- `create(<description>)`
+- `update(<repository_id>, <description>)`
+- `delete(<repository_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
 
 ### Schemas
-`chino.schemas`
+Class to mange schemas, `chino.schemas`
 
-- `list`
-- `create`
-- `read`
-- `update`
-- `delete`
+- `list(<repository_id>)`
+- `list(<repository_id>, <offset>, <limit>)`
+- `read(<schema_id>)`
+- `create(<repository_id>, <schema_request>)`
+- `update(<schema_id>, <schema_request>)`
+- `delete(<schema_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
 
 ### Document
-`chino.documents`
+Class to mange documents, `chino.documents`
 
-- `list`
-- `create`
-- `read`
-- `update`
-- `delete`
-
+- `list(<schema_id>)`
+- `list(<schema_id>, <offset>, <limit>)`
+- `read(<document_id>)`
+- `create(<schema_id>, <content>)`
+- `update(<document_id>, <content>)`
+- `delete(<document_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
 
 ### BLOB
-`chino.blobs`
+Class to mange blobs, `chino.blobs`
 
-- `uploadBlob`
-- `get`
-- `initUpload`
-- `uploadChunk`
-- `commitUpload`
-- `delete`
+- `uploadBlob(<path>, <document_id>, <field>, <file_name>)`
+    this is the main function which calls the following functions for the upload of a Blob
+    for a better explanation of the usage see the file `BlobSamples` in the `io.chino.example.blobs` folder
+    `path` the path of the file named `file_name` to upload to the Document with the id `document_id`, in the field `field`
+- `get(<blob_id>, <destination>)`
+    `destination` is the path where to save the blob read
+- `initUpload(<document_id>, <field>, <file_name>)`
+- `uploadChunk(<upload_id>, <chunk_data>, <offset>, <length>)`
+- `commitUpload(<upload_id>)`
+- `delete(<blob_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
 
 ### SEARCH
-`chino.searches`
+Class to mange searches, `chino.searches`
 
-- `searchDocuments`
+- `searchDocuments(<schema_id>, <result_type>, <filter_type>, <sort_options_list>, <filter_option_list>, <offset>, <limit>)`
 
-All the functions below are used in this form
+All the functions below are used in the following form
+
 Example:
-`Documents docs = chino.search.where("test_integer").gt(123).and("test_date").eq("1994-02-04").sortAscBy("test_string").search(SCHEMA_ID);`
+```
+Documents docs = chino.search.where("test_integer").gt(123).and("test_date").eq("1994-02-04").sortAscBy("test_string").search(SCHEMA_ID);
+```
+
+For a better explanation see the file `SearchSamples` in the `io.chino.example.search` folder
 
 - `sortAscBy`
 - `sortDescBy`
@@ -197,26 +245,19 @@ Example:
 - `gte`
 - `isCaseSensitive`
 
-### UserSchemas
-`chino.userSchemas`
-
-- `list`
-- `create`
-- `read`
-- `update`
-- `delete`
-
 ### Collections
 `chino.collections`
 
-- `list`
-- `create`
-- `read`
-- `update`
-- `delete`
-- `listDocuments`
-- `addDocument`
-- `removeDocument`
+- `list()`
+- `list(<offset>, <limit>)`
+- `read(<collection_id>)`
+- `create(<name>)`
+- `update(<collection_id>, <name>)`
+- `delete(<collection_id>, <force>)`
+    `force` is a boolean and if it's true, the resource cannot be restored
+- `listDocuments(<collection_id>)`
+- `addDocument(<collection_id>, <document_id>)`
+- `removeDocument(<collection_id>, <document_id>)`
 
 ##Support
 use issues of github 

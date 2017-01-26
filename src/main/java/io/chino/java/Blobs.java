@@ -144,7 +144,7 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
-    public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset ,int length) throws IOException, ChinoApiException {
+    public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset, int length) throws IOException, ChinoApiException {
         JsonNode data = putResource("/blobs/"+uploadId, chunkData, offset, length);
         if(data!=null)
             return mapper.convertValue(data, CreateBlobUploadResponse.class);
