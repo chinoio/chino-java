@@ -4,7 +4,6 @@ import io.chino.api.common.LoggingInterceptor;
 import okhttp3.*;
 
 public class ChinoAPI {
-    private LoggingInterceptor interceptor;
     OkHttpClient client;
     public Applications applications;
     public Auth auth;
@@ -29,10 +28,9 @@ public class ChinoAPI {
         checkNotNull(hostUrl, "host_url");
         checkNotNull(customerId, "customer_id");
         checkNotNull(customerKey, "customer_key");
-        interceptor = new LoggingInterceptor();
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(interceptor).build();
-        interceptor.setCustomer(customerId, customerKey);
+                .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
+        LoggingInterceptor.getInstance().setCustomer(customerId, customerKey);
         initObjects(hostUrl);
     }
 
@@ -42,7 +40,8 @@ public class ChinoAPI {
      */
     public ChinoAPI(String hostUrl) {
         checkNotNull(hostUrl, "host_url");
-        client = new OkHttpClient();
+        client = new OkHttpClient.Builder()
+                .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
         initObjects(hostUrl);
     }
 
@@ -56,7 +55,7 @@ public class ChinoAPI {
         collections = new Collections(hostUrl, client);
         users = new Users(hostUrl, client);
         search = new Search(hostUrl, client);
-        auth = new Auth(hostUrl, client, interceptor);
+        auth = new Auth(hostUrl, client);
         permissions = new Permissions(hostUrl, client);
         blobs = new Blobs(hostUrl, client);
     }

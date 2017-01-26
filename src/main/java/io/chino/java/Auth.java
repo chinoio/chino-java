@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class Auth extends ChinoBaseAPI {
 
-    public Auth(String hostUrl, OkHttpClient client, LoggingInterceptor interceptor){
-        super(hostUrl, client, interceptor);
+    public Auth(String hostUrl, OkHttpClient client){
+        super(hostUrl, client);
     }
 
     /**
@@ -40,8 +40,7 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().addInterceptor(interceptor);
-        clientBuilder.authenticator(new Authenticator() {
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().authenticator(new Authenticator() {
             private int mCounter = 0;
             @Override
             public Request authenticate(Route route, Response response) throws IOException {
@@ -54,7 +53,10 @@ public class Auth extends ChinoBaseAPI {
         });
         client = clientBuilder.build();
         Response response = client.newCall(request).execute();
-        String body = response.body().string();
+        String body = null;
+        if (response != null){
+            body = response.body().string();
+        }
         return auxFunction(response, body);
     }
 
@@ -86,16 +88,23 @@ public class Auth extends ChinoBaseAPI {
                 .post(formBody)
                 .build();
         Response response = client.newCall(request).execute();
-        String body = response.body().string();
+        String body = null;
+        if (response != null){
+            body = response.body().string();
+        }
         return auxFunction(response, body);
     }
 
     private LoggedUser auxFunction(Response response, String body) throws IOException, ChinoApiException{
+        checkNotNull(response, "response");
+        checkNotNull(body, "body");
         if (response.code() == 200) {
             JsonNode data = mapper.readTree(body).get("data");
             if(data!=null) {
                 LoggedUser loggedUser = mapper.convertValue(data, LoggedUser.class);
-                interceptor.setUser(loggedUser.getAccessToken());
+                LoggingInterceptor.getInstance().setUser(loggedUser.getAccessToken());
+                client = new OkHttpClient.Builder()
+                        .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
                 return loggedUser;
             }
             return null;
@@ -124,11 +133,14 @@ public class Auth extends ChinoBaseAPI {
                 .add("client_secret", applicationSecret)
                 .build();
         Request request = new Request.Builder()
-                .url(hostUrl+"/auth/token/")
+                .url(hostUrl + "/auth/token/")
                 .post(formBody)
                 .build();
         Response response = client.newCall(request).execute();
-        String body = response.body().string();
+        String body = null;
+        if (response != null){
+            body = response.body().string();
+        }
         return auxFunction(response, body);
     }
 
@@ -171,7 +183,7 @@ public class Auth extends ChinoBaseAPI {
         Response response = client.newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
-            interceptor.logout();
+            LoggingInterceptor.getInstance().logout();
             return "success";
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));

@@ -21,30 +21,16 @@ public class ChinoBaseAPI {
     public static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
     String hostUrl;
     OkHttpClient client;
-    LoggingInterceptor interceptor;
     static ObjectMapper mapper;
 
     /**
-     * The default constructor used by almost all classes
+     * The default constructor used by all classes
      * @param hostUrl the url of the server
      * @param client the OkHttpClient Object used for the calls to the server
      */
     public ChinoBaseAPI(String hostUrl, OkHttpClient client){
         this.hostUrl = hostUrl;
         this.client = client;
-        mapper = getMapper();
-    }
-
-    /**
-     * The constructor for the Auth class because it needs to access the same interceptor as ChinoAPI for the authentication
-     * @param hostUrl the url of the server
-     * @param client the OkHttpClient Object used for the calls to the server
-     * @param interceptor the LoggingInterceptor used by ChinoAPI too
-     */
-    public ChinoBaseAPI(String hostUrl, OkHttpClient client, LoggingInterceptor interceptor){
-        this.hostUrl = hostUrl;
-        this.client = client;
-        this.interceptor = interceptor;
         mapper = getMapper();
     }
 

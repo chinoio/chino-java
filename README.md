@@ -1,17 +1,60 @@
 #  CHINO.io Java client #
 *Official* Java wrapper for **CHINO.io** API,
 
-Docs is available [here](http://docs.chino.io)
+Docs are available [here](http://docs.chino.io)
 
 ###Setup
 If you're using Maven, then edit your project's "pom.xml" and add this to the `<dependencies>` section:
 
 ```xml
+<repositories>
+	<repository>
+	    <id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+
 <dependency>
-  <groupId>io.chino.library</groupId>
-      <artifactId>chino-java-library</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+	<groupId>com.github.chinoio</groupId>
+	    <artifactId>chino-java</artifactId>
+	<version>0.9</version>
 </dependency>
+```
+
+If you are using Gradle, then edit your project's "build.gradle" and add this to the `dependencies` section:
+
+```groovy
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+
+dependencies {
+    // ...
+    compile 'com.github.chinoio:chino-java:0.9'
+}
+```
+
+You can also download the Java SDK JAR and and its required dependencies directly from the [latest release page](https://github.com/chinoio/chino-java/releases/latest).
+
+## Building from source
+
+```
+git clone https://github.com/chinoio/chino-java.git
+cd chino-java
+./gradlew build
+```
+
+The output will be in "build/".
+
+And if you want a "fat jar" with all the dependencies inside use the following commands
+
+```
+git clone https://github.com/chinoio/chino-java.git
+cd chino-java
+./gradlew build shadowJar
 ```
 
 ##How to use it
@@ -35,7 +78,7 @@ String ACCESS_TOKEN = loggedUser.getAccessToken();
 you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN
 
 ###HelloWorldDocument
-To create a simple Document follow those steps:
+To create a simple Document follow these steps:
 
 -Create a ChinoAPI variable with your  `customer_id` and `customer_key`
 `ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)`

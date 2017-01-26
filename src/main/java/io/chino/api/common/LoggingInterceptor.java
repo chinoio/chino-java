@@ -7,23 +7,35 @@ import okhttp3.Response;
 
 import java.io.IOException;
 
-public class LoggingInterceptor implements Interceptor {
+public final class LoggingInterceptor implements Interceptor {
 
+    private static volatile LoggingInterceptor instance = null;
     private String credentials;
     private Boolean authenticate;
 
-    @Override public Response intercept(Interceptor.Chain chain) throws IOException {
-        Request request = chain.request();
-        Request newRequest;
-        if(authenticate){
-            newRequest = request.newBuilder()
-                    .addHeader("Authorization", credentials)
-                    .build();
-        } else {
-            newRequest = request.newBuilder().build();
-        }
+    private LoggingInterceptor(){}
 
-        return chain.proceed(newRequest);
+    public static LoggingInterceptor getInstance(){
+        if(instance == null){
+            instance = new LoggingInterceptor();
+        }
+        return instance;
+    }
+
+    @Override public Response intercept(Interceptor.Chain chain) throws IOException {
+        if (chain != null) {
+            Request request = chain.request();
+            Request newRequest;
+            if (authenticate) {
+                newRequest = request.newBuilder()
+                        .addHeader("Authorization", credentials)
+                        .build();
+            } else {
+                newRequest = request.newBuilder().build();
+            }
+            return chain.proceed(newRequest);
+        }
+        return null;
     }
 
     public void setCustomer(String customerId, String customerKey){

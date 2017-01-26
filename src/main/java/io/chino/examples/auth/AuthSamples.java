@@ -48,6 +48,8 @@ public class AuthSamples {
         Application application = chino.applications.create("ApplicationTest1", "password", "http://127.0.0.1/");
         APPLICATION_ID = application.getAppId();
 
+        chino = new ChinoAPI(Constants.HOST);
+
         //Now we log in with the username and password of the User created
         LoggedUser loggedUser = chino.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
