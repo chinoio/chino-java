@@ -76,11 +76,17 @@ public class DocumentSamples {
         DOCUMENT_ID = document.getDocumentId();
 
         System.out.println("");
-        GetDocumentsResponse documentsResponse = chino.documents.list(SCHEMA_ID);
+        GetDocumentsResponse documentsResponse = chino.documents.list(SCHEMA_ID, true);
         List<Document> documentList = documentsResponse.getDocuments();
-        for(Document documentObject : documentList){
-            System.out.println(documentObject);
+
+        HashMap<String, HashMap<String, Object>> allContents = new HashMap<String, HashMap<String, Object>>();
+
+        for(Document d : documentList){
+            allContents.put(d.getDocumentId(), d.getContentAsHashMap());
+            System.out.println(d);
         }
+
+        System.out.println(allContents.toString());
 
         //Now we try to delete the last document and then read the list again
         System.out.println(chino.documents.delete(DOCUMENT_ID, true));
