@@ -37,7 +37,18 @@ dependencies {
 }
 ```
 
-You can also download the Java SDK JAR and and its required dependencies directly from the [latest release page](https://github.com/chinoio/chino-java/releases/latest).
+Due to a bug in gradle, if you're developing in android you have to add even the following code
+to the "build.gradle" file
+
+```groovy
+android {
+    ...
+    packagingOptions {
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+    }
+}
+```
 
 ## Building from source
 
