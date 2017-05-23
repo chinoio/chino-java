@@ -17,7 +17,7 @@ If you're using Maven, then edit your project's "pom.xml" and add this:
 <dependency>
 	<groupId>com.github.chinoio</groupId>
 	    <artifactId>chino-java</artifactId>
-	<version>0.9</version>
+	<version>1.0</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ allprojects {
 
 dependencies {
     // ...
-    compile 'com.github.chinoio:chino-java:0.9'
+    compile 'com.github.chinoio:chino-java:1.0'
 }
 ```
 
