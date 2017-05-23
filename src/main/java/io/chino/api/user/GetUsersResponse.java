@@ -12,6 +12,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 		"offset" })
 public class GetUsersResponse {
 
+	@JsonProperty("exists")
+	private Boolean exists;
 	@JsonProperty("count")
 	private Integer count;
 	@JsonProperty("total_count")
@@ -125,6 +127,15 @@ public class GetUsersResponse {
 		s+=",\nlimit: "+limit;
 		s+=",\noffset: "+offset;
 		s+=",\nusers: "+users;
+		s+=",\nexists: "+exists;
 		return s;
+	}
+
+	public Boolean getExists() {
+		return exists;
+	}
+
+	public void setExists(Boolean exists) {
+		this.exists = exists;
 	}
 }

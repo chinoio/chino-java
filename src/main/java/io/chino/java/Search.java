@@ -38,6 +38,10 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(schemaId, "schema_id");
         JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, offset, limit);
+        this.searchRequest = new SearchRequest();
+        this.sort = new ArrayList<SortOption>();
+        this.filter = new ArrayList<FilterOption>();
+        this.filterOption = new FilterOption();
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
 
@@ -56,6 +60,10 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(schemaId, "schema_id");
         JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        this.searchRequest = new SearchRequest();
+        this.sort = new ArrayList<SortOption>();
+        this.filter = new ArrayList<FilterOption>();
+        this.filterOption = new FilterOption();
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
 
@@ -76,6 +84,10 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, offset, limit);
+        this.searchRequest = new SearchRequest();
+        this.sort = new ArrayList<SortOption>();
+        this.filter = new ArrayList<FilterOption>();
+        this.filterOption = new FilterOption();
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
 
@@ -94,6 +106,10 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        this.searchRequest = new SearchRequest();
+        this.sort = new ArrayList<SortOption>();
+        this.filter = new ArrayList<FilterOption>();
+        this.filterOption = new FilterOption();
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
 
@@ -312,5 +328,18 @@ public class Search extends ChinoBaseAPI {
         filterOption.setType("lte");
         return this;
     }
+
+    public Search is(Boolean value){
+        filterOption.setValue(value);
+        filterOption.setType("is");
+        return this;
+    }
+
+    public Search in(ArrayList<String> value){
+        filterOption.setValue(value);
+        filterOption.setType("in");
+        return this;
+    }
+
 
 }
