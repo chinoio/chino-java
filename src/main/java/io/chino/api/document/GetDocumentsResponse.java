@@ -28,6 +28,8 @@ public class GetDocumentsResponse {
     private Integer limit;
     @JsonProperty("offset")
     private Integer offset;
+    @JsonProperty("IDs")
+    private List<String> ids = new ArrayList<String>();
     
     /**
     * 
@@ -136,6 +138,15 @@ public class GetDocumentsResponse {
         s+=",\nlimit: "+limit;
         s+=",\noffset: "+offset;
         s+=",\ndocuments: "+documents;
+        s+=",\nIDs: "+ids;
         return s;
+    }
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
     }
 }
