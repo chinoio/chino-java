@@ -3,7 +3,7 @@
 
 Docs are available [here](http://docs.chino.io)
 
-### Setup
+## Setup
 If you're using Maven, then edit your project's "pom.xml" and add this:
 
 ```xml
@@ -50,7 +50,7 @@ android {
 }
 ```
 
-## Building from source
+### Building from source
 
 ```
 git clone https://github.com/chinoio/chino-java.git
@@ -68,7 +68,7 @@ cd chino-java
 ./gradlew build shadowJar
 ```
 
-## How to use it
+### How to use it
 First create a variable from the `ChinoAPI` class
 
 `ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)`
