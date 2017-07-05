@@ -21,7 +21,7 @@ public class Auth extends ChinoBaseAPI {
      * @param username the username of the user
      * @param password the password of the user
      * @param applicationId the id of the Application
-     * @param applicationSecret the Application secret
+     * @param applicationSecret the Application secret (pass an empty string if you login from a "public application")
      * @return LoggedUser Object
      * @throws IOException
      * @throws ChinoApiException
@@ -31,27 +31,28 @@ public class Auth extends ChinoBaseAPI {
         checkNotNull(password, "password");
         checkNotNull(applicationId, "application_id");
         checkNotNull(applicationSecret, "application_secret");
-        RequestBody formBody = new FormBody.Builder()
-                .add("grant_type", "password")
-                .add("username", username)
-                .add("password", password)
-                .build();
+        RequestBody formBody;
+        if (applicationSecret.equals("")) {
+            formBody = new FormBody.Builder()
+                    .add("grant_type", "password")
+                    .add("username", username)
+                    .add("password", password)
+                    .add("client_id", applicationId)
+                    .build();
+        } else {
+            formBody = new FormBody.Builder()
+                    .add("grant_type", "password")
+                    .add("username", username)
+                    .add("password", password)
+                    .add("client_id", applicationId)
+                    .add("client_secret", applicationSecret)
+                    .build();
+        }
         Request request = new Request.Builder()
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().authenticator(new Authenticator() {
-            private int mCounter = 0;
-            @Override
-            public Request authenticate(Route route, Response response) throws IOException {
-                if (mCounter++ > 0) {
-                    return null;
-                }
-                String credential = Credentials.basic(applicationId, applicationSecret);
-                return response.request().newBuilder().header("Authorization", credential).build();
-            }
-        });
-        client = clientBuilder.build();
+        client = new OkHttpClient.Builder().build();
         Response response = client.newCall(request).execute();
         String body = null;
         if (response != null){
@@ -65,7 +66,7 @@ public class Auth extends ChinoBaseAPI {
      * @param code the code retrieved from the app server
      * @param redirectUrl the redirect_url of the app server
      * @param applicationId the id of the Application
-     * @param applicationSecret the Application secret
+     * @param applicationSecret the Application secret (pass an empty string if you login from a "public application")
      * @return LoggedUser Object
      * @throws IOException
      * @throws ChinoApiException
@@ -75,14 +76,25 @@ public class Auth extends ChinoBaseAPI {
         checkNotNull(redirectUrl, "redirect_url");
         checkNotNull(applicationId, "application_id");
         checkNotNull(applicationSecret, "application_secret");
-        RequestBody formBody = new FormBody.Builder()
-                .add("grant_type", "authorization_code")
-                .add("code", code)
-                .add("redirect_uri", redirectUrl)
-                .add("client_id", applicationId)
-                .add("client_secret", applicationSecret)
-                .add("scope", "read write")
-                .build();
+        RequestBody formBody;
+        if (applicationSecret.equals("")) {
+            formBody = new FormBody.Builder()
+                    .add("grant_type", "authorization_code")
+                    .add("code", code)
+                    .add("redirect_uri", redirectUrl)
+                    .add("client_id", applicationId)
+                    .add("scope", "read write")
+                    .build();
+        } else {
+            formBody = new FormBody.Builder()
+                    .add("grant_type", "authorization_code")
+                    .add("code", code)
+                    .add("redirect_uri", redirectUrl)
+                    .add("client_id", applicationId)
+                    .add("client_secret", applicationSecret)
+                    .add("scope", "read write")
+                    .build();
+        }
         Request request = new Request.Builder()
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
@@ -161,20 +173,14 @@ public class Auth extends ChinoBaseAPI {
     /**
      * It logs out
      * @param token the token of the logged user
-     * @param applicationId the id of the Application
-     * @param applicationSecret the Application secret
      * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
-    public String logout(String token, String applicationId, String applicationSecret) throws IOException, ChinoApiException {
+    public String logout(String token) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
-        checkNotNull(applicationId, "application_id");
-        checkNotNull(applicationSecret, "application_secret");
         RequestBody formBody = new FormBody.Builder()
                 .add("token", token)
-                .add("client_id", applicationId)
-                .add("client_secret", applicationSecret)
                 .build();
         Request request = new Request.Builder()
                 .url(hostUrl+"/auth/revoke_token/")

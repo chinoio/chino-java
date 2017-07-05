@@ -38,6 +38,10 @@ public final class LoggingInterceptor implements Interceptor {
         return null;
     }
 
+    public void noCredentials(){
+        authenticate = false;
+    }
+
     public void setCustomer(String customerId, String customerKey){
         authenticate = true;
         credentials = Credentials.basic(customerId, customerKey);

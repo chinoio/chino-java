@@ -10,7 +10,8 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "grant_type",
         "app_name",
         "redirect_url",
-        "app_id"
+        "app_id",
+        "client_type"
 })
 public class Application {
 
@@ -24,6 +25,8 @@ public class Application {
     private String redirectUrl;
     @JsonProperty("app_id")
     private String appId;
+    @JsonProperty("client_type")
+    private String clientType;
 
     public String getAppSecret() {
         return appSecret;
@@ -63,6 +66,14 @@ public class Application {
 
     public void setAppId(String appId) {
         this.appId = appId;
+    }
+
+    public String getClientType() {
+        return clientType;
+    }
+
+    public void setClientType(String clientType) {
+        this.clientType = clientType;
     }
 
     public String toString(){
