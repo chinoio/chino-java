@@ -3,7 +3,7 @@
 
 Docs are available [here](http://docs.chino.io)
 
-###Setup
+### Setup
 If you're using Maven, then edit your project's "pom.xml" and add this:
 
 ```xml
@@ -68,7 +68,7 @@ cd chino-java
 ./gradlew build shadowJar
 ```
 
-##How to use it
+## How to use it
 First create a variable from the `ChinoAPI` class
 
 `ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)`
@@ -88,7 +88,7 @@ String ACCESS_TOKEN = loggedUser.getAccessToken();
 
 you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN
 
-###HelloWorldDocument
+### HelloWorldDocument
 To create a simple Document follow these steps:
 
 -Create a ChinoAPI variable with your `customer_id` and `customer_key`
