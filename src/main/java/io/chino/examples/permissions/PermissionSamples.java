@@ -120,7 +120,7 @@ public class PermissionSamples {
         System.out.println(chino.permissions.readPermissions());
 
         //We log out as a User and log in as a Developer
-        chino.auth.logout(TOKEN);
+        chino.auth.logout(TOKEN, application.getAppId(), application.getAppSecret());
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         //Now we create a Group and we'll add and read permissions on it

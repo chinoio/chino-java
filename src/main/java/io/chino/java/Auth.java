@@ -189,10 +189,14 @@ public class Auth extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
-    public String logout(String token) throws IOException, ChinoApiException {
+    public String logout(String token, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
+        checkNotNull(applicationId, "application_id");
+        checkNotNull(applicationSecret, "application_secret");
         RequestBody formBody = new FormBody.Builder()
                 .add("token", token)
+                .add("client_id", applicationId)
+                .add("client_secret", applicationSecret)
                 .build();
         Request request = new Request.Builder()
                 .url(hostUrl+"/auth/revoke_token/")

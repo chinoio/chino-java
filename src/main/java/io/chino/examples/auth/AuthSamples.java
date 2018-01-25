@@ -63,7 +63,7 @@ public class AuthSamples {
         System.out.println(loggedUser);
 
         //Finally we log out, we create a new ChinoAPI Object with the customerId and customerKey and we delete everything we created
-        System.out.println(chino.auth.logout(loggedUser.getAccessToken()));
+        System.out.println(chino.auth.logout(loggedUser.getAccessToken(), application.getAppId(), application.getAppSecret()));
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 
         System.out.println(chino.users.delete(USER_ID, true));
