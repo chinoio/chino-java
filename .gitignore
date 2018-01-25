@@ -4,7 +4,6 @@ build/
 .settings/
 target/
 out/
-src/test/
 src/main/java/io/chino/examples/util/Constants.java
 src/main/java/io/chino/test/
 *.DS_Store

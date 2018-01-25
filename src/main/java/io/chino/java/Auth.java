@@ -61,6 +61,18 @@ public class Auth extends ChinoBaseAPI {
         return auxFunction(response, body);
     }
 
+
+    public User loginWithBearerToken(String token, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
+        checkNotNull(token, "token");
+        checkNotNull(applicationId, "application_id");
+        checkNotNull(applicationSecret, "application_secret");
+        LoggingInterceptor.getInstance().setUser(token);
+        User u = checkUserStatus();
+        client = new OkHttpClient.Builder()
+                .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
+        return u;
+    }
+
     /**
      * Login with authentication code for users
      * @param code the code retrieved from the app server
