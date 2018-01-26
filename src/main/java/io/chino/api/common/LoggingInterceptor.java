@@ -9,17 +9,22 @@ import java.io.IOException;
 
 public final class LoggingInterceptor implements Interceptor {
 
-    private static volatile LoggingInterceptor instance = null;
     private String credentials;
     private Boolean authenticate;
 
-    private LoggingInterceptor(){}
 
-    public static LoggingInterceptor getInstance(){
-        if(instance == null){
-            instance = new LoggingInterceptor();
-        }
-        return instance;
+    public LoggingInterceptor(){
+        authenticate = false;
+    }
+
+    public LoggingInterceptor(String customerId, String customerKey){
+        authenticate = true;
+        credentials = Credentials.basic(customerId, customerKey);
+    }
+
+    public LoggingInterceptor(String token){
+        authenticate = true;
+        credentials = "Bearer ".concat(token);
     }
 
     @Override public Response intercept(Interceptor.Chain chain) throws IOException {
@@ -39,20 +44,6 @@ public final class LoggingInterceptor implements Interceptor {
     }
 
     public void noCredentials(){
-        authenticate = false;
-    }
-
-    public void setCustomer(String customerId, String customerKey){
-        authenticate = true;
-        credentials = Credentials.basic(customerId, customerKey);
-    }
-
-    public void setUser(String token){
-        authenticate = true;
-        credentials = "Bearer ".concat(token);
-    }
-
-    public void logout(){
         authenticate = false;
     }
 

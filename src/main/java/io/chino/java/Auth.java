@@ -66,10 +66,9 @@ public class Auth extends ChinoBaseAPI {
         checkNotNull(token, "token");
         checkNotNull(applicationId, "application_id");
         checkNotNull(applicationSecret, "application_secret");
-        LoggingInterceptor.getInstance().setUser(token);
         User u = checkUserStatus();
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
+                .addNetworkInterceptor(new LoggingInterceptor(token)).build();
         return u;
     }
 
@@ -126,9 +125,8 @@ public class Auth extends ChinoBaseAPI {
             JsonNode data = mapper.readTree(body).get("data");
             if(data!=null) {
                 LoggedUser loggedUser = mapper.convertValue(data, LoggedUser.class);
-                LoggingInterceptor.getInstance().setUser(loggedUser.getAccessToken());
                 client = new OkHttpClient.Builder()
-                        .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
+                        .addNetworkInterceptor(new LoggingInterceptor(loggedUser.getAccessToken())).build();
                 return loggedUser;
             }
             return null;
@@ -205,7 +203,6 @@ public class Auth extends ChinoBaseAPI {
         Response response = client.newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
-            LoggingInterceptor.getInstance().logout();
             return "success";
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));

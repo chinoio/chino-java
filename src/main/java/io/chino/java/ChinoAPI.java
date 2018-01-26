@@ -29,8 +29,8 @@ public class ChinoAPI {
         checkNotNull(customerId, "customer_id");
         checkNotNull(customerKey, "customer_key");
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
-        LoggingInterceptor.getInstance().setCustomer(customerId, customerKey);
+                .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey)).build();
+//        LoggingInterceptor.getInstance().setCustomer(customerId, customerKey);
         initObjects(hostUrl);
     }
 
@@ -41,7 +41,7 @@ public class ChinoAPI {
     public ChinoAPI(String hostUrl) {
         checkNotNull(hostUrl, "host_url");
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(LoggingInterceptor.getInstance()).build();
+                .addNetworkInterceptor(new LoggingInterceptor()).build();
         initObjects(hostUrl);
     }
 
