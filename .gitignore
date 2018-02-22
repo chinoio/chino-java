@@ -7,3 +7,6 @@ out/
 src/main/java/io/chino/examples/util/Constants.java
 src/main/java/io/chino/test/
 *.DS_Store
+/nbproject/*
+build.xml
+manifest.mf
