@@ -67,6 +67,7 @@ public class Auth extends ChinoBaseAPI {
         checkNotNull(applicationId, "application_id");
         checkNotNull(applicationSecret, "application_secret");
         User u = checkUserStatus();
+        // saves the new token in this class' client
         client = new OkHttpClient.Builder()
                 .addNetworkInterceptor(new LoggingInterceptor(token)).build();
         return u;
