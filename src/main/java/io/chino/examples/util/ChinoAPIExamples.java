@@ -5,6 +5,7 @@
  */
 package io.chino.examples.util;
 
+import io.chino.test.util.Constants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.permission.Permission;
 import io.chino.examples.applications.ApplicationSamples;

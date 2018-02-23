@@ -6,7 +6,7 @@ import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;

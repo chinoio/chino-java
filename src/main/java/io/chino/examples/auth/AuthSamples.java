@@ -3,15 +3,21 @@ package io.chino.examples.auth;
 import io.chino.api.application.Application;
 import io.chino.api.auth.LoggedUser;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Field;
+import io.chino.api.repository.Repository;
+import io.chino.api.schema.Schema;
+import io.chino.api.schema.SchemaRequest;
+import io.chino.api.schema.SchemaStructure;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.examples.util.DeleteAll;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class AuthSamples {
 
@@ -46,7 +52,6 @@ public class AuthSamples {
         USER_ID = user.getUserId();
 
         // *** USER AUTHENTICATION ***
-        // Method 1 - Auth via username/password
 
         // Create an Application that authenticates users with the 'password' grant type
         Application application = chino_admin.applications.create("ApplicationTest1", "password", "http://127.0.0.1/");
@@ -67,13 +72,11 @@ public class AuthSamples {
         loggedUser = chino_user.auth.refreshToken(loggedUser.getRefreshToken(), application.getAppId(), application.getAppSecret());
         System.out.println(loggedUser);
         
-        // User performs operations using their Bearer Token
+        // User refreshes their Bearer Token
         System.out.println(loggedUser.getAccessToken());
         Application external_app = chino_admin.applications.create("ApplicationTest2", "authorization-code", "http://127.0.0.1/");
         User u = chino_user.auth.loginWithBearerToken(loggedUser.getAccessToken(), external_app.getAppId(), external_app.getAppSecret());
         System.out.println(u);
-        
-            // TODO: check if 'u' and 'loggedUser' can do the same actions using their Access Token through the 'external_app'; if they do, 'loginWithBearerToken' is useless
 
         // User logs out
         System.out.println(chino_user.auth.logout(loggedUser.getAccessToken(), application.getAppId(), application.getAppSecret()));
@@ -83,8 +86,5 @@ public class AuthSamples {
         System.out.println(chino_admin.users.delete(USER_ID, true));
         System.out.println(chino_admin.userSchemas.delete(USER_SCHEMA_ID, true));
         System.out.println(chino_admin.applications.delete(APPLICATION_ID, true));
-        
-        
-        // Method 2 - Auth via authentication code
     }
 }

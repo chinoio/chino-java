@@ -3,7 +3,7 @@ package io.chino.examples.applications;
 import io.chino.api.application.Application;
 import io.chino.api.common.ChinoApiException;
 import io.chino.java.ChinoAPI;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 
 import java.io.IOException;
 

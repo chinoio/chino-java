@@ -6,7 +6,7 @@ import io.chino.java.ChinoAPI;
 import java.io.IOException;
 
 import io.chino.examples.permissions.PermissionSamples;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 import org.junit.*;
 
 

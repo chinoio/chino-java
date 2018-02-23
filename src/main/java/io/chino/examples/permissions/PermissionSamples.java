@@ -13,7 +13,7 @@ import io.chino.api.userschema.UserSchema;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 import io.chino.examples.util.DeleteAll;
 
 import java.io.IOException;

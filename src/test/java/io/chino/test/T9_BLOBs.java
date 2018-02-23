@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import io.chino.java.ChinoAPI;
 import io.chino.examples.blobs.BlobSamples;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 import org.junit.Before;
 import org.junit.Test;
 

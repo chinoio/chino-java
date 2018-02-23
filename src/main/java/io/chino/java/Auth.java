@@ -61,7 +61,15 @@ public class Auth extends ChinoBaseAPI {
         return auxFunction(response, body);
     }
 
-
+    /**
+     * Saves the {@code token} in a new {@link #client OkHttpClient} to be used in future calls
+     * @param token the new token to be used in the API calls
+     * @param applicationId the id of the application that interacts with Chino API
+     * @param applicationSecret the secret code of the application that interacts with Chino API
+     * @return the informations about the current {@link User}'s status (see also {@link #checkUserStatus() checkUserStatus()})
+     * @throws IOException the User can not be found on server. Returned by {@link Call#execute() okhttp3.Call}
+     * @throws ChinoApiException server response: 200
+     */
     public User loginWithBearerToken(String token, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
         checkNotNull(applicationId, "application_id");
