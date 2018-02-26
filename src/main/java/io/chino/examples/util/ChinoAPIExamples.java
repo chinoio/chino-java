@@ -7,7 +7,6 @@ package io.chino.examples.util;
 
 import io.chino.test.util.Constants;
 import io.chino.api.common.ChinoApiException;
-import io.chino.api.permission.Permission;
 import io.chino.examples.applications.ApplicationSamples;
 import io.chino.examples.auth.AuthSamples;
 import io.chino.examples.blobs.BlobSamples;
@@ -62,12 +61,6 @@ public class ChinoAPIExamples {
             );
             return;
         }
-        // Run examples
-//        if (!DEBUG)
-//            chino_admin = new ChinoAPI(Constants.HOST, System.getenv("customer_id"), System.getenv("customer_key"));
-//        else
-//            chino_admin = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
-
         if(DEBUG) {
             Constants.CUSTOMER_ID = System.getenv("customer_id");
             Constants.CUSTOMER_KEY = System.getenv("customer_key");
