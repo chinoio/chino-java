@@ -46,7 +46,7 @@ public class ChinoAPITest {
     /**
      * The customer console
      */
-    private static ChinoAPI chino_admin;
+    private static ChinoAPI customerApiClient;
     
     /**
      * This method will contain the codes that are needed in order to successfully
@@ -96,16 +96,16 @@ public class ChinoAPITest {
             fail("Please setup auth code application: applicationId or applicationSecret missing. Check javadoc for ChinoAPITest.");
         }
         
-        chino_admin = new ChinoAPI(URL, CID, CKEY);
+        customerApiClient = new ChinoAPI(URL, CID, CKEY);
         
         UserSchema userSchema = null;
         
         try {
-            GetUserSchemasResponse ls = chino_admin.userSchemas.list();
+            GetUserSchemasResponse ls = customerApiClient.userSchemas.list();
             while (! ls.getCount().equals(0)){
                 String usid = ls.getUserSchemas().get(0).getUserSchemaId();
-                chino_admin.userSchemas.delete(usid, true);
-                ls = chino_admin.userSchemas.list();
+                customerApiClient.userSchemas.delete(usid, true);
+                ls = customerApiClient.userSchemas.list();
             }
         } catch (Exception ex) {
             tearDownClass();
@@ -115,7 +115,7 @@ public class ChinoAPITest {
         
         try {
             // create a new user
-            userSchema = chino_admin.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
+            userSchema = customerApiClient.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
             USER_SCHEMA_ID = userSchema.getUserSchemaId();
             HashMap<String, Object> attributes = new HashMap<String, Object>();
             attributes.put("test_string", "test_string_value");
@@ -123,7 +123,7 @@ public class ChinoAPITest {
             attributes.put("test_integer", 123);
             attributes.put("test_date", "1993-09-08");
             attributes.put("test_float", 12.4);
-            User user = chino_admin.users.create(USERNAME, PASSWORD, attributes, USER_SCHEMA_ID);
+            User user = customerApiClient.users.create(USERNAME, PASSWORD, attributes, USER_SCHEMA_ID);
             USER_ID = user.getUserId();
         } catch (Exception ex) {
             fail("failed to set up test for ChinoAPITest.\n"
@@ -134,9 +134,9 @@ public class ChinoAPITest {
     @AfterClass
     public static void tearDownClass() {
         try {
-            if (!chino_admin.userSchemas.list().getCount().equals(0))
-                chino_admin.userSchemas.delete(USER_SCHEMA_ID, true);
-            chino_admin = null;
+            if (!customerApiClient.userSchemas.list().getCount().equals(0))
+                customerApiClient.userSchemas.delete(USER_SCHEMA_ID, true);
+            customerApiClient = null;
         } catch (Exception ex) {
             fail("failed to delete objects for ChinoAPITest. Please do it by hand.\n"
                     + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
@@ -144,13 +144,13 @@ public class ChinoAPITest {
     }
 
     @Test
-    public void testConstructor_String() {
+    public void testUserClient() {
         ChinoAPI apiClient = new ChinoAPI(URL);
         assertClientWasCreated(apiClient);
     }
 
     @Test
-    public void testConstructor_String_String() {
+    public void testAccessTokenClient() {
         // authenticate user
         String step = "initialize";
         ChinoAPI chino_user = new ChinoAPI(URL);
@@ -178,7 +178,7 @@ public class ChinoAPITest {
             step = "grant perms on repositories";
             PermissionRule repo_grant = new PermissionRule();
             repo_grant.setManage("C", "R", "U", "D", "L");
-            chino_admin.permissions.permissionsOnResources("grant", "repositories", "users", USER_ID, repo_grant);
+            customerApiClient.permissions.permissionsOnResources("grant", "repositories", "users", USER_ID, repo_grant);
             
             // use the access token to create a new repo
             step = "create repository";
@@ -219,7 +219,7 @@ public class ChinoAPITest {
     }
 
     @Test
-    public void testConstructor_String_String_String() {
+    public void testCustomerClient() {
         String step = "initialize";
         ChinoAPI apiClient = new ChinoAPI(URL, CID, CKEY);
         assertClientWasCreated(apiClient);
