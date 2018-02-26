@@ -1,0 +1,132 @@
+/*
+ * The MIT License
+ *
+ * Copyright 2018 Andrea Arighi <andrea@chino.org>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+package io.chino.api.consent;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.JsonNode;
+
+/**
+ * Contains information about a subject that collects sensitive data.
+ * @see Consent
+ * @author Andrea Arighi [andrea@chino.io]
+ */
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonPropertyOrder({
+        "company",
+        "contact",
+        "address",
+        "email",
+        "VAT",
+        "on_behalf",
+})
+class DataController{
+    
+    /**
+     * Name of the company which performs data collection.
+     */
+    @JsonProperty("company")
+    private String company;
+    
+    /**
+     * Name of the person who is collecting data for the {@link #company company}.
+     */
+    private String contact;
+    
+    /**
+     * Address of the subject who is performing data collection.
+     */
+    private String address;
+    
+    /**
+     * Email address to be used for communications regarding the personal
+     * data collection performed by the {@link #company company}.
+     */
+    private String email;
+    
+    /**
+     * The VAT number of the subject that performs data collection.
+     */
+    private String vat;
+    
+    /**
+     * True if the consent was collected in behalf of this data controller
+     * by another data controller.
+     */
+    private boolean onBehalf;
+    
+    
+
+    
+    /**
+     * Get the name of the company which performs data collection.
+     * @return a {@link String} with the name of the data controller
+     */
+    public String getCompany() {
+        return company;
+    }
+
+    /**
+     * Get the name of the person who is collecting data for the {@link #company company}
+     * @return a {@link String} with the name of the contact person.
+     */
+    public String getContact() {
+        return contact;
+    }
+
+    /**
+     * Get the address of the subject who is performing data collection.
+     * @return a {@link String} with the address of the data controller.
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * Get the email address to be used for communications regarding the personal
+     * data collection.
+     * @return an email address as a {@link String}.
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Get the VAT number of the subject that performs data collection.
+     * @return the VAT number of the data controller.
+     */
+    public String getVAT() {
+        return vat;
+    }
+
+    /**
+     * Check if the data collection was made on behalf of a data controller.
+     * @return true if the data collection was performed by another data controller
+     * on behalf of the subject represented here.
+     */
+    public boolean isOnBehalf() {
+        return onBehalf;
+    }
+}
