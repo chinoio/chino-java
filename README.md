@@ -86,7 +86,13 @@ LoggedUser loggedUser = chino.auth.loginUser(<username>, <password>, <customer_i
 String ACCESS_TOKEN = loggedUser.getAccessToken();
 ```
 
-you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN
+you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN. More on user login in the [auth](#auth) section.
+
+If you already have a valid ACCESS_TOKEN, you can create a `ChinoAPI` object and pass the token directly
+
+`ChinoAPI chino = new ChinoAPI(<hosturl>, <access_token>);`
+
+Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/dev-andrea/src/test/java/io/chino/java/ChinoAPITest.java) to see some practical examples about the use of the `ChinoAPI` class.
 
 ### HelloWorldDocument
 To create a simple Document follow these steps:
