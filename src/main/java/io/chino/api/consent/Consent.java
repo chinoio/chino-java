@@ -150,7 +150,6 @@ public class Consent {
             + "\tcollection_mode: " + collectionMode + ",\n"
             ;
         return "{" + s + "}\n";
-        }
     }
 
     /**
