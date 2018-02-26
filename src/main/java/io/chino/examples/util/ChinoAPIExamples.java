@@ -7,6 +7,7 @@ package io.chino.examples.util;
 
 import io.chino.test.util.Constants;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.consent.Consent;
 import io.chino.examples.applications.ApplicationSamples;
 import io.chino.examples.auth.AuthSamples;
 import io.chino.examples.blobs.BlobSamples;
@@ -122,6 +123,10 @@ public class ChinoAPIExamples {
                     case "userschema":
                     case "userschemas":
                         new UserSchemaSamples().testUserSchemas();
+                        break;
+                    case "consent":
+                    case "consents":
+                        System.out.println(new Consent().toString());
                         break;
                     default:
                         throw new IllegalArgumentException("Wrong parameter '" + example + "'");
