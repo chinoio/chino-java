@@ -7,7 +7,7 @@ import io.chino.api.schema.Schema;
 import io.chino.api.schema.SchemaRequest;
 import io.chino.api.schema.SchemaStructure;
 import io.chino.java.ChinoAPI;
-import io.chino.examples.util.Constants;
+import io.chino.test.util.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;

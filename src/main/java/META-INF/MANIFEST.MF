@@ -1,3 +1,2 @@
-Manifest-Version: 1.0
-Main-Class: io.chino.examples.tutorial.Main
+Manifest-Version: 1.1
 

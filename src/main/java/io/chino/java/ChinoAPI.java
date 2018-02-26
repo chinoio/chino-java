@@ -19,10 +19,11 @@ public class ChinoAPI {
     public Blobs blobs;
 
     /**
-     * The constructor for the developer
-     * @param hostUrl the url of the server
-     * @param customerId the id of the customer
-     * @param customerKey the key of the customer
+     * Construct an API client which authenticates calls with a {@code (customerID, customerKey)} pair.
+     * To be used <b>only in secure clients</b>.
+     * @param hostUrl the base URL for the API calls
+     * @param customerId the customer id provided by Chino.io
+     * @param customerKey the customer key provided by Chino.io
      */
     public ChinoAPI(String hostUrl, String customerId, String customerKey){
         checkNotNull(hostUrl, "host_url");
@@ -35,8 +36,10 @@ public class ChinoAPI {
     }
 
     /**
-     * The constructor for the user
-     * @param hostUrl the url of the server
+     * Construct an unauthenticated API client.
+     * Mainly used for client-side applications.
+     * Users will need to authenticate via {@link Auth ChinoAPI.auth} using username and password or an authentication code
+     * @param hostUrl the base URL for the API calls
      */
     public ChinoAPI(String hostUrl) {
         checkNotNull(hostUrl, "host_url");
@@ -44,7 +47,20 @@ public class ChinoAPI {
                 .addNetworkInterceptor(new LoggingInterceptor()).build();
         initObjects(hostUrl);
     }
-
+    
+    /**
+     * Construct an API client which authenticates calls with a bearer token.
+     * Mainly used for server-side applications.
+     * @param hostUrl the base URL for the API calls
+     * @param bearerToken the bearer token to use for further calls
+     */
+    public ChinoAPI(String hostUrl, String bearerToken) {
+        checkNotNull(hostUrl, "host_url");
+        client = new OkHttpClient.Builder()
+                .addNetworkInterceptor(new LoggingInterceptor(bearerToken)).build();
+        initObjects(hostUrl);
+    }
+    
     private void initObjects(String hostUrl){
         applications = new Applications(hostUrl, client);
         userSchemas = new UserSchemas(hostUrl, client);
