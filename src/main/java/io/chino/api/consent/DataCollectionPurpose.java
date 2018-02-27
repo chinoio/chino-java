@@ -23,15 +23,98 @@
  */
 package io.chino.api.consent;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
 /**
  * Contains informations about the purpose of personal data collection.
- * @see Consent
+ * @see Consent#purposes
  * @author Andrea Arighi [andrea@chino.org]
  */
+@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonPropertyOrder({
+    "authorized",
+    "purpose",
+    "description"
+})
 class DataCollectionPurpose {
+    
+    /**
+     * Indicates whether or not the user gave the authorization to
+     * this purpose of data collection.
+     */
+    @JsonProperty("authorized")
+    private boolean authorized;
+    
+    /**
+     * A short {@link String} that describes a purpose for the data collection.
+     */
+    @JsonProperty("purpose")
+    private String purpose;
+    
+    
+    /**
+     * A text description which further explain the {@link #purpose purpose}
+     * of the data collection.
+     */
+    @JsonProperty("description")
+    private String description;
 
     @Override
     public String toString() {
-        throw new UnsupportedOperationException("To be implemented.");
+        return toString(0);
     }
+    
+    /**
+     * Gat an indented {@link String}.
+     * @param indentLevel the indentation level, e.g. the nr of "tab" characters
+     * to be inserted before each line.
+     * @return the same result given by {@link #toString() toString()},
+     * indented by the specified quantity. <b>The first line has no indentation</b>.
+     */
+    public String toString(int indentLevel) {
+        if (indentLevel < 0) {
+            throw new IllegalArgumentException("Indentation level can't be negative.");
+        }
+        
+        String indentation = "";
+        for (int i = 0; i < indentLevel; i++)
+            indentation += "\t";
+        
+        return "{\n"
+                + indentation + "\tauthorized: " + authorized + ",\n"
+                + indentation + "\tpurpose: " + purpose + ",\n"
+                + indentation + "\tdescription: " + description + ",\n"
+                + indentation + "}";
+    }
+
+    /**
+     * Check whether or not this purpose was authorized by a user.
+     * @return {@code true} if the user authorized the collection of
+     * their data for this purpose, otherwise {@code false}.
+     */
+    public boolean isAuthorized() {
+        return authorized;
+    }
+
+    /**
+     * Get the name of the purpose
+     * @return a short {@link String} that describes a purpose for
+     * the usage of personal data.
+     */
+    public String getPurpose() {
+        return purpose;
+    }
+
+    /**
+     * Get the purpose description
+     * @return a {@link String} that further explains how the personal
+     * data will be used.
+     */
+    public String getDescription() {
+        return description;
+    }
+    
+    
 }

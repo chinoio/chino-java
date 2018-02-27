@@ -26,14 +26,13 @@ package io.chino.api.consent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Contains information about a subject that collects sensitive data.
  * @see Consent
  * @author Andrea Arighi [andrea@chino.io]
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonPropertyOrder({
         "company",
         "contact",
@@ -42,7 +41,7 @@ import com.fasterxml.jackson.databind.JsonNode;
         "VAT",
         "on_behalf",
 })
-class DataController{
+class DataController {
     
     /**
      * Name of the company which performs data collection.
@@ -53,30 +52,34 @@ class DataController{
     /**
      * Name of the person who is collecting data for the {@link #company company}.
      */
+    @JsonProperty("contact")
     private String contact;
     
     /**
      * Address of the subject who is performing data collection.
      */
+    @JsonProperty("address")
     private String address;
     
     /**
      * Email address to be used for communications regarding the personal
      * data collection performed by the {@link #company company}.
      */
+    @JsonProperty("email")
     private String email;
     
     /**
      * The VAT number of the subject that performs data collection.
      */
+    @JsonProperty("VAT")
     private String vat;
     
     /**
      * True if the consent was collected in behalf of this data controller
      * by another data controller.
      */
+    @JsonProperty("on_behalf")
     private boolean onBehalf;
-    
     
 
     

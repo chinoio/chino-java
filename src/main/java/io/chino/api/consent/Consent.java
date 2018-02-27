@@ -31,8 +31,6 @@ import io.chino.api.user.User;
 import io.chino.java.ChinoBaseAPI;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * This class represents the consent given by a user to a policy.
@@ -59,49 +57,59 @@ public class Consent {
      */
     @JsonProperty("user_id")
     private String userId;
+    
     /**
      * A (potentially long) text description of this consent
      */
     @JsonProperty("description")
     private String description;
+    
     /**
      * A {@link DataController} object, which represents the
      * organization that is responsible for the usage of the data.
      */
     @JsonProperty("data_controller")
     private DataController dataController;
+    
     /**
      * The id of this Consent.
      */
     @JsonProperty("consent_id")
     private String consentId;
+    
     /**
-     * A list of {@link DataCollectionPurpose} objects, what the {@link #dataController}
-     * is allowed to do by the user who gave his/her consensus to this policy.
+     * A list of {@link DataCollectionPurpose} objects, which represent
+     * how the {@link #dataController data controller} was allowed to use the user's data
+     * by the user itself.
      */
     @JsonProperty("purposes")
     private List<DataCollectionPurpose> purposes = new LinkedList<>();
+    
     /**
      * A valid URL to the policy text
      */
     @JsonProperty("policy_url")
     private String policyUrl;
+    
     /**
      * Version number of the policy at {@link #policyUrl policyUrl}
      */
     @JsonProperty("policy_version")
     private String policyVersion;
+  
     /**
      * Timestamp of withdrawal of this Consent; if this field is not null,
      * the current Consent was withdrawn by the user. Otherwise, it is active.
      */
     @JsonProperty("withdrawn_date")
     private String withdrawnDate = null;
+    
     /**
      * Timestamp of creation of this Consent.
      */
     @JsonProperty("inserted_date")
     private String insertedDate;
+    
     /**
      * Brief {@link String} which describes how the consent was collected.
      */
@@ -124,7 +132,7 @@ public class Consent {
         
         String purposeList = "[\n";
         for (DataCollectionPurpose purp:purposes) {
-            purposeList += "\t\t" + purp.toString() + "\n";
+            purposeList += "\t\t" + purp.toString(2) + "\n";
         }
         purposeList += "\t]";
         
@@ -137,8 +145,7 @@ public class Consent {
             dataControllerString = "{n.d.}";
         }
         
-        String s = "\n"
-            + "\tuser_id: " + userId + ",\n"
+        String s = "\tuser_id: " + userId + ",\n"
             + "\tdescription: " + description + ",\n"
             + "\tdata_controller: " + dataControllerString + ",\n"
             + "\tconsent_id: " + consentId + ",\n"
@@ -149,7 +156,7 @@ public class Consent {
             + "\tinserted_date: " + insertedDate + ",\n"
             + "\tcollection_mode: " + collectionMode + ",\n"
             ;
-        return "{" + s + "}\n";
+        return "{\n" + s + "}\n";
     }
 
     /**
