@@ -17,6 +17,7 @@ public class ChinoAPI {
     public Search search;
     public Permissions permissions;
     public Blobs blobs;
+    public Consents consents;
 
     /**
      * Construct an API client which authenticates calls with a {@code (customerID, customerKey)} pair.
@@ -74,6 +75,7 @@ public class ChinoAPI {
         auth = new Auth(hostUrl, client);
         permissions = new Permissions(hostUrl, client);
         blobs = new Blobs(hostUrl, client);
+        consents = new Consents(hostUrl, client);
     }
 
     private void checkNotNull(Object object, String name){

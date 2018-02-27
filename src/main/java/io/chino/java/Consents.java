@@ -30,7 +30,7 @@ import io.chino.api.consent.Consent;
 import io.chino.api.consent.ConsentHistory;
 import io.chino.api.consent.ConsentList;
 import io.chino.api.consent.ConsentListWrapper;
-import io.chino.api.consent.DataCollectionPurpose;
+import io.chino.api.consent.Purpose;
 import io.chino.api.consent.DataController;
 import java.io.IOException;
 import java.util.List;
@@ -123,6 +123,7 @@ public class Consents extends ChinoBaseAPI {
      * mapped to a {@link Consent} object.
      */
     public Consent create(Consent consentData) throws IOException, ChinoApiException {
+        checkNotNull(consentData, "consent data");
         JsonNode data = postResource("/consents", consentData);
         if (data != null)
             return mapper.convertValue(data, Consent.class);
@@ -155,8 +156,16 @@ public class Consents extends ChinoBaseAPI {
      */
     public Consent create(String userId, String description, String policyUrl,
             String policyVersion, String collectionMode, DataController dataController,
-            List<DataCollectionPurpose> purposes) throws IOException, ChinoApiException
+            List<Purpose> purposes) throws IOException, ChinoApiException
     {
+        checkNotNull(userId, "user_id");
+        checkNotNull(description, "description");
+        checkNotNull(policyUrl, "policy_url");
+        checkNotNull(policyVersion, "policy_version");
+        checkNotNull(collectionMode, "collection_mode");
+        checkNotNull(dataController, "data_controller");
+        checkNotNull(purposes, "purposes");
+        
         return create(
                 new Consent(userId, description, policyUrl, policyVersion, collectionMode, dataController, purposes)
         );
@@ -176,7 +185,7 @@ public class Consents extends ChinoBaseAPI {
      * @param base the base {@link Consent} object
      * @param newDataController the new {@link DataController};
      * if {@code null}, the value will be copied from {@code base}.
-     * @param newPurposes the new list of {@link DataCollectionPurpose} objects;
+     * @param newPurposes the new list of {@link Purpose} objects;
      * if {@code null}, the value will be copied from {@code base}.
      * @return the {@link Consent} object that was just created on Chino.io.
      * @throws java.io.IOException request could not be executed
@@ -184,7 +193,10 @@ public class Consents extends ChinoBaseAPI {
      * @throws io.chino.api.common.ChinoApiException Chino.io
      * server responded with error code.
      */
-    public Consent create(Consent base, DataController newDataController, List<DataCollectionPurpose> newPurposes) throws IOException, ChinoApiException {
+    public Consent create(Consent base, DataController newDataController, List<Purpose> newPurposes) throws IOException, ChinoApiException {
+        checkNotNull(base, "old consent data");
+        checkNotNull(newDataController, "new data_controller");
+        checkNotNull(newPurposes, "new purposes");
         return create(
                 new Consent(base, newDataController, newPurposes)
         );
@@ -201,7 +213,7 @@ public class Consents extends ChinoBaseAPI {
      * @see Consent#Consent(io.chino.api.consent.Consent, java.lang.String)  Consent  constructor by user_id
      * 
      * @param base the base {@link Consent} object
-     * @param userId the new {@link #userId userId}. <b>Can not be {@code null}</b>
+     * @param userId the new {@link #userId userId}. <b>Cannot be {@code null}</b>
      * @return the {@link Consent} object that was just created on Chino.io.
      * @throws java.io.IOException request could not be executed
      * (but it might have arrived to the server).
@@ -209,6 +221,8 @@ public class Consents extends ChinoBaseAPI {
      * server responded with error code.
      */
     public Consent create(Consent base, String userId) throws IOException, ChinoApiException {
+        checkNotNull(base, "old consent data");
+        checkNotNull(userId, "user_id");
         return create(
                 new Consent(base, userId)
         );
@@ -216,8 +230,8 @@ public class Consents extends ChinoBaseAPI {
     
     /**
      * Fetch the consent with the specified {@code consent_id}.
-     * If there is a history for this {@link Consent} object, only the active consent is fetched.
-     * @see Consent#isActive() 
+     * If there is a history for this {@link Consent} object, only the active
+     * consent is fetched (see {@link Consent#isActive()})
      * @param consentId the {@link Consent#consentId consent_id} of the Consent to read
      * @return the {@link Consent} whose id matches {@code consent_id}, if exists, otherwise {@code null}.
      * @throws java.io.IOException request could not be executed
@@ -226,6 +240,7 @@ public class Consents extends ChinoBaseAPI {
      * server responded with error code.
      */
     public Consent read(String consentId) throws IOException, ChinoApiException {
+        checkNotNull(consentId, "consent_id");
         JsonNode data = getResource("/consents/" + consentId);
         if (data != null) {
             return mapper.convertValue(data, Consent.class);
@@ -251,14 +266,71 @@ public class Consents extends ChinoBaseAPI {
      * server responded with error code.
      */
     public Consent update(String consentId, Consent consentData) throws IOException, ChinoApiException {
-        JsonNode data = putResource("/consents" + consentId, consentData);
+        checkNotNull(consentId, "consent_id");
+        checkNotNull(consentData, "consent data");
+        JsonNode data = putResource("/consents/" + consentId, consentData);
         if (data != null)
             return mapper.convertValue(data, Consent.class);
         else
             return null;
     }
     
-    public ConsentHistory history(String consentId) {
+    
+    /**
+     * Fetch the history of the {@link Consent} whith the specified {@code consentId}.
+     * @param consentId the id of the consents in the consent history
+     * @return the {@link ConsentHistory} of the consent whose id matches
+     * {@code consentId}.
+     * @throws java.io.IOException request could not be executed
+     * (but it might have arrived to the server).
+     * @throws io.chino.api.common.ChinoApiException Chino.io
+     * server responded with error code.
+     */
+    public ConsentHistory history(String consentId) throws IOException, ChinoApiException {
+        checkNotNull(consentId, "consent_id");
+        JsonNode rawData = getResource("/consents/" + consentId + "/history");
         
+        if (rawData == null)
+            return new ConsentHistory(
+                mapper.convertValue(rawData, ConsentListWrapper.class),
+                read(consentId)
+            );
+        else
+            return null;
+    }
+    
+    /**
+     * Withdraw the {@link Consent} with the specified {@code consentId}.
+     * The consent's {@link Consent#withdrawnDate withdrawn_date} will be set
+     * to a non-null value and the object will no longer be active. 
+     * Inactive Consents cannot be updated, but their history is available
+     * on the server as a proof.
+     * @param consentId id of the {@link Consent} to be withdrawn
+     * @return the result {@link String}, as returned by the server.
+     * @throws java.io.IOException request could not be executed
+     * (but it might have arrived to the server).
+     * @throws io.chino.api.common.ChinoApiException Chino.io
+     * server responded with error code.
+     */
+    public String withdraw(String consentId) throws IOException, ChinoApiException {
+        checkNotNull(consentId, "consent_id");
+        return deleteResource("/consents/" + consentId, false);
+    }
+    
+    /**
+     * Deletes the {@link Consent} with the specified {@code consentId} from
+     * Chino.io servers. Consents are no more available after deletion.
+     * <b>This feature only works with the test API at
+     * <code>api.test.chino.io</code> and is not available in production.</b>
+     * @param consentId id of the {@link Consent} to be deleted
+     * @return the result {@link String}, as returned by the server.
+     * @throws java.io.IOException request could not be executed
+     * (but it might have arrived to the server).
+     * @throws io.chino.api.common.ChinoApiException Chino.io
+     * server responded with error code.
+     */
+    public String delete(String consentId) throws IOException, ChinoApiException {
+        checkNotNull(consentId, "consent_id");
+        return deleteResource("/consents/" + consentId, true);
     }
 }
