@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "purpose",
     "description"
 })
-public class DataCollectionPurpose {
+public class Purpose {
     
     /**
      * Indicates whether or not the user gave the authorization to
@@ -60,6 +60,13 @@ public class DataCollectionPurpose {
      */
     @JsonProperty("description")
     private String description;
+
+    public Purpose(boolean authorized, String purpose, String description) {
+        this.authorized = authorized;
+        this.purpose = purpose;
+        this.description = description;
+    }
+    
 
     @Override
     public String toString() {

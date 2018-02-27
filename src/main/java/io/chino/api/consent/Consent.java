@@ -79,12 +79,12 @@ public class Consent {
     private String consentId;
     
     /**
-     * A list of {@link DataCollectionPurpose} objects, which represent
+     * A list of {@link Purpose} objects, which represent
      * how the {@link #dataController data controller} was allowed to use the user's data
      * by the user itself.
      */
     @JsonProperty("purposes")
-    private List<DataCollectionPurpose> purposes;
+    private List<Purpose> purposes;
     
     /**
      * A valid URL to the policy text
@@ -116,6 +116,10 @@ public class Consent {
      */
     @JsonProperty("collection_mode")
     private String collectionMode;
+
+    Consent() {
+        super();
+    }
     
     
     /**
@@ -133,7 +137,7 @@ public class Consent {
      */
     public Consent(String userId, String description, String policyUrl, String policyVersion,
             String collectionMode, DataController dataController,
-            List<DataCollectionPurpose> purposes)
+            List<Purpose> purposes)
     {
         this.userId = userId;
         this.description = description;
@@ -158,10 +162,10 @@ public class Consent {
      * @param base the base {@link Consent} object.
      * @param newDataController the new {@link DataController};
      * if {@code null}, the value will be copied from {@code base}.
-     * @param newPurposes the new list of {@link DataCollectionPurpose} objects;
+     * @param newPurposes the new list of {@link Purpose} objects;
      * if {@code null}, the value will be copied from {@code base}.
      */
-    public Consent(Consent base, DataController newDataController, List<DataCollectionPurpose> newPurposes) {
+    public Consent(Consent base, DataController newDataController, List<Purpose> newPurposes) {
         this(base.userId, base.description, base.policyUrl, base.policyVersion, base.collectionMode,
                 (newDataController != null) ? newDataController : base.dataController,
                 (newPurposes != null) ? newPurposes : base.purposes
@@ -196,7 +200,7 @@ public class Consent {
     public String toString() {
         
         String purposesString = "[\n";
-        for (DataCollectionPurpose purp:getPurposes()) {
+        for (Purpose purp:getPurposes()) {
             purposesString += "\t\t" + purp.toString(2) + "\n";
         }
         purposesString += "\t]";
@@ -263,11 +267,11 @@ public class Consent {
 
     /**
      * Get informations about the purposes of the data collection.
-     * @return a list of {@link DataCollectionPurpose} objects that describe
+     * @return a list of {@link Purpose} objects that describe
      * what the {@link #dataController data controller} is allowed to do with the user's data.
      */
     @JsonProperty("purposes")
-    public List<DataCollectionPurpose> getPurposes() {
+    public List<Purpose> getPurposes() {
         return purposes;
     }
 
