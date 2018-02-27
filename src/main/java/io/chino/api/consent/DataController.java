@@ -41,7 +41,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "VAT",
         "on_behalf",
 })
-class DataController {
+public class DataController {
     
     /**
      * Name of the company which performs data collection.
@@ -81,7 +81,30 @@ class DataController {
     @JsonProperty("on_behalf")
     private boolean onBehalf;
     
-
+    
+    /**
+     * Create and initializes a new {@link DataController}.
+     * Check
+     * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
+     * to learn more about the parameters of the "data_controller" object
+     * in a Consent.
+     * @param company
+     * @param contact
+     * @param address
+     * @param email
+     * @param VAT
+     * @param onBehalf 
+     */
+    public DataController(String company, String contact, String address,
+            String email, String VAT, boolean onBehalf)
+    {
+        this.company = company;
+        this.contact = contact;
+        this.address = address;
+        this.email = email;
+        vat = VAT;
+        this.onBehalf = onBehalf;
+    }
     
     /**
      * Get the name of the company which performs data collection.

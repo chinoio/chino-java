@@ -29,8 +29,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.chino.api.user.User;
 import io.chino.java.ChinoBaseAPI;
-import java.util.LinkedList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class represents the consent given by a user to a policy.
@@ -83,7 +84,7 @@ public class Consent {
      * by the user itself.
      */
     @JsonProperty("purposes")
-    private List<DataCollectionPurpose> purposes = new LinkedList<>();
+    private List<DataCollectionPurpose> purposes;
     
     /**
      * A valid URL to the policy text
@@ -102,13 +103,13 @@ public class Consent {
      * the current Consent was withdrawn by the user. Otherwise, it is active.
      */
     @JsonProperty("withdrawn_date")
-    private String withdrawnDate = null;
+    private Date withdrawnDate = null;
     
     /**
      * Timestamp of creation of this Consent.
      */
     @JsonProperty("inserted_date")
-    private String insertedDate;
+    private Date insertedDate;
     
     /**
      * Brief {@link String} which describes how the consent was collected.
@@ -117,9 +118,73 @@ public class Consent {
     private String collectionMode;
     
     
+    /**
+     * Creates a new {@link Consent} and initializes its fields.
+     * Check
+     * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
+     * to learn more about the parameters of the Consent Object.
+     * @param userId
+     * @param description
+     * @param policyUrl
+     * @param policyVersion
+     * @param collectionMode
+     * @param dataController
+     * @param purposes 
+     */
+    public Consent(String userId, String description, String policyUrl, String policyVersion,
+            String collectionMode, DataController dataController,
+            List<DataCollectionPurpose> purposes)
+    {
+        this.userId = userId;
+        this.description = description;
+        this.policyUrl = policyUrl;
+        this.policyVersion = policyVersion;
+        this.collectionMode = collectionMode;
+        this.dataController = dataController;
+        this.purposes = purposes;
+        
+        // JsonProperty fields with 'null' values will be ignored
+        // because of JsonInclude.Include.NON_NULL
+        consentId = null;
+        insertedDate = null;
+        withdrawnDate = null;
+    }
     
     /**
-     * Check if this Consent is still active.
+     * Creates a new {@link Consent} and initializes its fields like the fields in
+     * {@code base}, except for the {@link #dataController dataController} and the
+     * {@link #purposes purposes list}. Useful when users give consent to new
+     * purposes or grant access to their data to other subjects.
+     * @param base the base {@link Consent} object.
+     * @param newDataController the new {@link DataController};
+     * if {@code null}, the value will be copied from {@code base}.
+     * @param newPurposes the new list of {@link DataCollectionPurpose} objects;
+     * if {@code null}, the value will be copied from {@code base}.
+     */
+    public Consent(Consent base, DataController newDataController, List<DataCollectionPurpose> newPurposes) {
+        this(base.userId, base.description, base.policyUrl, base.policyVersion, base.collectionMode,
+                (newDataController != null) ? newDataController : base.dataController,
+                (newPurposes != null) ? newPurposes : base.purposes
+        );
+    }
+    
+    /**
+     * Creates a new Consent which is identical to {@code base}, except for the
+     * {@link #userId userId}. Useful when consent to the same policy
+     * is asked to many users.
+     * @param base the base {@link Consent} object.
+     * @param userId the new {@link #userId userId}. <b>Can not be {@code null}</b>
+     */
+    public Consent(Consent base, String userId) {
+        this(userId,
+                base.description, base.policyUrl, base.policyVersion,
+                base.collectionMode, base.dataController, base.purposes
+        );
+    }
+    
+    /**
+     * Check if this Consent is still active, i.e. if its
+     * {@link #withdrawnDate withdrawn_date} is null.
      * @return true if the value of {@link #withdrawnDate withdrawn_date}
      * has not been set; false otherwise.
      */
@@ -130,11 +195,11 @@ public class Consent {
     @Override
     public String toString() {
         
-        String purposeList = "[\n";
-        for (DataCollectionPurpose purp:purposes) {
-            purposeList += "\t\t" + purp.toString(2) + "\n";
+        String purposesString = "[\n";
+        for (DataCollectionPurpose purp:getPurposes()) {
+            purposesString += "\t\t" + purp.toString(2) + "\n";
         }
-        purposeList += "\t]";
+        purposesString += "\t]";
         
         String dataControllerString = "";
         try {
@@ -149,7 +214,7 @@ public class Consent {
             + "\tdescription: " + description + ",\n"
             + "\tdata_controller: " + dataControllerString + ",\n"
             + "\tconsent_id: " + consentId + ",\n"
-            + "\tpurposes: " + purposeList + ",\n"
+            + "\tpurposes: " + purposesString + ",\n"
             + "\tpolicy_url: " + policyUrl +  ",\n"
             + "\tpolicy_version: " + policyVersion + "\n"
             + "\twithdrawn_date: " + ((withdrawnDate == null) ? "null" : withdrawnDate) + ",\n"
@@ -184,7 +249,7 @@ public class Consent {
      */
     @JsonProperty("data_controller")
     public DataController getDataController() {
-        return dataController;
+        return ChinoBaseAPI.getMapper().convertValue(dataController, DataController.class);
     }
 
     /**
@@ -227,21 +292,21 @@ public class Consent {
     /**
      * Get the date of withdrawal of this Consent
      * @return {@code null} if this Consent is {@link #isActive() active},
-     * otherwise a {@link String} with the timestamp of the withdrawal
+     * otherwise the {@link Date} of the withdrawal
      * of this Consent.
      */
     @JsonProperty("withdrawn_date")
-    public String getWithdrawnDate() {
+    public Date getWithdrawnDate() {
         return withdrawnDate;
     }
 
     /**
      * Get the date of creation of this Consent
-     * @return a {@link String} with the timestamp of the creation
+     * @return the {@link Date} of creation
      * of this Consent.
      */
     @JsonProperty("inserted_date")
-    public String getInsertedDate() {
+    public Date getInsertedDate() {
         return insertedDate;
     }
 
@@ -253,5 +318,23 @@ public class Consent {
     @JsonProperty("collection_mode")
     public String getCollectionMode() {
         return collectionMode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Consent) {
+            Consent c = (Consent) obj;
+            return (c.consentId == this.consentId && c.insertedDate == this.insertedDate);
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 89 * hash + Objects.hashCode(this.consentId);
+        hash = 89 * hash + Objects.hashCode(this.insertedDate);
+        return hash;
     }
 }

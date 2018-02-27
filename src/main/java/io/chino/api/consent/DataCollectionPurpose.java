@@ -38,7 +38,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "purpose",
     "description"
 })
-class DataCollectionPurpose {
+public class DataCollectionPurpose {
     
     /**
      * Indicates whether or not the user gave the authorization to
