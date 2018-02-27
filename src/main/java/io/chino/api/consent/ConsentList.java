@@ -84,7 +84,7 @@ public class ConsentList extends ArrayList<Consent> {
     
     /**
      * Add to this list the data from the {@code wrapper} and updates the
-     * pagination informations with 
+     * pagination informations with the wrapper
      * @param wrapper 
      */
     public void addAll(ConsentListWrapper wrapper) {
