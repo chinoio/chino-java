@@ -23,14 +23,18 @@
  */
 package io.chino.java;
 
+import io.chino.api.common.ChinoApiException;
 import io.chino.api.consent.Consent;
 import io.chino.api.consent.ConsentHistory;
 import io.chino.api.consent.ConsentList;
 import io.chino.api.consent.DataController;
 import io.chino.api.consent.Purpose;
+import io.chino.examples.Constants;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -42,6 +46,9 @@ public class ConsentsTest {
     
     private static ChinoAPI chino_admin;
     private static ArrayList<Consent> createdObjects;
+    
+    private static String userId1 = "mariorossi@mailmail.com",
+            userId2 = "rossimario@mail.ml";
     
     private static DataController dcSample;
     private static Purpose pSample1, pSample2, pSample3;
@@ -66,7 +73,7 @@ public class ConsentsTest {
         purps.add(pSample2);
         purps.add(pSample3);
         
-        consentSample1 = new Consent("mariorossi@mailmail.com", "Consent sample created for testing - class ConsentsTest",
+        consentSample1 = new Consent(userId1, "Consent sample created for testing - class ConsentsTest",
                 "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purps);
         createdObjects.add(consentSample1);
         
@@ -74,7 +81,7 @@ public class ConsentsTest {
         purps.remove(pSample2);
         
         // creating another consent for user "rossimario@mail.ml", with different purposes
-        consentSample2 = new Consent(new Consent(consentSample1, null, purps), "rossimario@mail.ml");
+        consentSample2 = new Consent(new Consent(consentSample1, null, purps), userId2);
         createdObjects.add(consentSample2);
     }
     
@@ -100,15 +107,23 @@ public class ConsentsTest {
     @Test
     public void testList_3args() throws Exception {
         System.out.println("list (3 args)");
-        String userId = "";
-        int offset = 0;
-        int limit = 0;
-        Consents instance = null;
-        ConsentList expResult = null;
-        ConsentList result = instance.list(userId, offset, limit);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        int newConsents = 4;
+        String userId = "userId3@mail.ml";
+        for (int i = 0; i<newConsents; i++) {
+            createdObjects.add(
+                    chino_admin.consents.create(consentSample1, userId)
+            );
+        }
+        
+        int totalListElements = 0;
+        int limit = 2;
+        for (int i=0; i < newConsents/limit; i++) {
+            int offset = i;
+            ConsentList results = chino_admin.consents.list(userId, offset, limit);
+            totalListElements += results.size();
+        }
+        assertEquals(totalListElements, newConsents);
     }
 
     /**
