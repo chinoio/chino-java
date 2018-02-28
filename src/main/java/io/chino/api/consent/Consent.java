@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andrea Arighi <andrea@chino.org>.
+ * Copyright (c) 2009-2015 Chino Srls, http://www.chino.io/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.api.user.User;
 import io.chino.java.ChinoBaseAPI;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -150,7 +151,7 @@ public class Consent {
         this.policyVersion = policyVersion;
         this.collectionMode = collectionMode;
         this.dataController = dataController;
-        this.purposes = purposes;
+        this.purposes = new ArrayList<>(purposes);
         
         // JsonProperty fields with 'null' values will be ignored
         // because of JsonInclude.Include.NON_NULL

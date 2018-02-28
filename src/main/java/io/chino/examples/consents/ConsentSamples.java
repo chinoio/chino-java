@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andrea Arighi [andrea@chino.org].
+ * Copyright (c) 2009-2015 Chino Srls, http://www.chino.io/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal

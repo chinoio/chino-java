@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andrea Arighi [andrea@chino.org].
+ * Copyright (c) 2009-2015 Chino Srls, http://www.chino.io/
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -40,15 +40,58 @@ import static org.junit.Assert.*;
  */
 public class ConsentsTest {
     
+    private static ChinoAPI chino_admin;
+    private static ArrayList<Consent> createdObjects;
+    
+    private static DataController dcSample;
+    private static Purpose pSample1, pSample2, pSample3;
+    private static Consent consentSample1, consentSample2;
+    
     public ConsentsTest() {
     }
     
-    @Before
-    public void setUp() {
+    @BeforeClass
+    public static void setUpClass() {
+        Constants.init();
+        chino_admin = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
+        createdObjects = new ArrayList<>();
+        
+        dcSample = new DataController("Chino.io", "example", "42 John Doe St.", "java-example@chino.io", "vat123456789", true);
+        
+        pSample1 = new Purpose(true, "promo", "Send ads to mail and address");
+        pSample2  = new Purpose(false, "third-party", "Send data to third party services");
+        pSample3 = new Purpose(true, "internal", "Required data");
+        ArrayList<Purpose> purps = new ArrayList<>();
+        purps.add(pSample1);
+        purps.add(pSample2);
+        purps.add(pSample3);
+        
+        consentSample1 = new Consent("mariorossi@mailmail.com", "Consent sample created for testing - class ConsentsTest",
+                "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purps);
+        createdObjects.add(consentSample1);
+        
+        purps.remove(pSample1);
+        purps.remove(pSample2);
+        
+        // creating another consent for user "rossimario@mail.ml", with different purposes
+        consentSample2 = new Consent(new Consent(consentSample1, null, purps), "rossimario@mail.ml");
+        createdObjects.add(consentSample2);
     }
     
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDownClass() {
+        for (Consent c:createdObjects) {
+            try {
+                chino_admin.consents.delete(c.getConsentId());
+            } catch (ChinoApiException apiX) {
+                System.err.println("tearDownClass - server returned following error:");
+                System.err.println(apiX.getLocalizedMessage());
+                System.err.println("(ChinoAPIException)");
+            } catch (IOException e) {
+                System.err.println("'tearDownClass - could not reach the server '" + e.getLocalizedMessage() + "'");
+                System.err.println("(IOException)");
+            }
+        }
     }
 
     /**
@@ -56,7 +99,7 @@ public class ConsentsTest {
      */
     @Test
     public void testList_3args() throws Exception {
-        System.out.println("list");
+        System.out.println("list (3 args)");
         String userId = "";
         int offset = 0;
         int limit = 0;
