@@ -32,7 +32,8 @@ import java.util.LinkedList;
  *                                              Many '-run' parameters can be used at the same time to run all the examples of the specified objects in order. E.g.: <code>--run=users --run=groups</code></li>
  * <li><code>--clean</code> OR -c       :       Delete all the test objects from Chino.io server. Can be used together with 'run' parameters. E.g.: <code>-run=users -run=consents -c</code></li>
  * </ul>
- * @author Andrea
+ * 
+ * @author Andrea Arighi [andrea@chino.org]
  */
 public class ChinoAPIExamples {
     
@@ -50,12 +51,14 @@ public class ChinoAPIExamples {
                 operations.add("clean");
             }
         }
+        
         // Print help and exit
         if (arguments.contains("--help") || arguments.contains("-h")) {
             System.out.println("Chino.io API Examples\n"
                     + "To use this class, you need to obtain your Chino.io customer id and customer key.\n"
-                    + "Once you have the required credentials, you'll need to add two system environment variables: 'customer_id' and 'customer_key'."
-                    + "ChinoAPIExample will read the values from there and authenticate the API calls with your credentials."
+                    + "Once you have the required credentials, you'll need to add two system environment variables: 'customer_id' and 'customer_key'.\n"
+                    + "ChinoAPIExample will read the values from there and authenticate the API calls with your credentials.\n"
+                    + "\n"
                     + "Command-line arguments:\n"
                     + "\t-h    --help\t\tShow this help\n"
                     + "\t--production-api\tUse production API instead of test API. WARNING: use only if you know what you are doing\n"
@@ -67,7 +70,7 @@ public class ChinoAPIExamples {
             return;
         }
         
-        // set customer_key and customer_id
+        // set customer_key and customer_id in Constants
         Constants.init();
 
         for(String example:operations) {

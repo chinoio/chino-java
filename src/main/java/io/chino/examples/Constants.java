@@ -53,8 +53,9 @@ public class Constants {
         CUSTOMER_ID = System.getenv("customer_id");
         CUSTOMER_KEY = System.getenv("customer_key");
         if (CUSTOMER_ID == null || CUSTOMER_KEY == null) {
-            System.err.println("customer_id or customer_key not found.\n"
-                    + "Be sure to get them from Chino.io API console and to add the system environment variables 'customer_id' and 'customer_key' before running the examples.");
+            System.err.println("To use this class, you need to obtain your Chino.io customer id and customer key.\n"
+                    + "Once you have the required credentials, you need to create two system environment variables: 'customer_id' and 'customer_key'.\n"
+                    + "ChinoAPIExample will read the values from there and authenticate the API calls with your credentials.\n");
         }
         
         // sample values; you can edit those two values at will (either here or in class 'Constants').
