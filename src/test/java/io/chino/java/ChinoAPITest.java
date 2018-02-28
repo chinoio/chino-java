@@ -40,18 +40,16 @@ import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 
 /**
- * Test for class {@link ChinoAPI io.chino.java.ChinoAPI}
- * You need to set the Chino.io customerId and customerKey in method {@link #setCodes() }.
- * You also need to create a Chino.io application and to paste the
+ * Test for class {@link ChinoAPI io.chino.java.ChinoAPI}:
+ * you need to create two Chino.io applications (one that authenticates via
+ * 'password' and the other via 'authentication_code', then paste the
  * applicationId and applicationSecret in method {@link #setCodes() setCodes()}.
  * @author Andrea
  */
 public class ChinoAPITest {
     
     private static final String URL = Constants.HOST;
-    private static String CID = null;
-    private static String CKEY = null;
-    private static final String USERNAME = "testusrname";
+    private static String USERNAME = "testusrname";
     private static String PASSWORD = "testpword32";
     
     private static String USER_ID;
@@ -71,14 +69,7 @@ public class ChinoAPITest {
      * complete the tests. See {@link ChinoAPITest class javadoc} for more instructions.
      */
     private static void setCodes() {
-        // paste here your customerID/customerKey pair to run tests
-        CID = // customerId
-                ""
-        ;
-        CKEY = // customerKey
-                ""
-        ;
-        
+
         // You will need to create an application to run tests, which must have
         // a 'password' grant type. After creating it, paste here the
         // id and secret of the application you will use to run tests.
@@ -99,22 +90,24 @@ public class ChinoAPITest {
         AUTHCODE_APP_SECRET = // app secret
                 ""
         ;
+        
+        if (PWORD_APP_ID == null | PWORD_APP_ID.isEmpty() || PWORD_APP_SECRET == null || PWORD_APP_SECRET.isEmpty()) {
+            fail("Please setup password application: applicationId or applicationSecret missing. Check javadoc for class ChinoAPITest.");
+        }
+        if (AUTHCODE_APP_ID == null | AUTHCODE_APP_ID.isEmpty() || AUTHCODE_APP_SECRET == null || AUTHCODE_APP_SECRET.isEmpty()) {
+            fail("Please setup auth code application: applicationId or applicationSecret missing. Check javadoc for class ChinoAPITest.");
+        }
     }
     
     @BeforeClass
     public static void setUpClass() {
-        setCodes();
-        if (CID == null || CID.isEmpty() || CKEY == null || CKEY.isEmpty()) {
-            fail("Please setup tests: customerId or customerKey missing. Check javadoc for ChinoAPITest.");
-        }
-        if (PWORD_APP_ID == null | PWORD_APP_ID.isEmpty() || PWORD_APP_SECRET == null || PWORD_APP_SECRET.isEmpty()) {
-            fail("Please setup password application: applicationId or applicationSecret missing. Check javadoc for ChinoAPITest.");
-        }
-        if (AUTHCODE_APP_ID == null | AUTHCODE_APP_ID.isEmpty() || AUTHCODE_APP_SECRET == null || AUTHCODE_APP_SECRET.isEmpty()) {
-            fail("Please setup auth code application: applicationId or applicationSecret missing. Check javadoc for ChinoAPITest.");
-        }
+        // init customer data
+        Constants.init(USERNAME, PASSWORD);
         
-        customerApiClient = new ChinoAPI(URL, CID, CKEY);
+        // init data of test applications
+        setCodes();
+        
+        customerApiClient = new ChinoAPI(URL, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
         
         UserSchema userSchema = null;
         
@@ -141,7 +134,7 @@ public class ChinoAPITest {
             attributes.put("test_integer", 123);
             attributes.put("test_date", "1993-09-08");
             attributes.put("test_float", 12.4);
-            User user = customerApiClient.users.create(USERNAME, PASSWORD, attributes, USER_SCHEMA_ID);
+            User user = customerApiClient.users.create(Constants.USERNAME, Constants.PASSWORD, attributes, USER_SCHEMA_ID);
             USER_ID = user.getUserId();
         } catch (Exception ex) {
             fail("failed to set up test for ChinoAPITest.\n"
@@ -176,8 +169,8 @@ public class ChinoAPITest {
                 refreshToken = null;
         LoggedUser user = null;
         try {
-            step = "authenticate user with username '" + USERNAME + "' and password '" + PASSWORD + "'";
-            user = chino_user.auth.loginWithPassword(USERNAME, PASSWORD, PWORD_APP_ID, PWORD_APP_SECRET);
+            step = "authenticate user with username '" + Constants.USERNAME + "' and password '" + Constants.PASSWORD + "'";
+            user = chino_user.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, PWORD_APP_ID, PWORD_APP_SECRET);
             accessToken = user.getAccessToken();
             System.out.println("1st access token: " + accessToken);
             refreshToken = user.getRefreshToken();
@@ -239,7 +232,7 @@ public class ChinoAPITest {
     @Test
     public void testCustomerClient() {
         String step = "initialize";
-        ChinoAPI apiClient = new ChinoAPI(URL, CID, CKEY);
+        ChinoAPI apiClient = new ChinoAPI(URL, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
         assertClientWasCreated(apiClient);
         try {
             // create a repository using costomer credentials
