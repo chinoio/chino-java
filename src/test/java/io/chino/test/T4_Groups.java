@@ -3,7 +3,7 @@ package io.chino.test;
 import io.chino.api.common.ChinoApiException;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.groups.GroupSamples;
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 import org.junit.Before;
 import org.junit.Test;
 

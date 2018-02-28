@@ -5,7 +5,7 @@ import io.chino.java.ChinoAPI;
 import io.chino.examples.users.UserSamples;
 import java.io.IOException;
 
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 import org.junit.*;
 
 

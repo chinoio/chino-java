@@ -4,7 +4,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
 import io.chino.api.userschema.*;
 import io.chino.java.ChinoAPI;
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 
 import java.io.IOException;
 import java.util.ArrayList;

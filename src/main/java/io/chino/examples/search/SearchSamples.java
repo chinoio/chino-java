@@ -9,7 +9,7 @@ import io.chino.api.search.FilterOption;
 import io.chino.api.search.SearchRequest;
 import io.chino.api.search.SortOption;
 import io.chino.java.ChinoAPI;
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

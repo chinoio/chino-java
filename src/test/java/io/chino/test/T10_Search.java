@@ -18,7 +18,7 @@ import io.chino.examples.search.SchemaStructureSample;
 import io.chino.examples.DeleteAll;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.search.SearchSamples;
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 import org.junit.Before;
 import org.junit.Test;
 

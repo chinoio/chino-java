@@ -28,7 +28,7 @@ import io.chino.api.consent.Consent;
 import io.chino.api.consent.DataController;
 import io.chino.api.consent.Purpose;
 import io.chino.java.ChinoAPI;
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 

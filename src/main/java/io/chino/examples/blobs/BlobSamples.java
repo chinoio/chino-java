@@ -9,7 +9,7 @@ import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
-import io.chino.test.util.Constants;
+import io.chino.examples.Constants;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
