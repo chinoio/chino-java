@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
 
 /**
  * Contains informations about the purpose of personal data collection.
@@ -130,6 +131,24 @@ public class Purpose {
     public String getDescription() {
         return description;
     }
-    
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Purpose))
+            return false;
+        
+        Purpose p = (Purpose) obj;
+        return (this.authorized == p.authorized) &&
+                this.description.equals(p.description) &&
+                this.purpose.equals(p.purpose);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 37 * hash + (this.authorized ? 1 : 0);
+        hash = 37 * hash + Objects.hashCode(this.purpose);
+        hash = 37 * hash + Objects.hashCode(this.description);
+        return hash;
+    }
 }

@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Objects;
 
 /**
  * Contains information about a subject that collects sensitive data.
@@ -164,4 +165,63 @@ public class DataController {
     public boolean isOnBehalf() {
         return onBehalf;
     }
+    
+    @Override
+    public String toString() {
+        return toString(0);
+    }
+
+    /**
+     * Gat an indented {@link String}.
+     * @param indentLevel the indentation level, e.g. the nr of "tab" characters
+     * to be inserted before each line.
+     * @return the same result given by {@link #toString() toString()},
+     * indented by the specified quantity. <b>The first line has no indentation</b>.
+     */
+    public String toString(int indentLevel) {
+        if (indentLevel < 0) {
+            throw new IllegalArgumentException("Indentation level can't be negative.");
+        }
+        
+        String indentation = "";
+        for (int i = 0; i < indentLevel; i++)
+            indentation += "\t";
+        
+        return "{\n"
+                + indentation + "\tcompany: " + company + ",\n"
+                + indentation + "\tcontact: " + contact + ",\n"
+                + indentation + "\taddress: " + address + ",\n"
+                + indentation + "\temail: " + email + ",\n"
+                + indentation + "\tVAT: " + vat + ",\n"
+                + indentation + "\ton_behalf: " + onBehalf + ",\n"
+                + indentation + "}";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof DataController))
+            return false;
+        
+        DataController dc = (DataController) obj;
+        return this.address.equals(dc.address) &&
+                this.company.equals(dc.company) &&
+                this.contact.equals(dc.contact)&&
+                this.email.equals(dc.email) &&
+                this.vat.equals(dc.vat) &&
+                (this.onBehalf == dc.onBehalf);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + Objects.hashCode(this.company);
+        hash = 89 * hash + Objects.hashCode(this.contact);
+        hash = 89 * hash + Objects.hashCode(this.address);
+        hash = 89 * hash + Objects.hashCode(this.email);
+        hash = 89 * hash + Objects.hashCode(this.vat);
+        hash = 89 * hash + (this.onBehalf ? 1 : 0);
+        return hash;
+    }
+    
+    
 }
