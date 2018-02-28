@@ -27,13 +27,15 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.consent.Consent;
 import io.chino.api.consent.DataController;
 import io.chino.api.consent.Purpose;
+import io.chino.examples.ChinoAPIExamples;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- *
+ * Example of usage for the class {@link Consent} and the Consent Management APIs.
+ * Run this example from {@link ChinoAPIExamples}
  * @author Andrea Arighi [andrea@chino.org]
  */
 public class ConsentSamples {
