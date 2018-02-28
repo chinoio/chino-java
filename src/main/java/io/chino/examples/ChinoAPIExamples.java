@@ -36,12 +36,6 @@ import java.util.LinkedList;
  */
 public class ChinoAPIExamples {
     
-    public static ChinoAPI chino_admin;
-    
-    // TODO: remove DEBUG and all the code with "if(DEBUG)"
-    private final static boolean DEBUG = true;
-    
-    
     public static void main(String[] args) {
         // Parse command-line arguments
         LinkedList<String> arguments = new LinkedList<>();
@@ -58,7 +52,11 @@ public class ChinoAPIExamples {
         }
         // Print help and exit
         if (arguments.contains("--help") || arguments.contains("-h")) {
-            System.out.println("Command-line arguments:\n"
+            System.out.println("Chino.io API Examples\n"
+                    + "To use this class, you need to obtain your Chino.io customer id and customer key.\n"
+                    + "Once you have the required credentials, you'll need to add two system environment variables: 'customer_id' and 'customer_key'."
+                    + "ChinoAPIExample will read the values from there and authenticate the API calls with your credentials."
+                    + "Command-line arguments:\n"
                     + "\t-h    --help\t\tShow this help\n"
                     + "\t--production-api\tUse production API instead of test API. WARNING: use only if you know what you are doing\n"
                     + "\t--run=[example]\t\tRun the specified example; 'example' is the lowercase name of one of the Chino API objects,\n"
