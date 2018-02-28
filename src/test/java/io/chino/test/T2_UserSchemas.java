@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import io.chino.examples.userschemas.UserSchemaSamples;
 import io.chino.test.util.Constants;
-import io.chino.examples.util.DeleteAll;
+import io.chino.examples.DeleteAll;
 import org.junit.Before;
 import org.junit.Test;
 

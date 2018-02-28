@@ -14,7 +14,7 @@ import io.chino.java.ChinoAPI;
 import io.chino.examples.schemas.SchemaStructureSample;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.test.util.Constants;
-import io.chino.examples.util.DeleteAll;
+import io.chino.examples.DeleteAll;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -1,9 +1,11 @@
-package io.chino.examples.util;
+package io.chino.examples;
 
 import io.chino.java.ChinoAPI;
 import io.chino.api.application.Application;
 import io.chino.api.collection.Collection;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.consent.Consent;
+import io.chino.api.consent.ConsentList;
 import io.chino.api.document.Document;
 import io.chino.api.group.Group;
 import io.chino.api.repository.Repository;
@@ -48,6 +50,10 @@ public class DeleteAll {
                 temp.users.delete(user.getUserId(), true);
             }
             temp.userSchemas.delete(u.getUserSchemaId(), true);
+        }
+        ConsentList consents = temp.consents.list(); // ConsentList consents = temp.consents.list().getConsents(); // gives the same result
+        for (Consent c:consents) {
+            temp.consents.delete(c.getConsentId());
         }
     }
 }

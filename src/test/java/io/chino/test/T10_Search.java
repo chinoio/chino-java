@@ -15,7 +15,7 @@ import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.api.userschema.UserSchemaStructure;
 import io.chino.examples.search.SchemaStructureSample;
-import io.chino.examples.util.DeleteAll;
+import io.chino.examples.DeleteAll;
 import io.chino.java.ChinoAPI;
 import io.chino.examples.search.SearchSamples;
 import io.chino.test.util.Constants;
