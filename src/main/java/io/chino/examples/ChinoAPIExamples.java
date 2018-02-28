@@ -3,11 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package io.chino.examples.util;
+package io.chino.examples;
 
 import io.chino.test.util.Constants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.consent.Consent;
+import io.chino.api.consent.Purpose;
+import io.chino.api.consent.DataController;
 import io.chino.examples.applications.ApplicationSamples;
 import io.chino.examples.auth.AuthSamples;
 import io.chino.examples.blobs.BlobSamples;
@@ -21,14 +23,19 @@ import io.chino.examples.search.SearchSamples;
 import io.chino.examples.users.UserSamples;
 import io.chino.examples.userschemas.UserSchemaSamples;
 import io.chino.java.ChinoAPI;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
  * Run the Chino.io API examples.<br>
  * Command-line arguments:<br>
- *      <code>--help</code> OR -h               Print help and exit<br>
- *      --run=[example]                         Run specified example; 'example' is the lowercase name of one of the Chino API objects (e.g. --run=users --run=groups etc...)
- *                                              and more '-run' parameters can be used to run all the test
+ * <ul>
+ * <li><code>--help</code> OR -h        :       Print help and exit.</li>
+ * <li>--run=[example]                  :       Run specified example; 'example' is the lowercase name of one of the Chino API objects.</br>
+ *                                              Many '-run' parameters can be used at the same time to run all the examples of the specified objects in order. E.g.: <code>--run=users --run=groups</code></li>
+ * <li><code>--clean</code> OR -c       :       Delete all the test objects from Chino.io server. Can be used together with 'run' parameters. E.g.: <code>-run=users -run=consents -c</code></li>
+ * </ul>
  * @author Andrea
  */
 public class ChinoAPIExamples {
@@ -40,43 +47,57 @@ public class ChinoAPIExamples {
     
     
     public static void main(String[] args) {
-        // Parse command-line options
-        LinkedList<String> opts = new LinkedList<>();
-        LinkedList<String> examples = new LinkedList<>();
+        // Parse command-line arguments
+        LinkedList<String> arguments = new LinkedList<>();
+        LinkedList<String> operations = new LinkedList<>();
         for (String s:args) {
-            opts.add(s);
+            arguments.add(s);
             if (s.startsWith("--run=")) {
                 String ex = s.replace("--run=", "");
-                if(!examples.contains(ex))
-                    examples.add(ex);
+                if(!operations.contains(ex))
+                    operations.add(ex);
+            } else if (s.equals("-c") || s.equals("--clean")) {
+                operations.add("clean");
             }
         }
         // Print help and exit
-        if (opts.contains("--help") || opts.contains("-h")) {
+        if (arguments.contains("--help") || arguments.contains("-h")) {
             System.out.println("Command-line arguments:\n"
                     + "\t-h    --help\t\tShow this help\n"
                     + "\t--production-api\tUse production API instead of test API. WARNING: use only if you know what you are doing\n"
                     + "\t--run=[example]\t\tRun the specified example; 'example' is the lowercase name of one of the Chino API objects,\n"
-                                    + "\t\te.g. --run=users --run=groups etc. Can be used several times to run multiple examples at once.\n"
-                    + ""
+                                    + "\t\t\t\te.g. --run=users --run=groups etc. Can be used several times to run multiple examples at once.\n"
+                    + "\t-c    --clean\t\tDelete all the test objects from Chino.io server. Can be used together with 'run' parameters.\n"
+                                    + "\t\t\t\tE.g.: -run=users -run=consents -c"
             );
             return;
         }
-        if(DEBUG) {
-            Constants.CUSTOMER_ID = System.getenv("customer_id");
-            Constants.CUSTOMER_KEY = System.getenv("customer_key");
-            Constants.USERNAME = "mrossi";
-            Constants.PASSWORD = "rossimario57";
+        
+        // load customer_id and customer_key from system environment variables
+        Constants.CUSTOMER_ID = System.getenv("customer_id");
+        Constants.CUSTOMER_KEY = System.getenv("customer_key");
+        if (Constants.CUSTOMER_ID == null || Constants.CUSTOMER_KEY == null) {
+            System.err.println("customer_id or customer_key not found.\n"
+                    + "Be sure to get them from Chino.io API console and to add the system environment variables 'customer_id' and 'customer_key' before running the examples.");
         }
         
-        if (DEBUG)
+        // sample code; edit those two values at will.
+        Constants.USERNAME = "mrossi";
+        Constants.PASSWORD = "rossimario57";
             
 
-        for(String example:examples) {
-            if (DEBUG)
-                System.out.println(example);
+        for(String example:operations) {
+            if (example.equals("clean"))
+                System.out.println("***cleaning***");
+            else
+                System.out.println("***Starting " + example + " example***");
             try {
                 switch(example.toLowerCase()) {
+                    case "clean":
+                        // delete all test objects
+                        new DeleteAll().deleteAll(new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY));
+                        System.out.println("Done.\n");
+                        break;
                     case "application":
                     case "applications":
                         new ApplicationSamples().testApplications();
@@ -126,17 +147,86 @@ public class ChinoAPIExamples {
                         break;
                     case "consent":
                     case "consents":
-                        System.out.println(new Consent().toString());
+                        chino_admin = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
+                        
+                        DataController dc = new DataController("Chino.io", "example", "42 John Doe St.", "java-example@chino.io", "vat123456789", true);
+                        Purpose p1 = new Purpose(true, "promo", "Send ads to mail and address"),
+                                p2 = new Purpose(false, "third-party", "Send data to third party services"),
+                                p3 = new Purpose(true, "internal", "Required data");
+                        ArrayList<Purpose> purposes = new ArrayList<>();
+                        purposes.add(p1);
+                        purposes.add(p2);
+                        purposes.add(p3);
+                        
+                        // create
+                        Consent local = new Consent("mail@mailmail.com", "Chino.io Consent Management example", "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dc, purposes);
+                        System.out.println("Local:");
+                        System.out.println(local.toString());
+                        
+                        // test if 'equals()' works
+                        Consent created1 = chino_admin.consents.create(local);
+                        System.out.println("Created:");
+                        System.out.println(created1.toString());
+                        Consent created2 = chino_admin.consents.create("mail@mailmail.com", "Chino.io service agreement", "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dc, purposes);
+                        System.out.println("1. Expected: false. Actual: " + created1.equals(created2));
+                        
+                        // read 'created2'
+                        Consent read = chino_admin.consents.read(created2.getConsentId());
+                        if (read.equals(created2)) {
+                            System.out.println("2. Correctly retrieved consent.");
+                        } else {
+                            System.out.println("2. Error in read consent.");
+                            System.out.println("Original:\n" + created2.toString() + "\n");
+                            System.out.println("Read:\n" + read.toString() + "\n");
+                            System.out.flush();
+                            System.out.println("deleting first consent... " + chino_admin.consents.delete(created1.getConsentId()));
+                            System.out.println("deleting second consent...  " + chino_admin.consents.delete(created2.getConsentId()));
+                            System.out.println("exiting...");
+                            return;
+                        }
+                        
+                        // update (remove purposes 1 and 2 from 'read')
+                        ArrayList<Purpose> newPurposes = new ArrayList<>(purposes);
+                        newPurposes.remove(p1);
+                        newPurposes.remove(p2);
+                        Consent updated = chino_admin.consents.update(read.getConsentId(), new Consent(read, null, newPurposes));
+                        System.out.println("3. Expected: false. Actual: " + updated.equals(read));
+                        System.out.println("4. Expected: false. Actual: " + updated.getPurposes().contains(p1));
+                        System.out.println("5. Expected: false. Actual: " + updated.getPurposes().contains(p2));
+                        System.out.println("6. Expected: true. Actual: " + updated.getPurposes().contains(p3));
+                        System.out.println();
+                        
+                        // history
+                        System.out.println("Now there are "
+                                + chino_admin.consents.history(updated.getConsentId()).size()
+                                + " elements in the consent history.");
+                        
+                        // withdraw consent1
+                        System.out.println("withdraw: " + chino_admin.consents.withdraw(created1.getConsentId()));
+                        
+                        
+                        // delete
+                        System.out.println("deleting first consent... " + chino_admin.consents.delete(created1.getConsentId()));
+                        System.out.println("deleting second consent...  " + chino_admin.consents.delete(created2.getConsentId()));
+                        System.out.println();
+                        System.out.println("list:");
+                        System.out.println(chino_admin.consents.list());
+                                
+                        chino_admin = null;
                         break;
                     default:
                         throw new IllegalArgumentException("Wrong parameter '" + example + "'");
                 }
             } catch (ChinoApiException apiX) {
-                System.err.println("API EXCEPTION caught while running '" + example + "' example.");
+                System.err.println("'" + example + "' API example - server returned following error:");
                 System.err.println(apiX.getLocalizedMessage());
-            } catch (Exception e) {
-                System.err.println("EXCEPTION caught while running '" + example + "' example.");
-                System.err.println(e.getLocalizedMessage());
+                System.err.println("(ChinoAPIException)");
+            } catch (IOException e) {
+                System.err.println("'" + example + "' API example - could not reach the server '" + e.getLocalizedMessage() + "'");
+                System.err.println("(IOException)");
+            } catch (InterruptedException ex) {
+                System.err.println("INTERRUPT EXCEPTION caught while running '" + example + "' example.");
+                System.err.println(ex.getLocalizedMessage());
             }
         }
         

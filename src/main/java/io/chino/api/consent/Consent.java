@@ -27,6 +27,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.api.user.User;
 import io.chino.java.ChinoBaseAPI;
 import java.util.Date;
@@ -117,7 +118,11 @@ public class Consent {
     @JsonProperty("collection_mode")
     private String collectionMode;
 
-    Consent() {
+    /**
+     * Empty constructor used by {@link ObjectMapper} to create
+     * JSON objects from this class.
+     */
+    private Consent() {
         super();
     }
     
@@ -328,7 +333,7 @@ public class Consent {
     public boolean equals(Object obj) {
         if (obj instanceof Consent) {
             Consent c = (Consent) obj;
-            return (c.consentId == this.consentId && c.insertedDate == this.insertedDate);
+            return (c.consentId.equals(this.consentId) && c.insertedDate.equals(this.insertedDate));
         } else {
             return false;
         }

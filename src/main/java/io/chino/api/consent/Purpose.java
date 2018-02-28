@@ -26,6 +26,7 @@ package io.chino.api.consent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Contains informations about the purpose of personal data collection.
@@ -67,6 +68,13 @@ public class Purpose {
         this.description = description;
     }
     
+    /**
+     * Empty constructor used by {@link ObjectMapper} to create
+     * JSON objects from this class.
+     */
+    private Purpose() {
+        super();
+    }
 
     @Override
     public String toString() {

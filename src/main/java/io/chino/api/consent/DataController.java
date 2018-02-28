@@ -26,6 +26,7 @@ package io.chino.api.consent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * Contains information about a subject that collects sensitive data.
@@ -104,6 +105,14 @@ public class DataController {
         this.email = email;
         vat = VAT;
         this.onBehalf = onBehalf;
+    }
+    
+    /**
+     * Empty constructor used by {@link ObjectMapper} to create
+     * JSON objects from this class.
+     */
+    private DataController() {
+        super();
     }
     
     /**

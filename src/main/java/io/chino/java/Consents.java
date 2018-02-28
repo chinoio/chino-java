@@ -126,7 +126,7 @@ public class Consents extends ChinoBaseAPI {
         checkNotNull(consentData, "consent data");
         JsonNode data = postResource("/consents", consentData);
         if (data != null)
-            return mapper.convertValue(data, Consent.class);
+            return mapper.convertValue(data.get("consent"), Consent.class);
         else
             return null;
     }
@@ -242,9 +242,9 @@ public class Consents extends ChinoBaseAPI {
     public Consent read(String consentId) throws IOException, ChinoApiException {
         checkNotNull(consentId, "consent_id");
         JsonNode data = getResource("/consents/" + consentId);
-        if (data != null) {
-            return mapper.convertValue(data, Consent.class);
-        } else {
+        if (data != null)
+            return mapper.convertValue(data.get("consent"), Consent.class);
+        else {
             return null;
         }
     }
@@ -270,7 +270,7 @@ public class Consents extends ChinoBaseAPI {
         checkNotNull(consentData, "consent data");
         JsonNode data = putResource("/consents/" + consentId, consentData);
         if (data != null)
-            return mapper.convertValue(data, Consent.class);
+            return mapper.convertValue(data.get("consent"), Consent.class);
         else
             return null;
     }
@@ -290,13 +290,14 @@ public class Consents extends ChinoBaseAPI {
         checkNotNull(consentId, "consent_id");
         JsonNode rawData = getResource("/consents/" + consentId + "/history");
         
-        if (rawData == null)
+        if (rawData != null) {
             return new ConsentHistory(
                 mapper.convertValue(rawData, ConsentListWrapper.class),
                 read(consentId)
             );
-        else
+        } else {
             return null;
+        }
     }
     
     /**
