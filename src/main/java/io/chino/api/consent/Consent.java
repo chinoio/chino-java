@@ -210,18 +210,9 @@ public class Consent {
         }
         purposesString += "\t]";
         
-        String dataControllerString = "";
-        try {
-            dataControllerString = ChinoBaseAPI.getMapper().writeValueAsString(dataController);
-        } catch (JsonProcessingException ex) {
-            System.err.println("Can not map data_controller to JSON.\n"
-                    + "Details: " + ex.getMessage());
-            dataControllerString = "{n.d.}";
-        }
-        
         String s = "\tuser_id: " + userId + ",\n"
             + "\tdescription: " + description + ",\n"
-            + "\tdata_controller: " + dataControllerString + ",\n"
+            + "\tdata_controller: " + dataController.toString(1) + ",\n"
             + "\tconsent_id: " + consentId + ",\n"
             + "\tpurposes: " + purposesString + ",\n"
             + "\tpolicy_url: " + policyUrl +  ",\n"

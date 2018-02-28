@@ -88,15 +88,17 @@ public class ConsentSamples {
         System.out.println("4. Expected: false. Actual: " + updated.getPurposes().contains(p1));
         System.out.println("5. Expected: false. Actual: " + updated.getPurposes().contains(p2));
         System.out.println("6. Expected: true. Actual: " + updated.getPurposes().contains(p3));
-        System.out.println();
+        System.out.println("Updated:");
+        System.out.println(updated);
 
         // history
         System.out.println("Now there are "
                 + chino_admin.consents.history(updated.getConsentId()).size()
-                + " elements in the consent history.");
+                + " elements in the consent history."
+                + "(Expected: 2)\n");
 
         // withdraw consent1
-        System.out.println("withdraw: " + chino_admin.consents.withdraw(created1.getConsentId()));
+        System.out.println("withdrawing first consent... " + chino_admin.consents.withdraw(created1.getConsentId()) + "\n");
 
 
         // delete
@@ -104,7 +106,6 @@ public class ConsentSamples {
         System.out.println("deleting second consent...  " + chino_admin.consents.delete(created2.getConsentId()));
         System.out.println();
         System.out.println("list:");
-        System.out.println(chino_admin.consents.list());
-                                
+        System.out.println(chino_admin.consents.list());  
     }
 }
