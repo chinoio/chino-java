@@ -77,9 +77,11 @@ public class ChinoAPIExamples {
                     + "Be sure to get them from Chino.io API console and to add the system environment variables 'customer_id' and 'customer_key' before running the examples.");
         }
         
-        // sample code; edit those two values at will.
-        Constants.USERNAME = "mrossi";
-        Constants.PASSWORD = "rossimario57";
+        // sample values; you can edit those two values at will (either here or in class 'Constants').
+        if (Constants.USERNAME == null)
+            Constants.USERNAME = "mrossi";
+        if (Constants.PASSWORD == null)
+            Constants.PASSWORD = "rossimario57";
             
 
         for(String example:operations) {
