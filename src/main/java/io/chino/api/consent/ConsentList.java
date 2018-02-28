@@ -25,6 +25,7 @@ package io.chino.api.consent;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A list of {@link Consent} objects returned by an API call.
@@ -80,6 +81,18 @@ public class ConsentList extends ArrayList<Consent> {
      */
     public int getOffset() {
         return offset;
+    }
+    
+    /**
+     * Get the objects in this ConsentList as a {@link List}.
+     * This method exists to adapt the interface of this class to the rest of this SDK.
+     * However it is possible (and best practice) to use
+     * {@link List} methods of the {@link ConsentList} class directly instead
+     * of using method getConsents.
+     * @return a new {@link List} containing all the objects of this {@link ConsentList}.
+     */
+    public List<Consent> getConsents() {
+        return new ArrayList<>(this);
     }
     
     /**
