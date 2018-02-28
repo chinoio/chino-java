@@ -1,6 +1,8 @@
 package io.chino.java;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.chino.api.application.Application;
+import io.chino.api.application.ClientType;
 import io.chino.api.auth.*;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.ErrorResponse;
@@ -17,12 +19,13 @@ public class Auth extends ChinoBaseAPI {
     }
 
     /**
-     * Login with password and username for users
-     * @param username the username of the user
-     * @param password the password of the user
-     * @param applicationId the id of the Application
-     * @param applicationSecret the Application secret (pass an empty string if you login from a "public application")
-     * @return LoggedUser Object
+     * Login with username/password to an {@link Application}.
+     * @param username the "username" of the user
+     * @param password the "password" of the user
+     * @param applicationId the "application_id"
+     * @param applicationSecret the application_secret - if authenticating from
+     * a {@link ClientType#PUBLIC "public"} application, pass an empty String: {@code ""}
+     * @return a {@link LoggedUser} object
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -59,6 +62,20 @@ public class Auth extends ChinoBaseAPI {
             body = response.body().string();
         }
         return auxFunction(response, body);
+    }
+    
+    /**
+     * Login with username/password to a {@link ClientType#PUBLIC "public"}
+     * Application. No need to know the {@link Application}'s "application_secret".
+     * @param username the "username" of the user
+     * @param password the "password" of the user
+     * @param applicationId the "application_id"
+     * @return a {@link LoggedUser} object
+     * @throws IOException
+     * @throws ChinoApiException 
+     */
+    public LoggedUser loginWithPassword (String username, String password, final String applicationId) throws IOException, ChinoApiException {
+        return loginWithPassword(username, password, applicationId, "");
     }
 
     /**

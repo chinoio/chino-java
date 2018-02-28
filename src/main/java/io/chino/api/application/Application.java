@@ -3,6 +3,9 @@ package io.chino.api.application;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.sun.javafx.UnmodifiableArrayList;
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -27,6 +30,7 @@ public class Application {
     private String appId;
     @JsonProperty("client_type")
     private String clientType;
+    
 
     public String getAppSecret() {
         return appSecret;

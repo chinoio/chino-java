@@ -58,16 +58,42 @@ public class Applications extends ChinoBaseAPI {
     }
 
     /**
-     * It creates the Application
+     * Create a new {@link ClientType#CONFIDENTIAL "confidential"} Application
      * @param name the name of the Application
-     * @param grantType "authorization-code" or "password", it indicates the method for the authentication
-     * @param redirectUrl used only with the "authorization-code" method
-     * @return Application Object
+     * @param grantType either "authorization-code" or "password",
+     * i.e. the authentication method.
+     * @param redirectUrl (used only with the "authorization-code" method)
+     * @return an {@link Application} object
      * @throws IOException
      * @throws ChinoApiException
      */
     public Application create(String name, String grantType, String redirectUrl) throws IOException, ChinoApiException {
         CreateApplicationRequest applicationRequest = new CreateApplicationRequest(name, grantType, redirectUrl);
+        JsonNode data = postResource("/auth/applications", applicationRequest);
+        if(data!=null)
+            return mapper.convertValue(data, GetApplicationResponse.class).getApplication();
+
+        return null;
+    }
+    
+    /**
+     * Create a new {@link Application}.
+     * @param name the name of the Application
+     * @param grantType either "authorization-code" or "password",
+     * i.e. the authentication method.
+     * @param redirectUrl (used only with the "authorization-code" method)
+     * @param clientType either {@link ClientType#CONFIDENTIAL} or {@link ClientType#PUBLIC}.
+     * See <a href="https://docs.chino.io/#header-client-types">Chino.io API Docs</a>
+     * to learn more about cliet types.
+     * @return an {@link Application} object
+     * @throws IOException
+     * @throws ChinoApiException 
+     */
+    public Application create(String name, String grantType, String redirectUrl, ClientType clientType) throws IOException, ChinoApiException {
+        if (clientType == ClientType.CONFIDENTIAL)
+            return create(name, grantType, redirectUrl);
+        
+        CreateApplicationRequest applicationRequest = new CreateApplicationRequest(name, grantType, redirectUrl, clientType);
         JsonNode data = postResource("/auth/applications", applicationRequest);
         if(data!=null)
             return mapper.convertValue(data, GetApplicationResponse.class).getApplication();
