@@ -32,11 +32,15 @@ import io.chino.api.consent.Purpose;
 import io.chino.examples.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Rule;
+import org.junit.rules.TestName;
 
 /**
  *
@@ -52,13 +56,19 @@ public class ConsentsTest {
     
     private static DataController dcSample;
     private static Purpose pSample1, pSample2, pSample3;
-    private static Consent consentSample1, consentSample2;
+    private static Consent consentSample1 = null,
+            consentSample2 = null;
+    
+    // control
+    private Exception testReadException = null;
+    private String testReadMessage = null;
+    private static String tearDownMessage = "all objects";
     
     public ConsentsTest() {
     }
-    
+   
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws IOException, ChinoApiException {
         Constants.init();
         chino_admin = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
         createdObjects = new ArrayList<>();
@@ -67,28 +77,31 @@ public class ConsentsTest {
         
         pSample1 = new Purpose(true, "promo", "Send ads to mail and address");
         pSample2  = new Purpose(false, "third-party", "Send data to third party services");
-        pSample3 = new Purpose(true, "internal", "Required data");
-        ArrayList<Purpose> purps = new ArrayList<>();
-        purps.add(pSample1);
-        purps.add(pSample2);
-        purps.add(pSample3);
+        pSample3 = new Purpose(true, "internal", "Internal usage");
+        ArrayList<Purpose> purposes = new ArrayList<>();
+        purposes.add(pSample1);
+        purposes.add(pSample2);
+        purposes.add(pSample3);
         
+        // creating consent for "mariorossi@mailmail.com"
         consentSample1 = new Consent(userId1, "Consent sample created for testing - class ConsentsTest",
-                "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purps);
-        createdObjects.add(consentSample1);
+                "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purposes);
+        createdObjects.addAll(chino_admin.consents.list(userId1, 0, 1));
+        System.out.println(consentSample1.getConsentId());
         
-        purps.remove(pSample1);
-        purps.remove(pSample2);
+        purposes.remove(pSample1);
+        purposes.remove(pSample2);
         
-        // creating another consent for user "rossimario@mail.ml", with different purposes
-        consentSample2 = new Consent(new Consent(consentSample1, null, purps), userId2);
-        createdObjects.add(consentSample2);
+        // creating consent for another user, "rossimario@mail.ml", with different purposes.
+        consentSample2 = new Consent(new Consent(consentSample1, null, purposes), userId2);
+        createdObjects.addAll(chino_admin.consents.list(userId2, 0, 1));
     }
     
     @AfterClass
     public static void tearDownClass() {
         for (Consent c:createdObjects) {
             try {
+                
                 chino_admin.consents.delete(c.getConsentId());
             } catch (ChinoApiException apiX) {
                 System.err.println("tearDownClass - server returned following error:");
@@ -109,17 +122,29 @@ public class ConsentsTest {
         System.out.println("list (3 args)");
         
         int newConsents = 4;
-        String userId = "userId3@mail.ml";
+        String userId = "userIdList3@mail.ml";
         for (int i = 0; i<newConsents; i++) {
-            createdObjects.add(
-                    chino_admin.consents.create(consentSample1, userId)
-            );
+            chino_admin.consents.create(consentSample1, userId);
         }
+        
+        createdObjects.addAll(
+            chino_admin.consents.list(userId, 0, newConsents)
+        );
+        
+        chino_admin.consents.create(consentSample1, "ignoredUserId@mail.ml");
+        chino_admin.consents.create(consentSample1, "anotherIgnoredUserId@mail.ml");
+        createdObjects.addAll(
+            chino_admin.consents.list("ignoredUserId@mail.ml", 0, 1)
+            );
+        createdObjects.addAll(
+            chino_admin.consents.list("anotherIgnoredUserId@mail.ml", 0, 1)
+            );
         
         int totalListElements = 0;
         int limit = 2;
-        for (int i=0; i < newConsents/limit; i++) {
+        for (int i=0; i < (newConsents + limit - 1)/limit; i++) {
             int offset = i;
+            // Call method to be tested
             ConsentList results = chino_admin.consents.list(userId, offset, limit);
             totalListElements += results.size();
         }
@@ -131,15 +156,30 @@ public class ConsentsTest {
      */
     @Test
     public void testList_int_int() throws Exception {
-        System.out.println("list");
-        int offset = 0;
-        int limit = 0;
-        Consents instance = null;
-        ConsentList expResult = null;
-        ConsentList result = instance.list(offset, limit);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("list (2 args)");
+        
+        int newConsents = 7;
+        String userId = "userIdList2@mail.ml";
+        for (int i = 0; i<newConsents; i++) {
+            chino_admin.consents.create(consentSample1, userId);
+        }
+        createdObjects.addAll(
+                chino_admin.consents.list(userId, 0, newConsents)
+        );
+        
+        int totalListElements = 0;
+        int limit = 2;
+        for (int i = 0; i < (newConsents + limit - 1)/limit; i++) {
+            int offset = i;
+            ConsentList results = chino_admin.consents.list(offset, limit);
+            totalListElements += results.size();
+            if (results.size() < limit) {
+                // last page of results was fetched
+                assertTrue(chino_admin.consents.list(++ offset, limit).isEmpty());
+                break;
+            }
+        }
+        assertEquals(totalListElements, newConsents);
     }
 
     /**
@@ -147,13 +187,20 @@ public class ConsentsTest {
      */
     @Test
     public void testList_0args() throws Exception {
-        System.out.println("list");
-        Consents instance = null;
-        ConsentList expResult = null;
-        ConsentList result = instance.list();
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("list (no args");
+        int newConsents = 5;
+        String userId = "userIdList0@mail.ml";
+        // cleanup all consents
+        for (int i = 0; i<newConsents; i++) {
+            chino_admin.consents.create(consentSample1, userId);
+        }
+        createdObjects.addAll(
+                chino_admin.consents.list(userId, 0, newConsents)
+        );
+        
+        // Tested method
+        ConsentList results = chino_admin.consents.list();
+        assertEquals(newConsents, results.size());
     }
 
     /**
@@ -162,13 +209,14 @@ public class ConsentsTest {
     @Test
     public void testCreate_Consent() throws Exception {
         System.out.println("create");
-        Consent consentData = null;
-        Consents instance = null;
-        Consent expResult = null;
-        Consent result = instance.create(consentData);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        String userId = "userIdCreate@mail.ml";
+        // Tested method
+        Consent local = chino_admin.consents.create(consentSample1);
+        assertNotNull(local.getUserId());
+        Consent fetched = chino_admin.consents.list(userId, 0, 1).get(0);
+        assertNotNull("Couldn't retrieve created object", fetched);
+        assertNotNull("Retrieved object has no consentId", fetched.getConsentId());
+        assertEquals(fetched.getUserId(), local.getUserId());
     }
 
     /**
@@ -176,20 +224,10 @@ public class ConsentsTest {
      */
     @Test
     public void testCreate_7args() throws Exception {
-        System.out.println("create");
-        String userId = "";
-        String description = "";
-        String policyUrl = "";
-        String policyVersion = "";
-        String collectionMode = "";
-        DataController dataController = null;
-        List<Purpose> purposes = null;
-        Consents instance = null;
-        Consent expResult = null;
-        Consent result = instance.create(userId, description, policyUrl, policyVersion, collectionMode, dataController, purposes);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("create (7 args)");
+        System.out.println("(Tested during setUpClass)");
+        
+        assertNotNull(consentSample1);
     }
 
     /**
@@ -197,16 +235,20 @@ public class ConsentsTest {
      */
     @Test
     public void testCreate_3args() throws Exception {
-        System.out.println("create");
-        Consent base = null;
-        DataController newDataController = null;
-        List<Purpose> newPurposes = null;
-        Consents instance = null;
-        Consent expResult = null;
-        Consent result = instance.create(base, newDataController, newPurposes);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("create (3 args)");
+        System.out.println("(Tested during setUpClass)");
+        
+        assertFalse(consentSample2.getPurposes().isEmpty());
+        assertNotNull(consentSample2.getDataController());
+        assertNotNull(consentSample2.getInsertedDate());
+        assertNotNull(consentSample2.getCollectionMode());
+        assertFalse(consentSample2.getCollectionMode().isEmpty());
+        assertNotNull(consentSample2.getDescription());
+        assertFalse(consentSample2.getDescription().isEmpty());
+        assertNotNull(consentSample2.getPolicyUrl());
+        assertFalse(consentSample2.getPolicyUrl().isEmpty());
+        assertNotNull(consentSample2.getPolicyVersion());
+        assertFalse(consentSample2.getPolicyVersion().isEmpty());
     }
 
     /**
@@ -214,15 +256,11 @@ public class ConsentsTest {
      */
     @Test
     public void testCreate_Consent_String() throws Exception {
-        System.out.println("create");
-        Consent base = null;
-        String userId = "";
-        Consents instance = null;
-        Consent expResult = null;
-        Consent result = instance.create(base, userId);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        System.out.println("create (2 args)");
+        System.out.println("(Tested during setUpClass and 'list' tests)");
+        
+        assertNotNull(consentSample2.getUserId());
+        assertFalse(consentSample2.getUserId().isEmpty());
     }
 
     /**
@@ -231,44 +269,80 @@ public class ConsentsTest {
     @Test
     public void testRead() throws Exception {
         System.out.println("read");
-        String consentId = "";
-        Consents instance = null;
-        Consent expResult = null;
-        Consent result = instance.read(consentId);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        Consent consent1 = chino_admin.consents.list(userId1, 0, 1).get(0);
+        Consent consent2 = chino_admin.consents.list(userId2, 0, 1).get(0);
+        
+        assertNotNull("failed to read consent 1", chino_admin.consents.read(consent1.getConsentId()));
+        assertNotNull("failed to read consent 2", chino_admin.consents.read(consent2.getConsentId()));
     }
 
     /**
-     * Test of update method, of class Consents.
+     * Test of update and history methods, of class Consents.
+     * Also, test of {@link ConsentHistory#getActiveConsent(java.util.Date) getActiveConsent},
+     * of class {@link ConsentHistory}.
      */
     @Test
-    public void testUpdate() throws Exception {
+    public void testUpdate_History() throws Exception {
         System.out.println("update");
-        String consentId = "";
-        Consent consentData = null;
-        Consents instance = null;
-        Consent expResult = null;
-        Consent result = instance.update(consentId, consentData);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
-     * Test of history method, of class Consents.
-     */
-    @Test
-    public void testHistory() throws Exception {
+        Consent consentOld = chino_admin.consents.list(userId1, 0, 1).get(0);
+        DataController updatedDataController = new DataController(dcSample.getCompany(), "new contact", "new address", "new_email@mail.ml", dcSample.getVAT(), true);
+        // update consent with a new DataController
+        Consent updated = new Consent(consentOld, dcSample, null);
+        // Test method (update)
+        chino_admin.consents.update(consentOld.getConsentId(), updated);
+        Consent consentUpdated = chino_admin.consents.list(userId1, 0, 1).get(0);
+        assertEquals(consentOld.getConsentId(), consentUpdated.getConsentId());
+        assertEquals(updatedDataController, updated.getDataController());
+        
         System.out.println("history");
-        String consentId = "";
-        Consents instance = null;
-        ConsentHistory expResult = null;
-        ConsentHistory result = instance.history(consentId);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        // Test method (history)
+        ConsentHistory history = chino_admin.consents.history(consentOld.getConsentId());
+        assertFalse(history.isEmpty());
+        assertNull("Incorrect active consent - 'withdrawn_date' is not null", history.getActiveConsent().getWithdrawnDate());
+        assertEquals(consentUpdated, history.getActiveConsent());
+        assertEquals(consentOld.getConsentId(), history.getConsentId());
+        
+        Consent consentOldInHistory = null;
+        for (Consent c:history) {
+            if (c.isWithdrawn()) {
+                consentOldInHistory = c;
+                break;
+            }
+        }
+        assertNotNull(
+            "Could not find a withdrawn Consent in history"
+                    + String.format("\n(consent_id: %s", history.getConsentId()),
+            consentOldInHistory
+        );
+        assertEquals(consentOldInHistory, consentOld);
+        
+        
+        assertEquals(history.getActiveConsent(consentOld.getInsertedDate()), consentOld);
+        assertEquals(history.getActiveConsent(consentUpdated.getInsertedDate()), consentUpdated);
+        // get the Consent that was active right before consentUpdated (i.e. consentOld)
+        assertEquals(history.getActiveConsent(new Date(consentUpdated.getInsertedDate().getTime() - 10000)), consentOld);
+        // get the Consent that was active right before consentOld (i.e. null)
+        assertNull(history.getActiveConsent(new Date(0)));
+        // get the Consent that is active now (i.e. consentUpdated)
+        assertEquals(history.getActiveConsent(new Date()), consentUpdated);
+    }
+    
+    /**
+     * Test of the Exception that should be thrown by
+     * {@link ConsentHistory#getActiveConsent(java.util.Date) getActiveConsent}
+     * in class {@link ConsentHistory}.
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void testHistory_getActiveConsent_Exception() throws IOException, ChinoApiException {
+        String userId = "userIdhistory_findVersion_Exception@mail.ml";
+        chino_admin.consents.create(new Consent(consentSample1, userId));
+        Consent created = chino_admin.consents.list(userId, 0, 100).get(0);
+        createdObjects.add(created);
+        
+        ConsentHistory history = chino_admin.consents.history(created.getConsentId());
+        // this call should throw an Exception
+        history.getActiveConsent(new Date((long)1.5 * System.currentTimeMillis()));
     }
 
     /**
