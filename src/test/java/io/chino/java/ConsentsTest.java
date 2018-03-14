@@ -32,15 +32,11 @@ import io.chino.api.consent.Purpose;
 import io.chino.examples.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import org.junit.Rule;
-import org.junit.rules.TestName;
 
 /**
  *
@@ -347,17 +343,27 @@ public class ConsentsTest {
 
     /**
      * Test of withdraw method, of class Consents.
+     * Also, test of {@link ConsentHistory#getActiveConsent(java.util.Date) getActiveConsent},
+     * of class {@link ConsentHistory}.
      */
     @Test
     public void testWithdraw() throws Exception {
         System.out.println("withdraw");
-        String consentId = "";
-        Consents instance = null;
-        String expResult = "";
-        String result = instance.withdraw(consentId);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        String userId = "userIdWithdraw@mail.ml";
+        chino_admin.consents.create(consentSample1, userId);
+        Consent c = chino_admin.consents.list(userId, 0, 1).get(0);
+        createdObjects.add(c);
+        
+        // Test method
+        chino_admin.consents.withdraw(c.getConsentId());
+        assertTrue(chino_admin.consents.list(userId, 0, 1).get(0).isWithdrawn());
+        
+        // Check that c is still returned by history() but that it's not recognized as 'active'
+        ConsentHistory h = chino_admin.consents.history(c.getConsentId());
+        assertFalse(h.isEmpty());
+        assertNull(h.getActiveConsent());
+        assertNull(h.getActiveConsent(new Date()));
     }
 
     /**
@@ -366,13 +372,17 @@ public class ConsentsTest {
     @Test
     public void testDelete() throws Exception {
         System.out.println("delete");
-        String consentId = "";
-        Consents instance = null;
-        String expResult = "";
-        String result = instance.delete(consentId);
-        assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
+        
+        String userId = "userIdDelete@mail.ml";
+        chino_admin.consents.create(consentSample1, userId);
+        Consent c = chino_admin.consents.list(userId, 0, 1).get(0);
+        createdObjects.add(c);
+        
+        // Test method
+        chino_admin.consents.delete(c.getConsentId());
+        assertNull(chino_admin.consents.read(c.getConsentId()));
+        assertNull(chino_admin.consents.history(c.getConsentId()));
+        assertTrue(chino_admin.consents.list(userId, 0, 100).isEmpty());
     }
     
 }
