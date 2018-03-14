@@ -66,7 +66,7 @@ public class Consents extends ChinoBaseAPI {
     public ConsentList list(String userId, int offset, int limit) throws IOException, ChinoApiException {
         HashMap<String, String> params = new HashMap<>();
         
-        String userIdValue = (userId == null || userId.equals("") || userId.endsWith("user_id=")) ? "" : userId;
+        String userIdValue = (userId == null) ? "" : userId;
         
         String offsetValue = (offset < 0) ? "0" : "" + offset,
                 limitValue = (limit < 0) ? "0" : "" + limit;
