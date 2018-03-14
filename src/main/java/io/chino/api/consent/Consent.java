@@ -198,8 +198,8 @@ public class Consent {
      * @return true if the value of {@link #withdrawnDate withdrawn_date}
      * has not been set; false otherwise.
      */
-    public boolean isActive() {
-        return (withdrawnDate == null);
+    public boolean isWithdrawn() {
+        return (withdrawnDate != null);
     }
 
     @Override
@@ -292,7 +292,7 @@ public class Consent {
 
     /**
      * Get the date of withdrawal of this Consent
-     * @return {@code null} if this Consent is {@link #isActive() active},
+     * @return {@code null} if this Consent is {@link #isWithdrawn() active},
      * otherwise the {@link Date} of the withdrawal
      * of this Consent.
      */
