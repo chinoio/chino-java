@@ -102,8 +102,10 @@ public class Consents extends ChinoBaseAPI {
 
     /**
      * List all the available {@link Consent consents}. Results are paginated
-     * and this method only fetches the first page.
-     * Use {@link #list(int, int) list(offset, limit)} to navigate.
+     * and this method only fetches the first page, with a
+     * {@link ChinoApiConstants#QUERY_DEFAULT_LIMIT default limit} 100.
+     * Use {@link #list(int, int) list(offset, limit)} to navigate
+     * or to fetch less results.
      * @return a {@link ConsentList} of objects that match
      * the specified {@code userId}
      * @throws java.io.IOException request could not be executed
