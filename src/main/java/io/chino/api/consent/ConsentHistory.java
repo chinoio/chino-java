@@ -90,7 +90,7 @@ public class ConsentHistory extends ConsentList {
             }
         }
         
-        if (!previousInsertedConsent.getWithdrawnDate().after(insertedDate))
+        if (previousInsertedConsent == null || !previousInsertedConsent.getWithdrawnDate().after(insertedDate))
             return null;
         
         return previousInsertedConsent;
