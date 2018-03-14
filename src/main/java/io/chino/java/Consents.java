@@ -233,7 +233,7 @@ public class Consents extends ChinoBaseAPI {
     /**
      * Fetch the consent with the specified {@code consent_id}.
      * If there is a history for this {@link Consent} object, only the active
-     * consent is fetched (see {@link Consent#isActive()})
+     * consent is fetched (see {@link Consent#isWithdrawn()})
      * @param consentId the {@link Consent#consentId consent_id} of the Consent to read
      * @return the {@link Consent} whose id matches {@code consent_id}, if exists, otherwise {@code null}.
      * @throws java.io.IOException request could not be executed
@@ -293,10 +293,8 @@ public class Consents extends ChinoBaseAPI {
         JsonNode rawData = getResource("/consents/" + consentId + "/history");
         
         if (rawData != null) {
-            return new ConsentHistory(
-                mapper.convertValue(rawData, ConsentListWrapper.class),
-                read(consentId)
-            );
+            ConsentListWrapper wrapper = mapper.convertValue(rawData, ConsentListWrapper.class);            
+            return new ConsentHistory(wrapper);
         } else {
             return null;
         }
