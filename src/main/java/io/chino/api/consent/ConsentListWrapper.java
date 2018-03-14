@@ -26,8 +26,6 @@ package io.chino.api.consent;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.databind.JsonNode;
-import io.chino.java.ChinoBaseAPI;
 import java.util.ArrayList;
 import java.util.List;
 
