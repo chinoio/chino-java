@@ -33,6 +33,7 @@ import io.chino.api.consent.ConsentListWrapper;
 import io.chino.api.consent.Purpose;
 import io.chino.api.consent.DataController;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import okhttp3.OkHttpClient;
 
@@ -63,18 +64,18 @@ public class Consents extends ChinoBaseAPI {
      * server responded with error code.
      */
     public ConsentList list(String userId, int offset, int limit) throws IOException, ChinoApiException {
-        String uidParameter;
-        if (userId == null || userId.equals("") || userId.endsWith("user_id=")) {
-            // no user_id specified
-            uidParameter = "";
-        } else {
-             uidParameter = "?user_id=" + userId;
-        }
+        HashMap<String, String> params = new HashMap<>();
         
-        int offsetValue = (offset < 0) ? 0 : offset,
-                limitValue = (limit < 0) ? 0 : limit;
+        String userIdValue = (userId == null || userId.equals("") || userId.endsWith("user_id=")) ? "" : userId;
         
-        JsonNode data = getResource("/consents" + uidParameter, offsetValue, limitValue);
+        String offsetValue = (offset < 0) ? "0" : "" + offset,
+                limitValue = (limit < 0) ? "0" : "" + limit;
+        
+        params.put("userId", userIdValue);
+        params.put("offset", offsetValue);
+        params.put("limit", limitValue);
+        
+        JsonNode data = getResource("/consents", params);
         
         if (data != null) {
             ConsentListWrapper wrapper = mapper.convertValue(data, ConsentListWrapper.class);
