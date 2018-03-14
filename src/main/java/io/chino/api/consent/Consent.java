@@ -323,9 +323,32 @@ public class Consent {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof Consent) {
+        if (obj != null && obj instanceof Consent) {
             Consent c = (Consent) obj;
-            return (c.consentId.equals(this.consentId) && c.insertedDate.equals(this.insertedDate));
+            if (this.consentId != null && c.consentId != null)
+                return (c.consentId.equals(this.consentId) && c.insertedDate.equals(this.insertedDate));
+            else {
+                boolean matchingPurposes = true;
+                for (Purpose p:this.purposes) {
+                    if (! c.purposes.contains(p))
+                        matchingPurposes = false;
+                }
+                for (Purpose p:c.purposes) {
+                    if (! this.purposes.contains(p))
+                        matchingPurposes = false;
+                }
+                return (
+                        matchingPurposes &&
+                        c.userId.equals(this.userId) &&
+                        c.collectionMode.equals(this.collectionMode) &&
+                        c.dataController.equals(this.dataController) &&
+                        c.description.equals(this.description) &&
+                        c.insertedDate.equals(this.insertedDate) &&
+                        c.policyUrl.equals(this.policyUrl) &&
+                        c.policyVersion.equals(this.policyVersion) &&
+                        c.withdrawnDate.equals(this.withdrawnDate)
+                );
+            }
         } else {
             return false;
         }
