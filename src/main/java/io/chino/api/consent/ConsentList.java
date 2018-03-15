@@ -107,4 +107,13 @@ public class ConsentList extends ArrayList<Consent> {
         limit = wrapper.limit;
         total = wrapper.totalCount;
     }
+
+    @Override
+    public String toString() {
+        String navigation = String.format("paging: {count: %s - offset: %s - limit: %s - total: %s}", count, offset, limit, total);
+        String indentedContent = super.toString();
+        indentedContent.replaceAll("\n", "\n\t");
+        return "{\n" + "consents: " + indentedContent + ",\n" + navigation + "\n}"; //To change body of generated methods, choose Tools | Templates.
+    }
+    
 }
