@@ -13,9 +13,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class ChinoBaseAPI {
 
@@ -115,27 +113,28 @@ public class ChinoBaseAPI {
      * The default function to make a GET call to the server saved in hostUrl.
      * This call allows to pass any value as a URL parameter with the call.
      * @param path the path of the URL
-     * @param parameters a <code>&lt</code><code>key, value</code><code>&gt</code>
+     * @param urlParameters a <code>&lt</code><code>key, value</code><code>&gt</code>
      * {@link HashMap} containing the URL parameters.
      * @return JsonNode Object with the response of the server if there are no errors
      * @throws IOException
      * @throws ChinoApiException
      */
-    public JsonNode getResource(String path, HashMap<String, String> parameters) throws IOException, ChinoApiException {
+    public JsonNode getResource(String path, HashMap<String, String> urlParameters) throws IOException, ChinoApiException {
         // parse parameters
-        String urlParameters = "";
-        if (!parameters.isEmpty()) {
-            int concatCounter = parameters.keySet().size() - 1;
-            for (String paramName:parameters.keySet()) {
-                String param = parameters.get(paramName);
-                urlParameters += paramName + "=" + param;
-                urlParameters += (concatCounter > 0) ? "&" : "";
+        String paramString = "";
+        if (!urlParameters.isEmpty()) {
+            paramString = "?";
+            int concatCounter = urlParameters.keySet().size() - 1;
+            for (String paramName:urlParameters.keySet()) {
+                String param = urlParameters.get(paramName);
+                paramString += paramName + "=" + param;
+                paramString += (concatCounter > 0) ? "&" : "";
                 concatCounter --;
             }
         }
         // send GET request
         Request request = new Request.Builder()
-                .url(hostUrl + path + urlParameters)
+                .url(hostUrl + path + paramString)
                 .get()
                 .build();
         Response response = client.newCall(request).execute();
