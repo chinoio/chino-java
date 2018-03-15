@@ -65,34 +65,39 @@ public class ConsentHistory extends ConsentList {
     
     /**
      * Get the Consent version that was active at the specified Date.
-     * @param insertedDate a {@link Date} object.
+     * @param date a {@link Date} object.
      * @return the {@link Consent} which was active at that date. Returns
      * {@code null} in two cases:<br>
      * 1) if {@code insertedDate} preceeds every Consent in this history<br>
      * 2) if the first Consent before {@code insertedDate} was withdrawn before that date
      * @throws IllegalArgumentException insertedDate is a Date in the future
      */
-    public Consent getActiveConsent(Date insertedDate) throws IllegalArgumentException {
+    public Consent getActiveConsentOnDate(Date date) throws IllegalArgumentException {
         Date now = new Date();
-        if (insertedDate.after(now)) {
+        if (date.after(now)) {
             throw new IllegalArgumentException("'insertedDate' cannot be a date in the future.\n"
-                    + "Illegal value:" + insertedDate);
+                    + "Illegal value:" + date);
         }
         
         Date nearestDate = null;
-        Consent previousInsertedConsent = null;
+        Consent previousConsent = null;
         for (Consent c:this) {
-            if (!c.getInsertedDate().before(insertedDate)) {
-                if (nearestDate == null || c.getInsertedDate().before(nearestDate)) {
+            if (! c.getInsertedDate().after(date)) { // the consent needs to have been inserted before the date passed as a parameter
+                if (nearestDate == null || c.getInsertedDate().after(nearestDate)) {
                     nearestDate = c.getInsertedDate();
-                    previousInsertedConsent = c;
+                    previousConsent = c;
                 }
             }
         }
         
-        if (previousInsertedConsent == null || !previousInsertedConsent.getWithdrawnDate().after(insertedDate))
+        if (previousConsent == null)
             return null;
         
-        return previousInsertedConsent;
-    }
+        if (previousConsent.getWithdrawnDate() != null && !previousConsent.getWithdrawnDate().after(date))
+            // the previous consent must still be active on the date passed as a parameter
+            return null;
+        
+        return previousConsent;
+    }    
+    
 }
