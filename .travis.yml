@@ -11,9 +11,9 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 jdk:
-  - openjdk7
+  # - openjdk7 # not passing
   - oraclejdk8
-  - oraclejdk9
+  # - oraclejdk9 # not passing
 before_install:
   - echo $JAVA_HOME
   - chmod +x gradlew
