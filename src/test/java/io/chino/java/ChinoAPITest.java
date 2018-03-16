@@ -121,7 +121,7 @@ public class ChinoAPITest {
         } catch (Exception ex) {
             tearDownClass();
             fail("failed to delete objects for ChinoAPITest. Please do it by hand.\n"
-                    + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+                    + ex.getClass().getSimpleName() + ": " + ex.getLocalizedMessage());
         }
         
         try {
