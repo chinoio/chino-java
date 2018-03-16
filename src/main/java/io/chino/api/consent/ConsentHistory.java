@@ -70,7 +70,7 @@ public class ConsentHistory extends ConsentList {
      * {@code null} in two cases:<br>
      * 1) if {@code insertedDate} preceeds every Consent in this history<br>
      * 2) if the first Consent before {@code insertedDate} was withdrawn before that date
-     * @throws IllegalArgumentException insertedDate is a Date in the future
+     * @throws IllegalArgumentException {@code insertedDate} is a {@link Date} in the future
      */
     public Consent getActiveConsentOnDate(Date date) throws IllegalArgumentException {
         Date now = new Date();
