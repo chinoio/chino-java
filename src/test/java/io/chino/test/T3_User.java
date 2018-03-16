@@ -15,13 +15,13 @@ public class T3_User{
 
 	static ChinoAPI chino;
 	
-	@Before
+	// @Before
 	public void init(){
 		chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 	}
 
 	
-    @Test
+    // @Test
     public void testUsers() throws IOException, ChinoApiException{
 		UserSamples userSamples = new UserSamples();
 		userSamples.testUsers();

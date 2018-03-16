@@ -13,12 +13,12 @@ public class T4_Groups {
 
     ChinoAPI chino;
 
-    @Before
+    // @Before
     public void init() throws IOException, ChinoApiException {
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
     }
 
-    @Test
+    // @Test
     public void testPermissions() throws IOException, ChinoApiException {
         GroupSamples groupSamples = new GroupSamples();
         groupSamples.testGroups();

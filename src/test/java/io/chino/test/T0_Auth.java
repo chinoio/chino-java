@@ -12,12 +12,12 @@ public class T0_Auth {
 
     ChinoAPI chino;
 
-    @Before
+//    @Before
     public void init() throws IOException, ChinoApiException {
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
     }
 
-    @Test
+//    @Test
     public void testAuthAndroid() throws IOException, ChinoApiException {
         AuthSamples authSamples = new AuthSamples();
         authSamples.testAuth();

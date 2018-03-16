@@ -18,12 +18,12 @@ public class T9_BLOBs{
     static ChinoAPI chino;
 
 	
-	@Before
+	// @Before
 	public void init(){
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 	}
 	
-    @Test 
+    // @Test 
     public void testDocs() throws IOException, ChinoApiException{
         BlobSamples blobSamples = new BlobSamples();
         blobSamples.testBlobs();

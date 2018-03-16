@@ -13,13 +13,13 @@ public class T7_Schemas {
 
     ChinoAPI chino;
 
-    @Before
+    // @Before
     public void init(){
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
     }
 
 
-    @Test
+    // @Test
     public void testSchemas() throws IOException, ChinoApiException {
         SchemaSamples schemaSamples = new SchemaSamples();
         schemaSamples.testSchemas();

@@ -12,12 +12,12 @@ import java.io.IOException;
 public class T12_Applications {
     ChinoAPI chino;
 
-    @Before
+//    @Before
     public void init() throws IOException, ChinoApiException {
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
     }
 
-    @Test
+//    @Test
     public void testPermissions() throws IOException, ChinoApiException {
         ApplicationSamples applicationSamples = new ApplicationSamples();
         applicationSamples.testApplications();

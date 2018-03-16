@@ -17,13 +17,13 @@ public class T2_UserSchemas{
 
 	static ChinoAPI chino;
 	
-	@Before
+//	@Before
 	public void init(){
 	    chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 	}
 	
 	
-    @Test
+//    @Test
     public void testSchemas() throws IOException, ChinoApiException{
 		UserSchemaSamples userSchemaSamples = new UserSchemaSamples();
 		userSchemaSamples.testUserSchemas();

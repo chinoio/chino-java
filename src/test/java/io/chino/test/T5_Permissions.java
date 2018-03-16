@@ -16,13 +16,13 @@ public class T5_Permissions{
 
 	static ChinoAPI chino;
 
-	@Before
+	// @Before
 	public void init() throws IOException, ChinoApiException{
 	    chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
 	}
 	
 
-	@Test
+	// @Test
     public void testPermissions() throws IOException, ChinoApiException{
 		PermissionSamples permissionSamples = new PermissionSamples();
 		permissionSamples.testPermissions();

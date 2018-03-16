@@ -33,12 +33,12 @@ public class T10_Search {
     String REPOSITORY_ID = "";
     String SCHEMA_ID = "";
 
-    @Before
+//    @Before
     public void init(){
         chino = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
     }
 
-    @Test
+//    @Test
     public void testDocs() throws IOException, ChinoApiException,InterruptedException {
 //        SearchSamples searchSamples = new SearchSamples();
 //        searchSamples.testSearch();
