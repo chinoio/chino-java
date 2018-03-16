@@ -47,7 +47,7 @@ import java.util.concurrent.TimeUnit;
  *
  * // @author Andrea Arighi [andrea@chino.org]
  */
-public class ConsentsTest {
+public class ConsentsTestLauncher {
     
     private static ChinoAPI chino_admin;
     private static ArrayList<Consent> createdObjects;
@@ -77,12 +77,12 @@ public class ConsentsTest {
     private static String tearDownMessage = "all objects";
     
     
-    public ConsentsTest() {
+    public ConsentsTestLauncher() {
     }
     
     public static void main(String[]s) throws IOException, ChinoApiException, Exception {
         setUpClass();
-        ConsentsTest test = new ConsentsTest();
+        ConsentsTestLauncher test = new ConsentsTestLauncher();
         
         test.testUpdate_History();
         test.tearDown();
