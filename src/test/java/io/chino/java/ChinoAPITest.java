@@ -23,16 +23,17 @@
  */
 package io.chino.java;
 
+import io.chino.api.application.Application;
 import io.chino.api.auth.LoggedUser;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.permission.PermissionRule;
 import io.chino.api.repository.Repository;
 import io.chino.api.user.User;
-import io.chino.api.userschema.GetUserSchemasResponse;
 import io.chino.api.userschema.UserSchema;
 import io.chino.examples.userschemas.UserSchemaStructureSample;
 import io.chino.examples.Constants;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.junit.AfterClass;
 import org.junit.Test;
@@ -41,9 +42,10 @@ import org.junit.BeforeClass;
 
 /**
  * Test for class {@link ChinoAPI io.chino.java.ChinoAPI}:
- * you need to create two Chino.io applications (one that authenticates via
- * 'password' and the other via 'authentication_code', then paste the
- * applicationId and applicationSecret in method {@link #setCodes() setCodes()}.
+ * you need to create a Chino.io Application that authenticates via
+ * 'password', then you need to paste the {@code applicationId} and
+ * {@code applicationSecret} in environment variables
+ * "app_id" and "app_secret"
  * @author Andrea
  */
 public class ChinoAPITest {
@@ -54,69 +56,57 @@ public class ChinoAPITest {
     
     private static String USER_ID;
     private static String USER_SCHEMA_ID;
-    private static String PWORD_APP_ID = null;
-    private static String PWORD_APP_SECRET = null;
-    private static String AUTHCODE_APP_ID = null;
-    private static String AUTHCODE_APP_SECRET = null;
+    private final static String APP_NAME = "ChinoAPITest test app";
+    private static String APP_ID = null;
+    private static String APP_SECRET = null;
     
     /**
      * The customer console
      */
-    private static ChinoAPI customerApiClient;
+    private static ChinoAPI chino_customer;
     
     /**
      * This method will contain the codes that are needed in order to successfully
      * complete the tests. See {@link ChinoAPITest class javadoc} for more instructions.
      */
-    private static void setCodes() {
-
-        // You will need to create an application to run tests, which must have
-        // a 'password' grant type. After creating it, paste here the
-        // id and secret of the application you will use to run tests.
-        // You can find them in Chino.io API console (https://console.test.chino.io)
-        PWORD_APP_ID = // app ID
-                ""
-        ;
-        PWORD_APP_SECRET = // app secret
-                ""
-        ;
+    private static void setUpApplication() throws IOException, ChinoApiException {
         
-        // You will also need a second application which uses 'authentication code'
-        // as grant type. The redirect URL can be any valid URL.
-        // After creating it manually, paste here the app id and app secret.
-        AUTHCODE_APP_ID = // app id
-                ""
-        ;
-        AUTHCODE_APP_SECRET = // app secret
-                ""
-        ;
+        if (APP_ID != null && APP_SECRET != null) {
+            return;
+        }
         
-        if (PWORD_APP_ID == null | PWORD_APP_ID.isEmpty() || PWORD_APP_SECRET == null || PWORD_APP_SECRET.isEmpty()) {
-            fail("Please setup password application: applicationId or applicationSecret missing. Check javadoc for class ChinoAPITest.");
-        }
-        if (AUTHCODE_APP_ID == null | AUTHCODE_APP_ID.isEmpty() || AUTHCODE_APP_SECRET == null || AUTHCODE_APP_SECRET.isEmpty()) {
-            fail("Please setup auth code application: applicationId or applicationSecret missing. Check javadoc for class ChinoAPITest.");
-        }
+        ArrayList<Application> apps = (ArrayList<Application>) chino_customer.applications.list().getApplications();
+        
+        for (Application app:apps) 
+            if (app.getAppName().equals(APP_NAME)){
+                chino_customer.applications.delete(app.getAppId(), true);
+            }
+        
+        Application app = chino_customer.applications.create(APP_NAME, "password", URL);
+        APP_ID = app.getAppId();
+        APP_SECRET = app.getAppSecret();
     }
     
     @BeforeClass
-    public static void setUpClass() {
+    public static void setUpClass() throws IOException, ChinoApiException {
         // init customer data
         Constants.init(USERNAME, PASSWORD);
         
-        // init data of test applications
-        setCodes();
+        chino_customer = new ChinoAPI(URL, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
         
-        customerApiClient = new ChinoAPI(URL, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
+        // init data of test application
+        setUpApplication();
         
         UserSchema userSchema = null;
         
         try {
-            GetUserSchemasResponse ls = customerApiClient.userSchemas.list();
-            while (! ls.getCount().equals(0)){
-                String usid = ls.getUserSchemas().get(0).getUserSchemaId();
-                customerApiClient.userSchemas.delete(usid, true);
-                ls = customerApiClient.userSchemas.list();
+            ArrayList<UserSchema> ls = (ArrayList<UserSchema>) chino_customer.userSchemas.list().getUserSchemas();
+            for (UserSchema us:ls) {
+                ArrayList<User> users = (ArrayList<User>) chino_customer.users.list(us.getUserSchemaId()).getUsers();
+                for (User user:users){
+                    chino_customer.users.delete(user.getUserId(), true);
+                }
+                chino_customer.userSchemas.delete(us.getUserSchemaId(), true);
             }
         } catch (Exception ex) {
             tearDownClass();
@@ -126,7 +116,7 @@ public class ChinoAPITest {
         
         try {
             // create a new user
-            userSchema = customerApiClient.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
+            userSchema = chino_customer.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
             USER_SCHEMA_ID = userSchema.getUserSchemaId();
             HashMap<String, Object> attributes = new HashMap<String, Object>();
             attributes.put("test_string", "test_string_value");
@@ -134,23 +124,22 @@ public class ChinoAPITest {
             attributes.put("test_integer", 123);
             attributes.put("test_date", "1993-09-08");
             attributes.put("test_float", 12.4);
-            User user = customerApiClient.users.create(Constants.USERNAME, Constants.PASSWORD, attributes, USER_SCHEMA_ID);
+            User user = chino_customer.users.create(Constants.USERNAME, Constants.PASSWORD, attributes, USER_SCHEMA_ID);
             USER_ID = user.getUserId();
         } catch (Exception ex) {
             fail("failed to set up test for ChinoAPITest.\n"
-                    + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+                    + ex.getClass().getSimpleName() + ": " + ex.getLocalizedMessage());
         }
     }
     
     @AfterClass
     public static void tearDownClass() {
         try {
-            if (!customerApiClient.userSchemas.list().getCount().equals(0))
-                customerApiClient.userSchemas.delete(USER_SCHEMA_ID, true);
-            customerApiClient = null;
+            if (!chino_customer.userSchemas.list().getCount().equals(0))
+                chino_customer.userSchemas.delete(USER_SCHEMA_ID, true);
         } catch (Exception ex) {
             fail("failed to delete objects for ChinoAPITest. Please do it by hand.\n"
-                    + ex.getClass().getName() + ": " + ex.getLocalizedMessage());
+                    + ex.getClass().getSimpleName() + ": " + ex.getLocalizedMessage());
         }
     }
 
@@ -170,7 +159,7 @@ public class ChinoAPITest {
         LoggedUser user = null;
         try {
             step = "authenticate user with username '" + Constants.USERNAME + "' and password '" + Constants.PASSWORD + "'";
-            user = chino_user.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, PWORD_APP_ID, PWORD_APP_SECRET);
+            user = chino_user.auth.loginWithPassword(Constants.USERNAME, Constants.PASSWORD, APP_ID, APP_SECRET);
             accessToken = user.getAccessToken();
             System.out.println("1st access token: " + accessToken);
             refreshToken = user.getRefreshToken();
@@ -189,7 +178,7 @@ public class ChinoAPITest {
             step = "grant perms on repositories";
             PermissionRule repo_grant = new PermissionRule();
             repo_grant.setManage("C", "R", "U", "D", "L");
-            customerApiClient.permissions.permissionsOnResources("grant", "repositories", "users", USER_ID, repo_grant);
+            chino_customer.permissions.permissionsOnResources("grant", "repositories", "users", USER_ID, repo_grant);
             
             // use the access token to create a new repo
             step = "create repository";
@@ -198,7 +187,7 @@ public class ChinoAPITest {
 
             // refresh token - access token is automatically updated in apiClient
             step = "refresh token";
-            user = apiClient.auth.refreshToken(refreshToken, PWORD_APP_ID, PWORD_APP_SECRET);
+            user = apiClient.auth.refreshToken(refreshToken, APP_ID, APP_SECRET);
             accessToken = user.getAccessToken();
             System.out.println("2nd access token: " + accessToken);
             refreshToken = user.getRefreshToken();
@@ -220,7 +209,7 @@ public class ChinoAPITest {
             
             // log out from the api client
             step = "logout";
-            apiClient.auth.logout(accessToken, PWORD_APP_ID, PWORD_APP_SECRET);
+            apiClient.auth.logout(accessToken, APP_ID, APP_SECRET);
         } catch (ChinoApiException ex) {
             fail("Thrown ChinoApiException. Failed to " + step + ". \n" + ex.getMessage());
         } catch (IOException ex) {
