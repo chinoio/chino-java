@@ -155,6 +155,7 @@ public class UserSchema {
 		this.groups = groups;
 	}
 
+    @Override
 	public String toString(){
     	String s="\n";
 		s+="description: "+description;

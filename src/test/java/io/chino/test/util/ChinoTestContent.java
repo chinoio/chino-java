@@ -19,7 +19,7 @@ import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 
 public class ChinoTestContent {
-	private static final Integer UUIDLen=36;
+	private static final Integer UUID_LEN=36;
 	
 	public static boolean validLoggedUser(LoggedUser loggedUser) {
 		if(loggedUser==null)
@@ -134,7 +134,7 @@ public class ChinoTestContent {
 			return false;
 		if(schema.getStructure().getFields()==null)
 			return false;
-		if(schema.getStructure().getFields().size()==0)
+		if(schema.getStructure().getFields().isEmpty())
 			return false;
 		
 		return true;
@@ -151,7 +151,7 @@ public class ChinoTestContent {
 			return false;
 		if(userSchema.getStructure().getFields()==null)
 			return false;
-		if(userSchema.getStructure().getFields().size()==0)
+		if(userSchema.getStructure().getFields().isEmpty())
 			return false;
 		
 		return true;
@@ -188,7 +188,7 @@ public class ChinoTestContent {
 	public static boolean validUUID(String string){
 		if(string==null)
 			return false;
-		if(string.length()!=UUIDLen)
+		if(string.length()!=UUID_LEN)
 			return false;
 		
 		return true;
@@ -222,7 +222,7 @@ public class ChinoTestContent {
 		
 		boolean valid = false;
 		try {
-			final JsonParser parser = new ObjectMapper().getJsonFactory().createJsonParser(jsonString);
+			final JsonParser parser = new ObjectMapper().getFactory().createParser(jsonString);
 			while (parser.nextToken() != null) {
 			}
 			valid = true;

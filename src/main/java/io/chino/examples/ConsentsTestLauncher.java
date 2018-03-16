@@ -31,7 +31,6 @@ import io.chino.api.consent.ConsentHistory;
 import io.chino.api.consent.ConsentList;
 import io.chino.api.consent.DataController;
 import io.chino.api.consent.Purpose;
-import io.chino.examples.Constants;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;

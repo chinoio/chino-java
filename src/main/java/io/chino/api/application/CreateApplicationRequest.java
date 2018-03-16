@@ -81,7 +81,7 @@ public class CreateApplicationRequest {
      *            The name
      */
     @JsonProperty("name")
-    public void setName(String name) {
+    public final void setName(String name) {
         if(name==null){
             throw new NullPointerException("name");
         }
@@ -103,7 +103,7 @@ public class CreateApplicationRequest {
      *            The grantType
      */
     @JsonProperty("grant_type")
-    public void setGrantType(String grantType) {
+    public final void setGrantType(String grantType) {
         if(grantType==null){
             throw new NullPointerException("grant_type");
         } else if (!grantType.equals("password") && !grantType.equalsIgnoreCase("authentication_code")) {
@@ -128,7 +128,7 @@ public class CreateApplicationRequest {
      *            The redirectUrl
      */
     @JsonProperty("redirect_url")
-    public void setRedirectUrl(String redirectUrl) {
+    public final void setRedirectUrl(String redirectUrl) {
         if(redirectUrl==null){
             throw new NullPointerException("redirect_url");
         }

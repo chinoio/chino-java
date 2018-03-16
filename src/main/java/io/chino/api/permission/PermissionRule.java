@@ -45,6 +45,7 @@ public class PermissionRule {
         Collections.addAll(authorize, strings);
     }
 
+    @Override
     public String toString(){
         String s="{";
         if(manage!=null)

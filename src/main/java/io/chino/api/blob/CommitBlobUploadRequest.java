@@ -27,7 +27,7 @@ public class CommitBlobUploadRequest {
 		return uploadId;
 	}
 
-	public void setUploadId(String uploadId) {
+	public final void setUploadId(String uploadId) {
 		if(uploadId == null){
 			throw new NullPointerException("upload_id");
 		}

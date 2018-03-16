@@ -131,6 +131,7 @@ public class GetDocumentsResponse {
         this.documents = documents;
     }
 
+    @Override
     public String toString(){
         String s = "";
         s+="count: "+count;

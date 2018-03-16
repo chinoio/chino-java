@@ -129,6 +129,7 @@ public class GetApplicationsResponse {
         this.applications = applications;
     }
 
+    @Override
     public String toString(){
         String s = "";
         s+="count: "+count;

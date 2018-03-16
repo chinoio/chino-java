@@ -129,6 +129,7 @@ public class Collection {
     }
 
 
+    @Override
     public String toString(){
         String s="";
         s+="name: " + name;
