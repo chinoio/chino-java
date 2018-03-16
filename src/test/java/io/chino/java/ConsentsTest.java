@@ -41,6 +41,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 /**
  *
@@ -78,22 +79,6 @@ public class ConsentsTest {
     
     public ConsentsTest() {
     }
-    
-    public static void main(String[]s) throws IOException, ChinoApiException, Exception {
-        setUpClass();
-        ConsentsTest test = new ConsentsTest();
-        
-        test.testUpdate_History();
-        test.tearDown();
-        
-//        // More tests:
-//        // <test method here>
-//        test.tearDown();
-//        // <test method here>
-//        test.tearDown();
-//        // <test method here>
-//        test.tearDown();
-    }
    
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
@@ -111,7 +96,8 @@ public class ConsentsTest {
         purposes.add(pSample2);
         purposes.add(pSample3);
         
-        // creating consent for "mariorossi@mailmail.com"
+        // creating sample consent for "mariorossi@mailmail.com".
+        // Local object, not on Chino.io
         consentSample1 = new Consent(userId1, "Consent sample created for testing - class ConsentsTest",
                 "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purposes);
         System.out.println(consentSample1.getConsentId());
@@ -119,24 +105,31 @@ public class ConsentsTest {
         purposes.remove(pSample1);
         purposes.remove(pSample2);
         
-        // creating consent for another user, "rossimario@mail.ml", with different purposes.
+        // creating sample consent for another user, "rossimario@mail.ml",
+        // with different purposes. Local object, not on Chino.io
         consentSample2 = new Consent(new Consent(consentSample1, null, purposes), userId2);
     }
     
+    @Before
     @After
-    public void tearDown() {
+    public void deleteCreatedObjects() {
+        ArrayList<Consent> deletedObjects = new ArrayList<>();
         for (Consent c:createdObjects) {
             try {
                 chino_admin.consents.delete(c.getConsentId());
+                deletedObjects.add(c);
             } catch (ChinoApiException apiX) {
-                System.err.println("tearDownClass - server returned following error:");
+                System.err.println("deleteCreatedObjects - server returned following error:");
                 System.err.println(apiX.getLocalizedMessage());
                 System.err.println("(ChinoAPIException)");
             } catch (IOException e) {
-                System.err.println("'tearDownClass - could not reach the server '" + e.getLocalizedMessage() + "'");
+                System.err.println("'deleteCreatedObjects - could not reach the server '" + e.getLocalizedMessage() + "'");
                 System.err.println("(IOException)");
             }
         }
+        int size = createdObjects.size() -  deletedObjects.size();
+        if (size > 0)
+            System.out.println(String.format("*** Unable to delete %s objects.***", size));
         
         createdObjects.clear();
     }
@@ -151,7 +144,9 @@ public class ConsentsTest {
         int newValidConsents = 4;
         String userId = "userIdList3@mail.ml";
         for (int i = 0; i<newValidConsents; i++) {
-            createdObjects.add(chino_admin.consents.create(consentSample1, userId));
+            createdObjects.add(
+                    chino_admin.consents.create(consentSample1, userId)
+            );
         }
         
         createdObjects.add(
@@ -189,21 +184,19 @@ public class ConsentsTest {
         int newConsents = 7;
         String userId = "userIdList2@mail.ml";
         for (int i = 0; i<newConsents; i++) {
-            chino_admin.consents.create(consentSample1, userId);
+            createdObjects.add(
+                    chino_admin.consents.create(consentSample1, userId)
+            );
         }
-        createdObjects.addAll(
-                chino_admin.consents.list(userId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT)
-        );
         
         int totalListElements = 0;
         int limit = 2;
-        for (int i = 0; i < (newConsents + limit - 1)/limit; i++) {
-            int offset = i;
+        for (int offset = 0; offset < newConsents; offset += limit) {
             ConsentList results = chino_admin.consents.list(offset, limit);
             totalListElements += results.size();
             if (results.size() < limit) {
                 // last page of results was fetched
-                assertTrue(chino_admin.consents.list(++ offset, limit).isEmpty());
+                assertTrue(chino_admin.consents.list(offset + limit, limit).isEmpty());
                 break;
             }
         }
@@ -335,7 +328,9 @@ public class ConsentsTest {
         Consent base = new Consent(consentSample1, userId);
         
         Consent consentOld = chino_admin.consents.create(base);
-/**/        TimeUnit.SECONDS.sleep(1);
+        createdObjects.add(consentOld);
+        long secsBeforeUpdate = 5;
+        TimeUnit.SECONDS.sleep(secsBeforeUpdate);
         DataController updatedDataController = new DataController(dcSample.getCompany(), "new contact", "new address", "new_email@mail.ml", dcSample.getVAT(), true);
         ArrayList<Purpose> newPurposes = new ArrayList<>();
         newPurposes.add(pSample1);
@@ -376,8 +371,11 @@ public class ConsentsTest {
         assertEquals(history.getActiveConsentOnDate(consentOld.getInsertedDate()), consentOld);
         assertEquals(history.getActiveConsentOnDate(consentUpdated.getInsertedDate()), consentUpdated);
         // get the Consent that was active right before consentUpdated (i.e. consentOld)
-        assertEquals(history.getActiveConsentOnDate(new Date(consentUpdated.getInsertedDate().getTime() - 10000)), consentOld);
-        // get the Consent that was active right before consentOld (i.e. null)
+        Calendar beforeUpdate = Calendar.getInstance();
+        beforeUpdate.setTime(consentUpdated.getInsertedDate());
+        beforeUpdate.add(Calendar.SECOND,  (int) -(secsBeforeUpdate / 2));
+        assertEquals(history.getActiveConsentOnDate(beforeUpdate.getTime()), consentOld);
+        // get the Consent that was active before consentOld was created (i.e. null)
         assertNull(history.getActiveConsentOnDate(new Date(0)));
         // get the Consent that is active now (i.e. consentUpdated)
         assertEquals(history.getActiveConsentOnDate(new Date()), consentUpdated);
@@ -389,7 +387,7 @@ public class ConsentsTest {
  in class {@link ConsentHistory}.
      */
     @Test(expected = IllegalArgumentException.class)
-    public void testHistory_getActiveConsent_Exception() throws IOException, ChinoApiException {
+    public void testHistory_getActiveConsentOnDate_Exception() throws IOException, ChinoApiException {
         String userId = "userIdhistory_findVersion_Exception@mail.ml";
         Consent created = chino_admin.consents.create(consentSample1, userId);
         createdObjects.add(created);
@@ -463,7 +461,7 @@ public class ConsentsTest {
     public void testDeletedList() throws Exception {
         deleteInit();
         System.out.println("delete (list)");
-        assertTrue(chino_admin.consents.list(deletedUserId, 0, 100).isEmpty());
+        assertTrue(chino_admin.consents.list(deletedUserId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT).isEmpty());
     }
     
 }
