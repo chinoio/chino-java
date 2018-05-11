@@ -1,4 +1,4 @@
-#  CHINO.io Java client #
+#  CHINO.io Java SDK #
 *Official* Java wrapper for **CHINO.io** API,
 
 Docs are available [here](http://docs.chino.io)
@@ -17,7 +17,7 @@ If you're using Maven, then edit your project's "pom.xml" and add this:
 <dependency>
 	<groupId>com.github.chinoio</groupId>
 	    <artifactId>chino-java</artifactId>
-	<version>1.2</version>
+	<version>1.1</version>
 </dependency>
 ```
 
