@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andrea Arighi [andrea@chino.org].
+ * Copyright 2018 Andrea Arighi [andrea@chino.io].
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import java.util.Date;
 
 /**
  * A special {@link ConsentList} that help navigating through the history of a Consent.
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public class ConsentHistory extends ConsentList {
     

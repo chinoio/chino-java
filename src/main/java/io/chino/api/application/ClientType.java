@@ -25,7 +25,7 @@ package io.chino.api.application;
 
 /**
  * The types of Applications that are available.
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public enum ClientType {
     /**

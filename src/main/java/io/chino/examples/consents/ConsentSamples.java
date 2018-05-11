@@ -36,7 +36,7 @@ import java.util.ArrayList;
 /**
  * Example of usage for the class {@link Consent} and the Consent Management APIs.
  * Run this example from {@link ChinoAPIExamples}
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public class ConsentSamples {
     

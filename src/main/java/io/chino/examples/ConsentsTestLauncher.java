@@ -44,7 +44,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  *
- * // @author Andrea Arighi [andrea@chino.org]
+ * // @author Andrea Arighi [andrea@chino.io]
  */
 public class ConsentsTestLauncher {
     

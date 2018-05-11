@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright 2018 Andrea Arighi [andrea@chino.org].
+ * Copyright 2018 Andrea Arighi [andrea@chino.io].
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +29,7 @@ import java.util.List;
 
 /**
  * A list of {@link Consent} objects returned by an API call.
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public class ConsentList extends ArrayList<Consent> {
     

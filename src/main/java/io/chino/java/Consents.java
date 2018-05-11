@@ -40,7 +40,7 @@ import okhttp3.OkHttpClient;
 /**
  * Base API client for Consent Management.
  * @see Consent
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public class Consents extends ChinoBaseAPI {
     

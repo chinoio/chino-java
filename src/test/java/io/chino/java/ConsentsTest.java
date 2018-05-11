@@ -45,7 +45,7 @@ import org.junit.Before;
 
 /**
  *
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public class ConsentsTest {
     

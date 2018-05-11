@@ -32,7 +32,7 @@ import java.util.Objects;
 /**
  * Contains informations about the purpose of personal data collection.
  * @see Consent#purposes
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 @JsonInclude(JsonInclude.Include.ALWAYS)
 @JsonPropertyOrder({

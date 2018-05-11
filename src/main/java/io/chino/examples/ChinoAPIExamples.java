@@ -51,7 +51,7 @@ import java.util.LinkedList;
  * <li><code>--clean</code> OR -c       :       Delete all the test objects from Chino.io server. Can be used together with 'run' parameters. E.g.: <code>-run=users -run=consents -c</code></li>
  * </ul>
  * 
- * @author Andrea Arighi [andrea@chino.org]
+ * @author Andrea Arighi [andrea@chino.io]
  */
 public class ChinoAPIExamples {
     
