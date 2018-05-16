@@ -1,4 +1,4 @@
-package io.chino.java;
+package io.chino.java.testutils;
 
 import io.chino.api.user.User;
 
@@ -18,7 +18,7 @@ public class TestConstants {
      * The base URL of the Chino.io test API
      */
     public final static String HOST = "https://api.test.chino.io/v1";
-    
+
     /**
      * Your customer ID - DO NOT WRITE IT HERE IN THE CODE.
      * @see TestConstants
@@ -43,6 +43,14 @@ public class TestConstants {
      * with {@link #init(String, String)}.
      */
     public static String PASSWORD= null;
+
+    /**
+     * When {@code true}, allows the test suite to force deletion of every object
+     * in the customer account.
+     *
+     * If you want to avoid this, please use another account to perform tests.
+     */
+    public static final boolean FORCE_DELETE_ALL_ON_TESTS = false;
     
     /**
      * Initializes values in {@link TestConstants} with the customer informations,
@@ -81,4 +89,7 @@ public class TestConstants {
         USERNAME = (defaultUserUsername == null) ? "mrossi" : defaultUserUsername;
         PASSWORD = (defaultUserPassword == null) ? "rossimario57" : defaultUserPassword;
     }
+
+    /* Other constant values used throughout the test classes */
+    public final static String APP_NAME = "chino Java SDK test";
 }
