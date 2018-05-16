@@ -48,7 +48,7 @@ public class TestConstants {
      * When {@code true}, allows the test suite to force deletion of every object
      * in the customer account.
      *
-     * If you want to avoid this, please use another account to perform tests.
+     * If you want to avoid this, you should use a separate account to perform tests.
      */
     public static final boolean FORCE_DELETE_ALL_ON_TESTS = false;
     
