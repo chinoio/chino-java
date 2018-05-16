@@ -107,11 +107,14 @@ public class ChinoAPITest {
             fail("failed to delete objects for ChinoAPITest. Please do it by hand.\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getLocalizedMessage());
         }
-        
+
+        String step = "create user schema";
         try {
             // create a new user
             userSchema = chino_customer.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
             USER_SCHEMA_ID = userSchema.getUserSchemaId();
+
+            step = "create user";
             HashMap<String, Object> attributes = new HashMap<String, Object>();
             attributes.put("test_string", "test_string_value");
             attributes.put("test_boolean", true);
@@ -121,7 +124,7 @@ public class ChinoAPITest {
             User user = chino_customer.users.create(TestConstants.USERNAME, TestConstants.PASSWORD, attributes, USER_SCHEMA_ID);
             USER_ID = user.getUserId();
         } catch (Exception ex) {
-            fail("failed to set up test for ChinoAPITest.\n"
+            fail("failed to set up test for ChinoAPITest (" + step + ").\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getMessage());
         }
     }
