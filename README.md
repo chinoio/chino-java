@@ -288,7 +288,8 @@ an account *ad hoc*.
 In fact, after each test **every object on the account is deleted**, in order to preserve the correctness of tests.
 
 If you know what you are doing, open `io.chino.java.TestConstants` in the test folder, then:
-1. set the constant `TestConstants.FORCE_DELETE_ALL_ON_TESTS` to `true`;
+1. set the constant `TestConstants.FORCE_DELETE_ALL_ON_TESTS` to `true`.
+As an alternative, you can also `automated_test=allow` in your environment variables. 
 2. set the required environment variables;
 3. run the tests.
     

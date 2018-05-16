@@ -7,8 +7,12 @@ import org.junit.Before;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
+/**
+ * Base test class for all tests
+ */
 public class ChinoBaseTest {
 
     public static final String URL = TestConstants.HOST;
@@ -22,6 +26,8 @@ public class ChinoBaseTest {
 
     static {
         TestConstants.init(USERNAME, PASSWORD);
+        if (Objects.equals(System.getenv("automated_test"), "allow")) // null-safe 'equals()'
+            TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
     }
 
 
@@ -34,6 +40,7 @@ public class ChinoBaseTest {
     public static ChinoBaseAPI init(ChinoBaseAPI testedAPIClient) {
         errorMsg = "no errors";
         test = testedAPIClient;
+
         return test;
     }
 
