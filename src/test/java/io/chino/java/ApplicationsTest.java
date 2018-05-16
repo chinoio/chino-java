@@ -70,7 +70,7 @@ public class ApplicationsTest extends ChinoBaseTest {
             test.read(readApp.getAppId());
             fail("Application " + readApp.getAppId() + " should have been deleted");
         } catch (ChinoApiException e) {
-            System.out.println("Applications CRUDL test OK.");
+            success("Applications CRUDL");
         }
     }
 
@@ -87,5 +87,7 @@ public class ApplicationsTest extends ChinoBaseTest {
 
         assertNotNull(fetchedApps);
         assertEquals(fetchedApps.size(), limit);
+
+        success("Applications list(int, int)");
     }
 }

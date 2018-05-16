@@ -91,4 +91,8 @@ public class ChinoBaseTest {
             errorMsg = "no errors";
         }
     }
+
+    protected static void success(String testName) {
+        System.out.println(testName + " test OK");
+    }
 }
