@@ -6,6 +6,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Scanner;
 
 public class ChinoBaseTest {
@@ -57,20 +58,26 @@ public class ChinoBaseTest {
 
     /**
      * Handles test interruption when there are instances of a Chino.io resource
-     * on the user account
+     * on the customer's Chino.io API account. If {@link TestConstants#FORCE_DELETE_ALL_ON_TESTS} is
+     * set to {@code true}, the test won't be interrupted and all the objects on the Chino.io account will be deleted.
      *
-     * @param resourceIsEmpty
-     * @param resourceType
+     * @param resourceIsEmpty the result of {@link List#isEmpty()} or another value, which should be {@code true}
+     *                        only if there are no resources of the desired type stored on Chino.io.
+     * @param resourceAPIClient the API client that will be eventually used to delete all the objects of that kind if
+     * {@link TestConstants#FORCE_DELETE_ALL_ON_TESTS} is set to {@code true}.
      */
-    protected static final void resourceIsEmpty(boolean resourceIsEmpty, String resourceType) {
+    protected static final void resourceIsEmpty(boolean resourceIsEmpty, ChinoBaseAPI resourceAPIClient) throws IOException, ChinoApiException {
+        String resourceName = resourceAPIClient.getClass().getSimpleName();
+
         if (! resourceIsEmpty) {
             if (! TestConstants.FORCE_DELETE_ALL_ON_TESTS) {
             Scanner scanner = new Scanner(System.in);
-            System.err.println("WARNING: this account has" + resourceType + "stored. If you run the tests they will be deleted.");
+            System.err.println("WARNING: this account has" + resourceName + "stored. If you run the tests they will be deleted.");
             System.err.println("To hide this message, set the constant TestConstants.FORCE_DELETE_ALL_ON_TESTS to 'true' and re-run the tests.");
             } else {
                 System.out.println("TestConstants.FORCE_DELETE_ALL_ON_TESTS = true");
-                System.out.println("Every objenct will be deleted.");
+                System.out.println("Every object will be deleted.");
+                new DeleteAll().deleteAll(resourceAPIClient);
                 continueTests = true;
                 return;
             }
@@ -79,7 +86,7 @@ public class ChinoBaseTest {
         continueTests = resourceIsEmpty;
 
         if (!continueTests) {
-            errorMsg = "If you don't want to delete all your " + resourceType + ", consider using another account for testing.";
+            errorMsg = "If you don't want to delete all your " + resourceName + ", consider using another account for testing.";
         } else {
             errorMsg = "no errors";
         }

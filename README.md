@@ -281,5 +281,21 @@ For a better explanation see the file `SearchSamples` in the `io.chino.example.s
 - `addDocument(<collection_id>, <document_id>)`
 - `removeDocument(<collection_id>, <document_id>)`
 
+## Testing
+With the SDK are included some JUnit tests, that are used for continuous integration.
+If you want (for some reason) to run these tests by yourself, the best thing to do is to run them in
+an account *ad hoc*.
+In fact, after each test **every object on the account is deleted**, in order to preserve the correctness of tests.
+
+If you know what you are doing, open `io.chino.java.TestConstants` in the test folder, then:
+1. set the constant `TestConstants.FORCE_DELETE_ALL_ON_TESTS` to `true`;
+2. set the required environment variables;
+3. run the tests.
+    
+After every test, all the related object will be deleted.
+(E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)
+
+Testing is made with JUnit 4.
+
 ##Support
-use issues of github 
+Report problems and ask for support using Github issues. 
