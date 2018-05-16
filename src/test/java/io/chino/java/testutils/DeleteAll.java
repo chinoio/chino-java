@@ -14,21 +14,28 @@ import io.chino.api.schema.Schema;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.java.ChinoBaseAPI;
+import io.chino.java.Consents;
 
 import java.io.IOException;
 import java.util.List;
 
 public class DeleteAll {
 
-    public void deleteAll(ChinoBaseAPI APIClient) throws IOException, ChinoApiException {
-        if (APIClient instanceof Applications) {
-            Applications applicationsClient = (Applications) APIClient;
+    public void deleteAll(ChinoBaseAPI apiClient) throws IOException, ChinoApiException {
+        if (apiClient instanceof Applications) {
+            Applications applicationsClient = (Applications) apiClient;
             List<Application> items = applicationsClient.list().getApplications();
             for (Application app:items) {
                 applicationsClient.delete(app.getAppId(), true);
             }
+        } else if(apiClient instanceof Consents) {
+            Consents consentsClient = (Consents) apiClient;
+            List<Consent> items = consentsClient.list().getConsents();
+            for (Consent consent:items) {
+                consentsClient.delete(consent.getConsentId());
+            }
         } else {
-            throw new UnsupportedOperationException(APIClient.getClass().getSimpleName() + " is not yet supported.");
+            throw new UnsupportedOperationException(apiClient.getClass().getSimpleName() + " is not yet supported.");
         }
     }
 

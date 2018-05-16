@@ -51,7 +51,8 @@ public class ChinoBaseTest {
 
         if (!continueTests) {
             System.err.println(errorMsg);
-            System.exit(-1);
+//            System.exit(-1);
+            throw new RuntimeException(errorMsg);
         }
     }
 
@@ -60,6 +61,7 @@ public class ChinoBaseTest {
         new DeleteAll().deleteAll(test);
         errorMsg =  "init() method not called";
         continueTests = true;
+        test = null;
     }
 
 

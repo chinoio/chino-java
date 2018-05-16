@@ -47,7 +47,7 @@ import org.junit.BeforeClass;
  * before running the tests.
  * @author Andrea
  */
-public class ChinoAPITest extends ChinoBaseTest {
+public class ChinoAPITest {
 
     private static String USER_ID;
     private static String USER_SCHEMA_ID;
