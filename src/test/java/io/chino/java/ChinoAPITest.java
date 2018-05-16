@@ -30,6 +30,8 @@ import io.chino.api.permission.PermissionRule;
 import io.chino.api.repository.Repository;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
+import io.chino.java.testutils.ChinoBaseTest;
+import io.chino.java.testutils.TestConstants;
 import io.chino.java.testutils.UserSchemaStructureSample;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -45,15 +47,10 @@ import org.junit.BeforeClass;
  * before running the tests.
  * @author Andrea
  */
-public class ChinoAPITest {
-    
-    private static final String URL = TestConstants.HOST;
-    private static String USERNAME = "testusrname";
-    private static String PASSWORD = "testpword32";
-    
+public class ChinoAPITest extends ChinoBaseTest {
+
     private static String USER_ID;
     private static String USER_SCHEMA_ID;
-    private final static String APP_NAME = "chino Java SDK test";
     private static String APP_ID = null;
     private static String APP_SECRET = null;
     
@@ -75,11 +72,11 @@ public class ChinoAPITest {
         ArrayList<Application> apps = (ArrayList<Application>) chino_customer.applications.list().getApplications();
         
         for (Application app:apps) 
-            if (app.getAppName().equals(APP_NAME)){
+            if (app.getAppName().equals(TestConstants.APP_NAME)){
                 chino_customer.applications.delete(app.getAppId(), true);
             }
         
-        Application app = chino_customer.applications.create(APP_NAME, "password", URL);
+        Application app = chino_customer.applications.create(TestConstants.APP_NAME, "password", ChinoBaseTest.URL);
         APP_ID = app.getAppId();
         APP_SECRET = app.getAppSecret();
     }
@@ -87,9 +84,9 @@ public class ChinoAPITest {
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
         // init customer data
-        TestConstants.init(USERNAME, PASSWORD);
+        TestConstants.init(ChinoBaseTest.USERNAME, ChinoBaseTest.PASSWORD);
         
-        chino_customer = new ChinoAPI(URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+        chino_customer = new ChinoAPI(ChinoBaseTest.URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         
         // init data of test application
         setUpApplication();
@@ -142,7 +139,7 @@ public class ChinoAPITest {
 
     @Test
     public void testUserClient() {
-        ChinoAPI apiClient = new ChinoAPI(URL);
+        ChinoAPI apiClient = new ChinoAPI(ChinoBaseTest.URL);
         assertClientWasCreated(apiClient);
     }
 
@@ -150,7 +147,7 @@ public class ChinoAPITest {
     public void testAccessTokenClient() {
         // authenticate user
         String step = "initialize";
-        ChinoAPI chino_user = new ChinoAPI(URL);
+        ChinoAPI chino_user = new ChinoAPI(ChinoBaseTest.URL);
         String accessToken = null,
                 refreshToken = null;
         LoggedUser user = null;
@@ -168,7 +165,7 @@ public class ChinoAPITest {
             fail("Thrown IOException. Reason: " + ex.getMessage());
         }
         // Do some operations with the bearer token client
-        ChinoAPI apiClient = new ChinoAPI(URL, accessToken);
+        ChinoAPI apiClient = new ChinoAPI(ChinoBaseTest.URL, accessToken);
         assertClientWasCreated(apiClient);
         try {
             // give the user permission to CRUD and List repositories
@@ -218,7 +215,7 @@ public class ChinoAPITest {
     @Test
     public void testCustomerClient() {
         String step = "initialize";
-        ChinoAPI apiClient = new ChinoAPI(URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+        ChinoAPI apiClient = new ChinoAPI(ChinoBaseTest.URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         assertClientWasCreated(apiClient);
         try {
             // create a repository using costomer credentials

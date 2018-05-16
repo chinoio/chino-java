@@ -26,6 +26,7 @@ package io.chino.java;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.consent.*;
+import io.chino.java.testutils.TestConstants;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
