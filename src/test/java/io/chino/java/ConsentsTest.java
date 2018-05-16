@@ -25,23 +25,20 @@ package io.chino.java;
 
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
-import io.chino.api.consent.Consent;
-import io.chino.api.consent.ConsentHistory;
-import io.chino.api.consent.ConsentList;
-import io.chino.api.consent.DataController;
-import io.chino.api.consent.Purpose;
-import io.chino.examples.Constants;
+import io.chino.api.consent.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.TimeUnit;
-import org.junit.After;
-import org.junit.BeforeClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
-import org.junit.Before;
 
 /**
  *
@@ -82,8 +79,8 @@ public class ConsentsTest {
    
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
-        Constants.init();
-        chino_admin = new ChinoAPI(Constants.HOST, Constants.CUSTOMER_ID, Constants.CUSTOMER_KEY);
+        TestConstants.init();
+        chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         createdObjects = new ArrayList<>();
         
         dcSample = new DataController("Chino.io", "example", "42 John Doe St.", "java-example@chino.io", "vat123456789", true);
@@ -319,7 +316,7 @@ public class ConsentsTest {
     /**
      * Test of update and history methods, of class Consents.
      * Also, test of {@link ConsentHistory#getActiveConsentOnDate(java.util.Date) getActiveConsentOnDate},
- of class {@link ConsentHistory}.
+     * of class {@link ConsentHistory}.
      */
     @Test
     public void testUpdate_History() throws Exception {

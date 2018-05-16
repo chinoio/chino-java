@@ -1,4 +1,4 @@
-package io.chino.examples;
+package io.chino.java;
 
 import io.chino.java.ChinoAPI;
 import io.chino.api.application.Application;
