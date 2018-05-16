@@ -50,7 +50,7 @@ public class TestConstants {
      *
      * If you want to avoid this, you should use a separate account to perform tests.
      */
-    public static final boolean FORCE_DELETE_ALL_ON_TESTS = false;
+    public static boolean FORCE_DELETE_ALL_ON_TESTS = false;
     
     /**
      * Initializes values in {@link TestConstants} with the customer informations,
