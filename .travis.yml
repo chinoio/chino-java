@@ -17,6 +17,10 @@ jdk:
   # - oraclejdk9 # not passing
 jobs:
   include:
+    - stage: test-jdk8
+      jdk: oraclejdk8
+      script:
+        - gradle test --stacktrace
     - stage: test-jdk7
       jdk: openjdk7
       script:
@@ -25,9 +29,13 @@ jobs:
         - echo "security.provider.1=org.bouncycastle.jce.provider.BouncyCastleProvider" | sudo tee -a /etc/java-7-openjdk/security/java.security
         - gradle test --stacktrace
 
-#before_install:
-#  - echo $JAVA_HOME
-#  - chmod +x gradlew
+stages:
+  - test-jdk8
+  - test-jdk7
+
+before_install:
+  - echo $JAVA_HOME
+  - chmod +x gradlew
 #  - export JAVA_VER=$(java -version 2>&1 | sed -n ';s/.* version "\(.*\)\.\(.*\)\..*"/\1\2/p;')
 #  - echo $JAVA_VER
 #  - if [ $JAVA_VER = 17 ]
