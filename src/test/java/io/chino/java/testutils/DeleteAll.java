@@ -55,6 +55,20 @@ public class DeleteAll {
                     userClient.delete(user.getUserId(), true);
                 }
             }
+        } else if(apiClient instanceof Repositories || apiClient instanceof Schemas || apiClient instanceof Documents) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            List<Repository> repositories = chino.repositories.list().getRepositories();
+            for(Repository r : repositories){
+                List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
+                for(Schema s : schemas){
+                    List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
+                    for(Document d : documents){
+                        chino.documents.delete(d.getDocumentId(), true);
+                    }
+                    chino.schemas.delete(s.getSchemaId(), true);
+                }
+                chino.repositories.delete(r.getRepositoryId(), true);
+            }
         } else {
             throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() + ") is not supported.");
         }

@@ -56,7 +56,6 @@ public class ChinoBaseTest {
 
         if (!continueTests) {
             System.err.println(errorMsg);
-//            System.exit(-1);
             throw new RuntimeException(errorMsg);
         }
     }
