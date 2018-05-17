@@ -2,8 +2,10 @@ package io.chino.java.testutils;
 
 import io.chino.api.common.ChinoApiException;
 import io.chino.java.ChinoBaseAPI;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import java.io.IOException;
 import java.util.List;
@@ -44,6 +46,9 @@ public class ChinoBaseTest {
         return test;
     }
 
+    @BeforeClass
+    protected static void beforeClass() throws IOException, ChinoApiException {}
+
     @Before
     public void before() {
         if (errorMsg.equals("init() method not called"))
@@ -55,6 +60,9 @@ public class ChinoBaseTest {
             throw new RuntimeException(errorMsg);
         }
     }
+
+    @After
+    public static void after() throws IOException, ChinoApiException {}
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
@@ -75,7 +83,7 @@ public class ChinoBaseTest {
      * @param resourceAPIClient the API client that will be eventually used to delete all the objects of that kind if
      * {@link TestConstants#FORCE_DELETE_ALL_ON_TESTS} is set to {@code true}.
      */
-    protected static final void resourceIsEmpty(boolean resourceIsEmpty, ChinoBaseAPI resourceAPIClient) throws IOException, ChinoApiException {
+    protected static final void checkResourceIsEmpty(boolean resourceIsEmpty, ChinoBaseAPI resourceAPIClient) throws IOException, ChinoApiException {
         String resourceName = resourceAPIClient.getClass().getSimpleName();
 
         if (! resourceIsEmpty) {
