@@ -13,6 +13,8 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import io.chino.java.ChinoAPI;
+
 public class Auth extends ChinoBaseAPI {
 
     public Auth(String hostUrl, OkHttpClient client){
@@ -56,10 +58,7 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+        client = ChinoAPI.getDefaultHttpClient()
                 .build();
         Response response = client.newCall(request).execute();
         String body = null;
@@ -114,10 +113,7 @@ public class Auth extends ChinoBaseAPI {
     public User loginWithBearerToken(String token) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
         // saves the new token in the HTTP client
-        client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+        client = ChinoAPI.getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(token))
                 .build();
         User u = checkUserStatus();
@@ -177,10 +173,7 @@ public class Auth extends ChinoBaseAPI {
             JsonNode data = mapper.readTree(body).get("data");
             if(data!=null) {
                 LoggedUser loggedUser = mapper.convertValue(data, LoggedUser.class);
-                client = new OkHttpClient.Builder()
-                        .connectTimeout(10, TimeUnit.SECONDS)
-                        .writeTimeout(10, TimeUnit.SECONDS)
-                        .readTimeout(30, TimeUnit.SECONDS)
+                client = ChinoAPI.getDefaultHttpClient()
                         .addNetworkInterceptor(new LoggingInterceptor(loggedUser.getAccessToken()))
                         .build();
                 return loggedUser;

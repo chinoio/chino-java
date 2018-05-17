@@ -32,13 +32,9 @@ public class ChinoAPI {
         checkNotNull(hostUrl, "host_url");
         checkNotNull(customerId, "customer_id");
         checkNotNull(customerKey, "customer_key");
-        client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+        client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
                 .build();
-//        LoggingInterceptor.getInstance().setCustomer(customerId, customerKey);
         initObjects(hostUrl);
     }
 
@@ -50,10 +46,7 @@ public class ChinoAPI {
      */
     public ChinoAPI(String hostUrl) {
         checkNotNull(hostUrl, "host_url");
-        client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+        client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor())
                 .build();
         initObjects(hostUrl);
@@ -67,10 +60,7 @@ public class ChinoAPI {
      */
     public ChinoAPI(String hostUrl, String bearerToken) {
         checkNotNull(hostUrl, "host_url");
-        client = new OkHttpClient.Builder()
-                .connectTimeout(10, TimeUnit.SECONDS)
-                .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
+        client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(bearerToken))
                 .build();
         initObjects(hostUrl);
@@ -96,5 +86,16 @@ public class ChinoAPI {
         if(object == null){
             throw new NullPointerException(name);
         }
+    }
+
+    /**
+     * Get the default HTTP client
+     * @return
+     */
+    static OkHttpClient.Builder getDefaultHttpClient() {
+        return new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS);
     }
 }
