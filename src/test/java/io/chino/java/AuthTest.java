@@ -13,9 +13,7 @@ import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import io.chino.java.testutils.UserSchemaStructureSample;
 import junit.framework.AssertionFailedError;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,16 +23,18 @@ import static org.junit.Assert.*;
 
 public class AuthTest extends ChinoBaseTest {
 
-    private static ChinoAPI chino_admin;
+    private static ChinoAPI chino_admin, testClient;
     private static Auth test;
+
+    private static HashMap<String, String> docContent = new HashMap<>();
 
     private static String SCHEMA_ID;
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
         ChinoBaseTest.beforeClass();
-        chino_admin = new ChinoAPI(TestConstants.HOST);
-        test = (Auth) ChinoBaseTest.init(chino_admin.auth);
+        chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+        test = (Auth) ChinoBaseTest.init(new ChinoAPI(TestConstants.HOST).auth);
 
         // create a userschema and a user
         ChinoBaseTest.checkResourceIsEmpty(
@@ -84,46 +84,62 @@ public class AuthTest extends ChinoBaseTest {
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
-        ChinoBaseTest.afterClass();
-
         new DeleteAll().deleteAll(chino_admin);
+    }
+
+    @Before
+    public void before() {
+        testClient = new ChinoAPI(TestConstants.HOST);
+        test = testClient.auth;
     }
 
     @Test
     public void testLoginWithPasswordCONFIDENTIAL_logout() throws IOException, ChinoApiException {
-        Application app = chino_admin.applications.create(TestConstants.APP_NAME + " - AuthTest.testLoginWithPasswordCONFIDENTIAL_logout()", "password", "", ClientType.CONFIDENTIAL);;
+        Application app = chino_admin.applications.create(
+                TestConstants.APP_NAME + " - AuthTest.testLoginWithPasswordCONFIDENTIAL_logout()",
+                "password",
+                "",
+                ClientType.CONFIDENTIAL
+        );;
 
         // test login
-        LoggedUser tokens = test.loginWithPassword(
+        LoggedUser tokens = testClient.auth.loginWithPassword(
                 TestConstants.USERNAME,
                 TestConstants.PASSWORD,
                 app.getAppId(),
                 app.getAppSecret()
         );
-        assertLoginSuccessful(chino_admin, "(in) testLoginWithPasswordCONFIDENTIAL_logout");
+        testClient.auth.loginWithBearerToken(tokens.getAccessToken());
+        assertLoginSuccessful(testClient, "(in) testLoginWithPasswordCONFIDENTIAL_logout");
 
         // test logout
-        test.logout(tokens.getAccessToken(), app.getAppId(), app.getAppSecret());
-        assertLogoutSuccessful(chino_admin, "(out) testLoginWithPasswordCONFIDENTIAL_logout");
+        testClient.auth.logout(tokens.getAccessToken(), app.getAppId(), app.getAppSecret());
+        assertLogoutSuccessful(testClient, "(out) testLoginWithPasswordCONFIDENTIAL_logout");
 
         success("Password login (confidential) + logout");
     }
 
     @Test
     public void testLoginWithPasswordPUBLIC_logout() throws IOException, ChinoApiException {
-        Application app = chino_admin.applications.create(TestConstants.APP_NAME + " - AuthTest.testLoginWithPasswordCONFIDENTIAL_logout()", "password", "", ClientType.CONFIDENTIAL);;
+        Application app = chino_admin.applications.create(
+                TestConstants.APP_NAME + " - AuthTest.testLoginWithPasswordCONFIDENTIAL_logout()",
+                "password",
+                "",
+                ClientType.PUBLIC
+        );;
 
         // test login
-        LoggedUser tokens = test.loginWithPassword(
+        LoggedUser tokens = testClient.auth.loginWithPassword(
                 TestConstants.USERNAME,
                 TestConstants.PASSWORD,
                 app.getAppId()
         );
-        assertLoginSuccessful(chino_admin, "(in) testLoginWithPasswordPUBLIC_logout");
+        testClient.auth.loginWithBearerToken(tokens.getAccessToken());
+        assertLoginSuccessful(testClient, "(in) testLoginWithPasswordPUBLIC_logout");
 
         // test logout
-        test.logout(tokens.getAccessToken(), app.getAppId());
-        assertLogoutSuccessful(chino_admin, "(out) testLoginWithPasswordPUBLIC_logout");
+        testClient.auth.logout(tokens.getAccessToken(), app.getAppId());
+        assertLogoutSuccessful(testClient, "(out) testLoginWithPasswordPUBLIC_logout");
 
         success("Password login (public) + logout");
     }
@@ -133,7 +149,7 @@ public class AuthTest extends ChinoBaseTest {
         Application app = chino_admin.applications.create(TestConstants.APP_NAME + " - AuthTest.testLoginWithPasswordCONFIDENTIAL_logout()", "password", "", ClientType.CONFIDENTIAL);;
 
         // get tokens
-        LoggedUser tokens = test.loginWithPassword(
+        LoggedUser tokens = chino_admin.auth.loginWithPassword(
                 TestConstants.USERNAME,
                 TestConstants.PASSWORD,
                 app.getAppId(),
@@ -141,45 +157,45 @@ public class AuthTest extends ChinoBaseTest {
         );
 
         // test login with token
-        ChinoAPI bearerTokenClient = new ChinoAPI(TestConstants.HOST);
-        bearerTokenClient.auth.loginWithBearerToken(
-                tokens.getAccessToken()
-        );
-        assertLoginSuccessful(bearerTokenClient, "(1) testTokens");
+        testClient.auth.loginWithBearerToken(tokens.getAccessToken());
+        assertLoginSuccessful(testClient, "(1) testTokens");
 
         // test refresh token
-        LoggedUser newTokens = bearerTokenClient.auth.refreshToken(
+        LoggedUser newTokens = testClient.auth.refreshToken(
                 tokens.getRefreshToken(),
                 app.getAppId(),
                 app.getAppSecret()
         );
-        assertLoginSuccessful(bearerTokenClient, "(2) testTokens");
+        testClient.auth.loginWithBearerToken(newTokens.getAccessToken());
+        assertLoginSuccessful(testClient, "(2) testTokens");
 
         // test ChinoAPI client constructor with bearer token
-        assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, newTokens.getAccessToken()), "(3) testTokens");
-
-        // check that old tokens are invalid after refresh
         try {
+            // check that old tokens are invalid after refresh...
             assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, tokens.getAccessToken()), "(4) testTokens");
             fail("Old tokens are valid after refreshs");
         } catch (AssertionFailedError err) {
-            success("tokens");
+            // ...and that new tokens are valid
+            assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, newTokens.getAccessToken()), "(3) testTokens");
         }
 
+        success("tokens");
     }
 
-    private static HashMap<String, String> docContent = new HashMap<>();
-
     private static void assertLoginSuccessful(ChinoAPI client, String testMethodName) throws IOException, ChinoApiException {
-        docContent.put("testMethod", testMethodName);
-        client.documents.create(SCHEMA_ID, docContent);
+        try {
+            docContent.put("testMethod", testMethodName);
+            client.documents.create(SCHEMA_ID, docContent);
+        } catch (ChinoApiException | IOException e) {
+            throw new AssertionFailedError("Failed to login. " + e.getClass().getCanonicalName() + ": " + e.getMessage());
+        }
     }
 
     private static void assertLogoutSuccessful(ChinoAPI client, String testMethodName) throws IOException {
         try {
             docContent.put("testMethod", testMethodName);
             client.documents.create(SCHEMA_ID, docContent);
-            fail("You did not log out.");
+            throw new AssertionFailedError("Failed to logout.");
         } catch (ChinoApiException e) {
             return;
         }

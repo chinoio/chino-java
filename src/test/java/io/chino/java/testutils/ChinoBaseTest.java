@@ -47,7 +47,7 @@ public class ChinoBaseTest {
     }
 
     @BeforeClass
-    protected static void beforeClass() throws IOException, ChinoApiException {}
+    public static void beforeClass() throws IOException, ChinoApiException {}
 
     @Before
     public void before() {
@@ -61,7 +61,7 @@ public class ChinoBaseTest {
     }
 
     @After
-    public static void after() throws IOException, ChinoApiException {}
+    public void after() throws IOException, ChinoApiException {}
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
