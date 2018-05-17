@@ -1,7 +1,6 @@
 package io.chino.java.testutils;
 
-import io.chino.java.Applications;
-import io.chino.java.ChinoAPI;
+import io.chino.java.*;
 import io.chino.api.application.Application;
 import io.chino.api.collection.Collection;
 import io.chino.api.common.ChinoApiException;
@@ -13,14 +12,25 @@ import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
-import io.chino.java.ChinoBaseAPI;
-import io.chino.java.Consents;
 
 import java.io.IOException;
 import java.util.List;
 
 public class DeleteAll {
 
+    /**
+     * Delete all the object of a given type, according to the implementation of {@link ChinoBaseAPI}
+     * that is passed as a parameter:<br>
+     *     <ul>
+     *         <li>{@link Applications}: delete all {@link Application} objects</li>
+     *         <li>{@link Consents}: delete all the {@link Consent} objects</li>
+     *         <li>{@link UserSchemas} OR {@link Users}: delete all the {@link User} objects that are stored in every {@link UserSchema}</li>
+     *         <li><i>Other elements to be added soon...</i></li>
+     *     </ul>
+     * @param apiClient one of the allowed implementation of {@link ChinoBaseAPI} listed above
+     * @throws IOException
+     * @throws ChinoApiException
+     */
     public void deleteAll(ChinoBaseAPI apiClient) throws IOException, ChinoApiException {
         if (apiClient instanceof Applications) {
             Applications applicationsClient = (Applications) apiClient;
@@ -34,8 +44,19 @@ public class DeleteAll {
             for (Consent consent:items) {
                 consentsClient.delete(consent.getConsentId());
             }
+        } else if(apiClient instanceof UserSchemas || apiClient instanceof Users) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            UserSchemas userSchemaClient = chino.userSchemas;
+            Users userClient = chino.users;
+            List<UserSchema> schemasList = userSchemaClient.list().getUserSchemas();
+            for (UserSchema userSchema:schemasList) {
+                List<User> usersList = userClient.list(userSchema.getUserSchemaId()).getUsers();
+                for (User user:usersList) {
+                    userClient.delete(user.getUserId(), true);
+                }
+            }
         } else {
-            throw new UnsupportedOperationException(apiClient.getClass().getSimpleName() + " is not yet supported.");
+            throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() + ") is not supported.");
         }
     }
 
