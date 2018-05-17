@@ -220,7 +220,10 @@ public class Auth extends ChinoBaseAPI {
     }
 
     /**
-     * It logs out
+     * Log out from a  {@link Application} using the user's access token.
+     * Use this method for {@link ClientType#CONFIDENTIAL CONFIDENTIAL} clients
+     * or when you are unsure about the client type.
+     *
      * @param token the token of the logged user
      * @return a String with the result of the operation
      * @throws IOException
@@ -246,6 +249,20 @@ public class Auth extends ChinoBaseAPI {
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }
+    }
+
+    /**
+     * Log out from a {@link Application} using the user's access token.
+     * This method works only for {@link ClientType#PUBLIC PUBLIC} clients.
+     * If you are not sure, use {@link #logout(String, String, String)}.
+     *
+     * @param token the token of the logged user
+     * @return a String with the result of the operation
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public String logout(String token, final String applicationId) throws IOException, ChinoApiException {
+        return logout(token, applicationId, "");
     }
 }
 
