@@ -31,6 +31,7 @@ import io.chino.api.repository.Repository;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.java.testutils.ChinoBaseTest;
+import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import io.chino.java.testutils.UserSchemaStructureSample;
 import java.io.IOException;
@@ -83,11 +84,12 @@ public class ChinoAPITest {
     
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
-        // init customer data
-        TestConstants.init(ChinoBaseTest.USERNAME, ChinoBaseTest.PASSWORD);
-        
+        TestConstants.init(TestConstants.USERNAME, TestConstants.PASSWORD); // instruction needed, because this is not subclass of ChinoBaseTest
         chino_customer = new ChinoAPI(ChinoBaseTest.URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        
+
+        // delete existing users from account
+        new DeleteAll().deleteAll(chino_customer.userSchemas);
+
         // init data of test application
         setUpApplication();
         
@@ -113,6 +115,10 @@ public class ChinoAPITest {
             // create a new user
             userSchema = chino_customer.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
             USER_SCHEMA_ID = userSchema.getUserSchemaId();
+        } catch (Exception ex) {
+            fail("failed to set up test for ChinoAPITest (" + step + ").\n"
+                    + ex.getClass().getSimpleName() + ": " + ex.getMessage());
+        }
 
             step = "create user";
             HashMap<String, Object> attributes = new HashMap<String, Object>();
@@ -121,6 +127,8 @@ public class ChinoAPITest {
             attributes.put("test_integer", 123);
             attributes.put("test_date", "1993-09-08");
             attributes.put("test_float", 12.4);
+
+        try {
             User user = chino_customer.users.create(TestConstants.USERNAME, TestConstants.PASSWORD, attributes, USER_SCHEMA_ID);
             USER_ID = user.getUserId();
         } catch (Exception ex) {

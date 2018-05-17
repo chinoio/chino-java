@@ -11,6 +11,7 @@ import io.chino.api.user.GetUserResponse;
 import io.chino.api.user.User;
 import okhttp3.*;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 public class Auth extends ChinoBaseAPI {
 
@@ -55,7 +56,11 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        client = new OkHttpClient.Builder().build();
+        client = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
         Response response = client.newCall(request).execute();
         String body = null;
         if (response != null){
@@ -94,7 +99,11 @@ public class Auth extends ChinoBaseAPI {
         User u = checkUserStatus();
         // saves the new token in this class' client
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor(token)).build();
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new LoggingInterceptor(token))
+                .build();
         return u;
     }
 
@@ -152,7 +161,11 @@ public class Auth extends ChinoBaseAPI {
             if(data!=null) {
                 LoggedUser loggedUser = mapper.convertValue(data, LoggedUser.class);
                 client = new OkHttpClient.Builder()
-                        .addNetworkInterceptor(new LoggingInterceptor(loggedUser.getAccessToken())).build();
+                        .connectTimeout(10, TimeUnit.SECONDS)
+                        .writeTimeout(10, TimeUnit.SECONDS)
+                        .readTimeout(30, TimeUnit.SECONDS)
+                        .addNetworkInterceptor(new LoggingInterceptor(loggedUser.getAccessToken()))
+                        .build();
                 return loggedUser;
             }
             return null;
