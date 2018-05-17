@@ -84,26 +84,43 @@ public class Auth extends ChinoBaseAPI {
     }
 
     /**
-     * Saves the {@code token} in a new {@link #client OkHttpClient} to be used in future calls
+     * Save the {@code token} in a new {@link #client OkHttpClient} to be used in future calls.<br>
+     * <br>
+     * <b>This method has been deprecated since API version 1.2 and might be removed at any time.</b>
+     * It's strongly suggested to use {@link #loginWithBearerToken(String)} instead.
+     *
      * @param token the new token to be used in the API calls
      * @param applicationId the id of the application that interacts with Chino API
      * @param applicationSecret the secret code of the application that interacts with Chino API
-     * @return the informations about the current {@link User}'s status (see also {@link #checkUserStatus() checkUserStatus()})
+     * @return information about the current {@link User}'s status (see also {@link #checkUserStatus() checkUserStatus()})
      * @throws IOException the User can not be found on server. Returned by {@link Call#execute() okhttp3.Call}
-     * @throws ChinoApiException server response: 200
+     * @throws ChinoApiException server responded with error
      */
+    @Deprecated
     public User loginWithBearerToken(String token, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
-        checkNotNull(token, "token");
         checkNotNull(applicationId, "application_id");
         checkNotNull(applicationSecret, "application_secret");
-        User u = checkUserStatus();
-        // saves the new token in this class' client
+
+        return loginWithBearerToken(token);
+    }
+
+    /**
+     * Save the {@code token} in a new {@link #client OkHttpClient} to be used in future calls
+     * @param token the new token to be used in the API calls
+     * @return information about the current {@link User}'s status (see also {@link #checkUserStatus() checkUserStatus()})
+     * @throws IOException the User can not be found on server. Thrown by {@link Call#execute() okhttp3.Call}
+     * @throws ChinoApiException server responded with error
+     */
+    public User loginWithBearerToken(String token) throws IOException, ChinoApiException {
+        checkNotNull(token, "token");
+        // saves the new token in the HTTP client
         client = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .addNetworkInterceptor(new LoggingInterceptor(token))
                 .build();
+        User u = checkUserStatus();
         return u;
     }
 
