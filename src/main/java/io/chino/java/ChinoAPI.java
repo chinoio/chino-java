@@ -3,6 +3,8 @@ package io.chino.java;
 import io.chino.api.common.LoggingInterceptor;
 import okhttp3.*;
 
+import java.util.concurrent.TimeUnit;
+
 public class ChinoAPI {
     OkHttpClient client;
     public Applications applications;
@@ -31,7 +33,11 @@ public class ChinoAPI {
         checkNotNull(customerId, "customer_id");
         checkNotNull(customerKey, "customer_key");
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey)).build();
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
+                .build();
 //        LoggingInterceptor.getInstance().setCustomer(customerId, customerKey);
         initObjects(hostUrl);
     }
@@ -45,7 +51,11 @@ public class ChinoAPI {
     public ChinoAPI(String hostUrl) {
         checkNotNull(hostUrl, "host_url");
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor()).build();
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new LoggingInterceptor())
+                .build();
         initObjects(hostUrl);
     }
     
@@ -58,7 +68,11 @@ public class ChinoAPI {
     public ChinoAPI(String hostUrl, String bearerToken) {
         checkNotNull(hostUrl, "host_url");
         client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor(bearerToken)).build();
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addNetworkInterceptor(new LoggingInterceptor(bearerToken))
+                .build();
         initObjects(hostUrl);
     }
     
