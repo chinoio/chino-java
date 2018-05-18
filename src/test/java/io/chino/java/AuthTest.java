@@ -182,9 +182,13 @@ public class AuthTest extends ChinoBaseTest {
             assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, tokens.getAccessToken()), "(4) testTokens");
             fail("Old tokens are valid after logout");
         } catch (AssertionFailedError err) {
-            // ...and that new tokens are valid
-            assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, newTokens.getAccessToken()), "(3) testTokens");
+            // expected
         }
+
+        // test loginWithBearerToken
+        ChinoAPI newClient = new ChinoAPI(TestConstants.HOST);
+        newClient.auth.loginWithBearerToken(newTokens.getAccessToken());
+        assertLoginSuccessful(newClient, "(3) testTokens");
 
         success("tokens");
     }
