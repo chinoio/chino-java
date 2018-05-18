@@ -1,7 +1,6 @@
 
 package io.chino.api.blob;
 
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,6 +23,7 @@ public class CommitBlobUploadResponse {
 		this.blob = blob;
 	}
 
+    @Override
 	public String toString(){
 		return blob.toString();
 	}

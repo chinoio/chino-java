@@ -40,7 +40,7 @@ public class CreateDocumentRequest {
      *     The content
      */
     @JsonProperty("content")
-    public void setContent(HashMap content) {
+    public final void setContent(HashMap content) {
         if(content == null){
             throw new NullPointerException("content");
         }

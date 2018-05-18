@@ -1,4 +1,4 @@
-package io.chino.examples.userschemas;
+package io.chino.java.testutils;
 
 import java.util.Date;
 

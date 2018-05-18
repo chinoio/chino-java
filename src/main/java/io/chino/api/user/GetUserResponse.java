@@ -35,6 +35,7 @@ public class GetUserResponse {
         this.user = user;
     }
 
+    @Override
     public String toString(){
         String s="";
         s+="user: "+user;

@@ -38,7 +38,7 @@ public class CreateCollectionRequest {
      *     The name
      */
     @JsonProperty("name")
-    public void setName(String name) {
+    public final void setName(String name) {
         if(name == null){
             throw new NullPointerException("name");
         }

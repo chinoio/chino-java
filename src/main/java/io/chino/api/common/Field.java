@@ -49,7 +49,7 @@ public class Field {
      *     The type
      */
     @JsonProperty("type")
-    public void setType(String type) {
+    public final void setType(String type) {
         if(type == null){
             throw new NullPointerException("type");
         }
@@ -72,7 +72,7 @@ public class Field {
      *     The name
      */
     @JsonProperty("name")
-    public void setName(String name) {
+    public final void setName(String name) {
         if(name == null){
             throw new NullPointerException("name");
         }
@@ -83,7 +83,7 @@ public class Field {
         return indexed;
     }
 
-    public void setIndexed(Boolean indexed) {
+    public final void setIndexed(Boolean indexed) {
         if(indexed == null){
             throw new NullPointerException("indexed");
         }

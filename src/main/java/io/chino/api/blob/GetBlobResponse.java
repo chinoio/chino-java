@@ -39,6 +39,7 @@ public class GetBlobResponse {
 		this.path = path;
 	}
 
+        @Override
    public String toString(){
 	   String s="";
 	   s+="filename: "+filename;

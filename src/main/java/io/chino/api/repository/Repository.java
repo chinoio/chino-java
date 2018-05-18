@@ -128,6 +128,7 @@ public class Repository {
         this.insertDate = insertDate;
     }
     
+    @Override
     public String toString(){
     	String s="";
 		s+="\ndescription: "+description;

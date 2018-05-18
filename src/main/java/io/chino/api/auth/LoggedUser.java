@@ -78,7 +78,7 @@ public class LoggedUser {
         this.scope = scope;
     }
 
-
+    @Override
     public String toString(){
         String s="\n";
         s+="access_token: "+accessToken;

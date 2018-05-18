@@ -5,7 +5,6 @@ import io.chino.api.blob.*;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.MD5Calc;
 import io.chino.api.common.SHA1Calc;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
@@ -16,9 +15,20 @@ import java.security.NoSuchAlgorithmException;
 public class Blobs extends ChinoBaseAPI {
 
     static int chunkSize=1024*1024;
+    private final ChinoAPI parent;
+    private final String hostUrl;
 
-    public Blobs(String hostUrl, OkHttpClient clientInitialized) {
-        super(hostUrl, clientInitialized);
+    /**
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
+     *                        {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
+     */
+    public Blobs(String baseApiUrl, ChinoAPI parentApiClient) {
+        super(baseApiUrl, parentApiClient);
+        hostUrl = baseApiUrl;
+        parent = parentApiClient;
     }
 
     /**
@@ -75,7 +85,7 @@ public class Blobs extends ChinoBaseAPI {
         GetBlobResponse getBlobResponse=new  GetBlobResponse();
 
         Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
 
         getBlobResponse.setFilename(response.header("Content-Disposition").substring(response.header("Content-Disposition").indexOf("=")+1, response.header("Content-Disposition").length()));
         getBlobResponse.setPath(destination+ File.separator+getBlobResponse.getFilename());

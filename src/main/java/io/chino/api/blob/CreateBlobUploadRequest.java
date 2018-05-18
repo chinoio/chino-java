@@ -37,7 +37,7 @@ public class CreateBlobUploadRequest {
 		return documentId;
 	}
 
-	public void setDocumentId(String documentId) {
+	public final void setDocumentId(String documentId) {
 		if(documentId==null){
 			throw new NullPointerException("document_id");
 		}
@@ -48,7 +48,7 @@ public class CreateBlobUploadRequest {
 		return field;
 	}
 
-	public void setField(String field) {
+	public final void setField(String field) {
 		if(field==null){
 			throw new NullPointerException("field");
 		}
@@ -59,7 +59,7 @@ public class CreateBlobUploadRequest {
 		return fileName;
 	}
 
-	public void setFileName(String fileName) {
+	public final void setFileName(String fileName) {
 		if(fileName==null){
 			throw new NullPointerException("file_name");
 		}

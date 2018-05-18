@@ -127,6 +127,8 @@ Class to manage authentication, `chino.auth`
 
 - `loginWithPassword(<username>, <password>, <application_id>, <application_secret>)`
     log in as a User with the "password" method
+- `loginWithPassword(<username>, <password>, <application_id>)`
+    log into a "public" Application as a User, with the "password" method
 - `loginWithAuthenticationCode(<code>, <redirect_url>, <application_id>, <application_secret>)`
     log in as a User with the "authentication-code" method
 - `refreshToken(<refresh_token>, <application_id>, <application_secret>)`
@@ -139,8 +141,11 @@ Class to manage applications, `chino.applications`
 - `list()`
 - `list(<offset>, <limit>)`
 - `read(<application_id>)`
+- `create(<name>, <grant_type>, <redirect_url>, <client_type)`
+    - `grant_type` can be either "password" or "authentication-code" and defines the authentication method for the users
+    - `client_type` is "public" or "confidential" and describes the type of application (see [Client types](https://docs.chino.io/#header-client-types))
 - `create(<name>, <grant_type>, <redirect_url>)`
-    `grant_type` can be "password" or "authentication-code" and defines the authentication method for the users
+    - see above; `client_type` is set to "confidential".
 - `update(<application_id>, <name>, <grant_type>, <redirect_url>)`
 - `delete(<application_id>, <force>)`
     `force` is a boolean and if it's true, the resource cannot be restored
@@ -276,5 +281,22 @@ For a better explanation see the file `SearchSamples` in the `io.chino.example.s
 - `addDocument(<collection_id>, <document_id>)`
 - `removeDocument(<collection_id>, <document_id>)`
 
+## Testing
+With the SDK are included some JUnit tests, that are used for continuous integration.
+If you want (for some reason) to run these tests by yourself, the best thing to do is to run them in
+an account *ad hoc*.
+In fact, after each test **every object on the account is deleted**, in order to preserve the correctness of tests.
+
+If you know what you are doing, open `io.chino.java.TestConstants` in the test folder, then:
+1. set the constant `TestConstants.FORCE_DELETE_ALL_ON_TESTS` to `true`.
+As an alternative, you can also `automated_test=allow` in your environment variables. 
+2. set the required environment variables;
+3. run the tests.
+    
+After every test, all the related object will be deleted.
+(E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)
+
+Testing is made with JUnit 4.
+
 ##Support
-use issues of github 
+Report problems and ask for support using Github issues. 

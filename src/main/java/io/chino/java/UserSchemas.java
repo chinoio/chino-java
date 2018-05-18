@@ -5,13 +5,21 @@ import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
 import io.chino.api.userschema.*;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 import java.util.List;
 
 public class UserSchemas extends ChinoBaseAPI {
-    public UserSchemas(String hostUrl, OkHttpClient client) {
-        super(hostUrl, client);
+
+    /**
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
+     *                        {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
+     */
+    public UserSchemas(String baseApiUrl, ChinoAPI parentApiClient) {
+        super(baseApiUrl, parentApiClient);
     }
 
     /**

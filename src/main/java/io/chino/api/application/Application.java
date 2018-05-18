@@ -27,6 +27,7 @@ public class Application {
     private String appId;
     @JsonProperty("client_type")
     private String clientType;
+    
 
     public String getAppSecret() {
         return appSecret;
@@ -75,7 +76,8 @@ public class Application {
     public void setClientType(String clientType) {
         this.clientType = clientType;
     }
-
+    
+    @Override
     public String toString(){
         String s="\n";
         s+="app_secret: " + appSecret;

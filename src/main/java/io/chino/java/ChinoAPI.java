@@ -1,7 +1,9 @@
 package io.chino.java;
 
 import io.chino.api.common.LoggingInterceptor;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+
+import java.util.concurrent.TimeUnit;
 
 public class ChinoAPI {
     OkHttpClient client;
@@ -17,6 +19,7 @@ public class ChinoAPI {
     public Search search;
     public Permissions permissions;
     public Blobs blobs;
+    public Consents consents;
 
     /**
      * Construct an API client which authenticates calls with a {@code (customerID, customerKey)} pair.
@@ -29,9 +32,9 @@ public class ChinoAPI {
         checkNotNull(hostUrl, "host_url");
         checkNotNull(customerId, "customer_id");
         checkNotNull(customerKey, "customer_key");
-        client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey)).build();
-//        LoggingInterceptor.getInstance().setCustomer(customerId, customerKey);
+        client = getDefaultHttpClient()
+                .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
+                .build();
         initObjects(hostUrl);
     }
 
@@ -43,8 +46,9 @@ public class ChinoAPI {
      */
     public ChinoAPI(String hostUrl) {
         checkNotNull(hostUrl, "host_url");
-        client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor()).build();
+        client = getDefaultHttpClient()
+                .addNetworkInterceptor(new LoggingInterceptor())
+                .build();
         initObjects(hostUrl);
     }
     
@@ -56,29 +60,59 @@ public class ChinoAPI {
      */
     public ChinoAPI(String hostUrl, String bearerToken) {
         checkNotNull(hostUrl, "host_url");
-        client = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new LoggingInterceptor(bearerToken)).build();
+        client = getDefaultHttpClient()
+                .addNetworkInterceptor(new LoggingInterceptor(bearerToken))
+                .build();
         initObjects(hostUrl);
     }
     
     private void initObjects(String hostUrl){
-        applications = new Applications(hostUrl, client);
-        userSchemas = new UserSchemas(hostUrl, client);
-        documents = new Documents(hostUrl, client);
-        schemas = new Schemas(hostUrl, client);
-        repositories = new Repositories(hostUrl, client);
-        groups = new Groups(hostUrl, client);
-        collections = new Collections(hostUrl, client);
-        users = new Users(hostUrl, client);
-        search = new Search(hostUrl, client);
-        auth = new Auth(hostUrl, client);
-        permissions = new Permissions(hostUrl, client);
-        blobs = new Blobs(hostUrl, client);
+        applications = new Applications(hostUrl, this);
+        userSchemas = new UserSchemas(hostUrl, this);
+        documents = new Documents(hostUrl, this);
+        schemas = new Schemas(hostUrl, this);
+        repositories = new Repositories(hostUrl, this);
+        groups = new Groups(hostUrl, this);
+        collections = new Collections(hostUrl, this);
+        users = new Users(hostUrl, this);
+        search = new Search(hostUrl, this);
+        auth = new Auth(hostUrl, this);
+        permissions = new Permissions(hostUrl, this);
+        blobs = new Blobs(hostUrl, this);
+        consents = new Consents(hostUrl, this);
     }
 
     private void checkNotNull(Object object, String name){
         if(object == null){
             throw new NullPointerException(name);
+        }
+    }
+
+    /**
+     * Get the default HTTP client
+     * @return
+     */
+    static OkHttpClient.Builder getDefaultHttpClient() {
+        return new OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .writeTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS);
+    }
+
+    OkHttpClient getHttpClient() {
+        return client;
+    }
+
+    void updateHttpAuth(LoggingInterceptor authInterceptor) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS);
+
+        if (authInterceptor == null) {
+            this.client = builder.build();
+        } else {
+            this.client = builder.addNetworkInterceptor(authInterceptor).build();
         }
     }
 }

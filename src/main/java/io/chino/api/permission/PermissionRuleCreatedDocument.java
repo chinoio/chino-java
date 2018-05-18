@@ -27,6 +27,7 @@ public class PermissionRuleCreatedDocument extends PermissionRule{
         this.createdDocument = createdDocument;
     }
 
+    @Override
     public String toString(){
         String s="{";
         if(getManage()!=null)
