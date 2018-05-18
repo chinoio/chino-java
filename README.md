@@ -1,4 +1,4 @@
-#  CHINO.io Java SDK #
+#  CHINO.io Java SDK # [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java)
 *Official* Java wrapper for **CHINO.io** API,
 
 Docs are available [here](http://docs.chino.io)
