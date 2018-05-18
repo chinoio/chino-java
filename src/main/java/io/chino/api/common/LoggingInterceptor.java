@@ -43,6 +43,13 @@ public final class LoggingInterceptor implements Interceptor {
         return null;
     }
 
+    public String getAuthorization() {
+        return credentials;
+    }
+
+    /**
+     *  Removes any authentication method from this Interceptor
+     */
     public void noCredentials(){
         authenticate = false;
     }

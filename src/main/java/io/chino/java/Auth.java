@@ -11,6 +11,9 @@ import io.chino.api.user.GetUserResponse;
 import io.chino.api.user.User;
 import okhttp3.*;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Auth extends ChinoBaseAPI {
 
@@ -259,7 +262,29 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/revoke_token/")
                 .post(formBody)
                 .build();
-        Response response = parent.getHttpClient().newCall(request).execute();
+        // execute call with a new HTTP client. This operation is made in order to avoid
+        // sending 2 different tokens, since the parent's client could be using another token
+        Response response = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build()
+                .newCall(request).execute();
+
+        // check if the revoked token is currently being used in the parent's HTTP client and, if so, remove it:
+        List<Interceptor> interceptors = parent.getHttpClient().networkInterceptors();
+        boolean resetAuth = false;
+        for (Interceptor i:interceptors) {
+            if (i instanceof LoggingInterceptor) {
+                String interceptorToken = ((LoggingInterceptor) i).getAuthorization().replace("Bearer ", "");
+                if (interceptorToken.equals(token))
+                    resetAuth = true;
+                break;
+            }
+        }
+        if (resetAuth)
+            parent.updateHttpAuth(null);
+
         String body = response.body().string();
         if (response.code() == 200) {
             return "success";
