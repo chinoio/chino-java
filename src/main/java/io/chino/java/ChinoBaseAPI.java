@@ -19,18 +19,21 @@ public class ChinoBaseAPI {
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
-    String hostUrl;
-    OkHttpClient client;
+    private final ChinoAPI parent;
+    private final String hostUrl;
     static ObjectMapper mapper;
 
+
     /**
-     * The default constructor used by all classes
-     * @param hostUrl the url of the server
-     * @param client the OkHttpClient Object used for the calls to the server
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl the base URL of the Chino.io API. For testing, use:<br>
+     *     {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
      */
-    public ChinoBaseAPI(String hostUrl, OkHttpClient client){
-        this.hostUrl = hostUrl;
-        this.client = client;
+    public ChinoBaseAPI(String baseApiUrl, ChinoAPI parentApiClient) {
+        this.hostUrl = baseApiUrl;
+        parent = parentApiClient;
         mapper = getMapper();
     }
 
@@ -46,10 +49,10 @@ public class ChinoBaseAPI {
         String json = mapper.writeValueAsString(resource);
         RequestBody requestBody = RequestBody.create(JSON, json);
         Request request = new Request.Builder()
-                .url(hostUrl+path)
+                .url(hostUrl + path)
                 .post(requestBody)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -75,7 +78,7 @@ public class ChinoBaseAPI {
                 .url(hostUrl+path+"?offset="+offset+"&limit="+limit)
                 .post(requestBody)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -99,7 +102,7 @@ public class ChinoBaseAPI {
                 .url(hostUrl + path+"?offset="+offset+"&limit="+limit)
                 .get()
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -137,7 +140,7 @@ public class ChinoBaseAPI {
                 .url(hostUrl + path + paramString)
                 .get()
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -159,7 +162,7 @@ public class ChinoBaseAPI {
                 .url(hostUrl + path)
                 .get()
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -183,7 +186,7 @@ public class ChinoBaseAPI {
                 .url(hostUrl+path)
                 .put(requestBody)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -207,7 +210,7 @@ public class ChinoBaseAPI {
                 .url(hostUrl+path)
                 .patch(requestBody)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -236,7 +239,7 @@ public class ChinoBaseAPI {
                 .put(requestBody)
                 .build();
 
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return mapper.readTree(body).get("data");
@@ -259,7 +262,7 @@ public class ChinoBaseAPI {
             request = new Request.Builder().url(hostUrl + path+"?force=true").delete().build();
         else
             request = new Request.Builder().url(hostUrl + path).delete().build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return "success";

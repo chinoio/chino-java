@@ -3,6 +3,7 @@ package io.chino.java;
 import io.chino.api.common.LoggingInterceptor;
 import okhttp3.*;
 
+import java.rmi.server.RemoteRef;
 import java.util.concurrent.TimeUnit;
 
 public class ChinoAPI {
@@ -67,19 +68,19 @@ public class ChinoAPI {
     }
     
     private void initObjects(String hostUrl){
-        applications = new Applications(hostUrl, client);
-        userSchemas = new UserSchemas(hostUrl, client);
-        documents = new Documents(hostUrl, client);
-        schemas = new Schemas(hostUrl, client);
-        repositories = new Repositories(hostUrl, client);
-        groups = new Groups(hostUrl, client);
-        collections = new Collections(hostUrl, client);
-        users = new Users(hostUrl, client);
-        search = new Search(hostUrl, client);
-        auth = new Auth(hostUrl, client);
-        permissions = new Permissions(hostUrl, client);
-        blobs = new Blobs(hostUrl, client);
-        consents = new Consents(hostUrl, client);
+        applications = new Applications(hostUrl, this);
+        userSchemas = new UserSchemas(hostUrl, this);
+        documents = new Documents(hostUrl, this);
+        schemas = new Schemas(hostUrl, this);
+        repositories = new Repositories(hostUrl, this);
+        groups = new Groups(hostUrl, this);
+        collections = new Collections(hostUrl, this);
+        users = new Users(hostUrl, this);
+        search = new Search(hostUrl, this);
+        auth = new Auth(hostUrl, this);
+        permissions = new Permissions(hostUrl, this);
+        blobs = new Blobs(hostUrl, this);
+        consents = new Consents(hostUrl, this);
     }
 
     private void checkNotNull(Object object, String name){
@@ -97,5 +98,22 @@ public class ChinoAPI {
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS);
+    }
+
+    OkHttpClient getHttpClient() {
+        return client;
+    }
+
+    void updateHttpAuth(LoggingInterceptor authInterceptor) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS);
+
+        if (authInterceptor == null) {
+            this.client = builder.build();
+        } else {
+            this.client = builder.addNetworkInterceptor(authInterceptor).build();
+        }
     }
 }
