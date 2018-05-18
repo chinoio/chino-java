@@ -5,8 +5,10 @@ import io.chino.api.application.ClientType;
 import io.chino.api.auth.LoggedUser;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
+import io.chino.api.permission.PermissionRule;
 import io.chino.api.repository.Repository;
 import io.chino.api.schema.SchemaStructure;
+import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.DeleteAll;
@@ -51,6 +53,7 @@ public class AuthTest extends ChinoBaseTest {
             return;
         }
 
+        User user;
         HashMap<String, Object> userData = new HashMap<>();
         userData.put("test_string", "test_string_value");
         userData.put("test_boolean", true);
@@ -58,7 +61,7 @@ public class AuthTest extends ChinoBaseTest {
         userData.put("test_date", "1993-09-08");
         userData.put("test_float", 12.4);
         try {
-            chino_admin.users.create(TestConstants.USERNAME, TestConstants.PASSWORD, userData, schema.getUserSchemaId());
+            user = chino_admin.users.create(TestConstants.USERNAME, TestConstants.PASSWORD, userData, schema.getUserSchemaId());
         } catch (Exception ex) {
             fail("failed to set up test for AuthTest (create User).\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -80,6 +83,11 @@ public class AuthTest extends ChinoBaseTest {
                     "this Schema is used to verify that users are logged in and can create Documents.",
                     new SchemaStructure(fields)
             ).getSchemaId();
+
+        // grant 'create' Permission to user
+        PermissionRule createPerms = new PermissionRule();
+        createPerms.setManage("C");
+        chino_admin.permissions.permissionsOnResourceChildren("grant", "schemas", SCHEMA_ID, "documents", "users", user.getUserId(), createPerms);
     }
 
     @AfterClass
@@ -149,7 +157,7 @@ public class AuthTest extends ChinoBaseTest {
         Application app = chino_admin.applications.create(TestConstants.APP_NAME + " - AuthTest.testLoginWithPasswordCONFIDENTIAL_logout()", "password", "", ClientType.CONFIDENTIAL);;
 
         // get tokens
-        LoggedUser tokens = chino_admin.auth.loginWithPassword(
+        LoggedUser tokens = test.loginWithPassword(
                 TestConstants.USERNAME,
                 TestConstants.PASSWORD,
                 app.getAppId(),
@@ -157,23 +165,22 @@ public class AuthTest extends ChinoBaseTest {
         );
 
         // test login with token
-        testClient.auth.loginWithBearerToken(tokens.getAccessToken());
         assertLoginSuccessful(testClient, "(1) testTokens");
 
         // test refresh token
-        LoggedUser newTokens = testClient.auth.refreshToken(
+        LoggedUser newTokens = test.refreshToken(
                 tokens.getRefreshToken(),
                 app.getAppId(),
                 app.getAppSecret()
         );
-        testClient.auth.loginWithBearerToken(newTokens.getAccessToken());
         assertLoginSuccessful(testClient, "(2) testTokens");
 
         // test ChinoAPI client constructor with bearer token
         try {
-            // check that old tokens are invalid after refresh...
+            // check that old tokens are invalid after logout...
+            test.logout(tokens.getAccessToken(), app.getAppId(), app.getAppSecret());
             assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, tokens.getAccessToken()), "(4) testTokens");
-            fail("Old tokens are valid after refreshs");
+            fail("Old tokens are valid after logout");
         } catch (AssertionFailedError err) {
             // ...and that new tokens are valid
             assertLoginSuccessful(new ChinoAPI(TestConstants.HOST, newTokens.getAccessToken()), "(3) testTokens");
@@ -187,6 +194,10 @@ public class AuthTest extends ChinoBaseTest {
             docContent.put("testMethod", testMethodName);
             client.documents.create(SCHEMA_ID, docContent);
         } catch (ChinoApiException | IOException e) {
+            if (e instanceof ChinoApiException && ((ChinoApiException) e).getCode().equals("403")) {
+                // Somebody forgot to grant 'create' Permissions on the Schema?
+                throw e;
+            }
             throw new AssertionFailedError("Failed to login. " + e.getClass().getCanonicalName() + ": " + e.getMessage());
         }
     }
@@ -197,7 +208,10 @@ public class AuthTest extends ChinoBaseTest {
             client.documents.create(SCHEMA_ID, docContent);
             throw new AssertionFailedError("Failed to logout.");
         } catch (ChinoApiException e) {
-            return;
+            if (e.getCode().equals("401")) {
+                return;
+            }
+            throw new AssertionFailedError("Failed to logout. Expected '401'; server responded '" + e.getMessage() + "'");
         }
     }
 }
