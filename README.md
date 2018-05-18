@@ -125,15 +125,24 @@ See io.chino.examples.documents.HelloWorldDocument for full documentation exampl
 ### Auth
 Class to manage authentication, `chino.auth`
 
+To set an authentication method of an API client use one of the following:
+
 - `loginWithPassword(<username>, <password>, <application_id>, <application_secret>)`
     log in as a User with the "password" method
 - `loginWithPassword(<username>, <password>, <application_id>)`
     log into a "public" Application as a User, with the "password" method
 - `loginWithAuthenticationCode(<code>, <redirect_url>, <application_id>, <application_secret>)`
     log in as a User with the "authentication-code" method
+- `loginWithBearerToken(<access_token>)`
+    log in as a User using a previously stored access token
+
+The Auth class also provides the following utility methods: 
 - `refreshToken(<refresh_token>, <application_id>, <application_secret>)`
+    use a refresh token to get new tokens 
 - `checkUserStatus()`
+    get current User from Chino.io
 - `logout(<token>, <application_id>, <application_secret>)`
+    revoke access to token
 
 ### Application
 Class to manage applications, `chino.applications`
@@ -296,7 +305,14 @@ As an alternative, you can also `automated_test=allow` in your environment varia
 After every test, all the related object will be deleted.
 (E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)
 
-Testing is made with JUnit 4.
+Testing is made with JUnit 4. Tests are implemented for the following classes:
+- `io.chino.api`:    
+    * `Applications`
+    * `Auth`
+    * `ChinoAPI`
+    * `Consents`
 
 ##Support
-Report problems and ask for support using Github issues. 
+Report problems and ask for support using Github issues.
+
+If you want to learn more about Chino.io, visit the [official site](https://chino.io) or email us at [info@chino.io](mailto:info@chino.io).
