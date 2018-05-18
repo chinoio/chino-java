@@ -11,14 +11,23 @@ import io.chino.api.user.GetUserResponse;
 import io.chino.api.user.User;
 import okhttp3.*;
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
-
-import io.chino.java.ChinoAPI;
 
 public class Auth extends ChinoBaseAPI {
 
-    public Auth(String hostUrl, OkHttpClient client){
-        super(hostUrl, client);
+    private final ChinoAPI parent;
+    private final String hostUrl;
+
+    /**
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
+     *                        {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
+     */
+    public Auth(String baseApiUrl, ChinoAPI parentApiClient) {
+        super(baseApiUrl, parentApiClient);
+        parent = parentApiClient;
+        hostUrl = baseApiUrl;
     }
 
     /**
@@ -58,14 +67,10 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        client = ChinoAPI.getDefaultHttpClient()
-                .build();
-        Response response = client.newCall(request).execute();
-        String body = null;
-        if (response != null){
-            body = response.body().string();
-        }
-        return auxFunction(response, body);
+        parent.updateHttpAuth(null);
+        Response response = parent.getHttpClient().newCall(request).execute();
+
+        return parseTokensAndUpdateAuth(response);
     }
     
     /**
@@ -83,7 +88,7 @@ public class Auth extends ChinoBaseAPI {
     }
 
     /**
-     * Save the {@code token} in a new {@link #client OkHttpClient} to be used in future calls.<br>
+     * Save the {@code token} in the parent's {@link OkHttpClient} to be used in future calls.<br>
      * <br>
      * <b>This method has been deprecated since API version 1.2 and might be removed at any time.</b>
      * It's strongly suggested to use {@link #loginWithBearerToken(String)} instead.
@@ -104,7 +109,7 @@ public class Auth extends ChinoBaseAPI {
     }
 
     /**
-     * Save the {@code token} in a new {@link #client OkHttpClient} to be used in future calls
+     * Save the {@code token} in the parent's {@link OkHttpClient} to be used in future calls.
      * @param token the new token to be used in the API calls
      * @return information about the current {@link User}'s status (see also {@link #checkUserStatus() checkUserStatus()})
      * @throws IOException the User can not be found on server. Thrown by {@link Call#execute() okhttp3.Call}
@@ -112,10 +117,7 @@ public class Auth extends ChinoBaseAPI {
      */
     public User loginWithBearerToken(String token) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
-        // saves the new token in the HTTP client
-        client = ChinoAPI.getDefaultHttpClient()
-                .addNetworkInterceptor(new LoggingInterceptor(token))
-                .build();
+        parent.updateHttpAuth(new LoggingInterceptor(token));
         User u = checkUserStatus();
         return u;
     }
@@ -158,24 +160,30 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/token/")
                 .post(formBody)
                 .build();
-        Response response = client.newCall(request).execute();
-        String body = null;
-        if (response != null){
-            body = response.body().string();
-        }
-        return auxFunction(response, body);
+        Response response = parent.getHttpClient().newCall(request).execute();
+        return parseTokensAndUpdateAuth(response);
     }
 
-    private LoggedUser auxFunction(Response response, String body) throws IOException, ChinoApiException{
+    /**
+     * Parses Chino.io server {@link Response response} and updates the parent's {@link OkHttpClient}
+     * authentication method
+     *
+     * @param response the server's {@link Response}
+     * @return
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    private LoggedUser parseTokensAndUpdateAuth(Response response) throws IOException, ChinoApiException{
         checkNotNull(response, "response");
-        checkNotNull(body, "body");
+
+        String body = response.body().string();
+        checkNotNull(body, "response body");
+
         if (response.code() == 200) {
             JsonNode data = mapper.readTree(body).get("data");
             if(data!=null) {
                 LoggedUser loggedUser = mapper.convertValue(data, LoggedUser.class);
-                client = ChinoAPI.getDefaultHttpClient()
-                        .addNetworkInterceptor(new LoggingInterceptor(loggedUser.getAccessToken()))
-                        .build();
+                parent.updateHttpAuth(new LoggingInterceptor(loggedUser.getAccessToken()));
                 return loggedUser;
             }
             return null;
@@ -207,12 +215,11 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl + "/auth/token/")
                 .post(formBody)
                 .build();
-        Response response = client.newCall(request).execute();
-        String body = null;
+        Response response = parent.getHttpClient().newCall(request).execute();
         if (response != null){
-            body = response.body().string();
+            // TODO remove all
         }
-        return auxFunction(response, body);
+        return parseTokensAndUpdateAuth(response);
     }
 
     /**
@@ -252,7 +259,7 @@ public class Auth extends ChinoBaseAPI {
                 .url(hostUrl+"/auth/revoke_token/")
                 .post(formBody)
                 .build();
-        Response response = client.newCall(request).execute();
+        Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
             return "success";

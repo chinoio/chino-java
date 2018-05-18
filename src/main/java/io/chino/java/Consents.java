@@ -35,6 +35,8 @@ import io.chino.api.consent.DataController;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
+import io.chino.api.user.User;
 import okhttp3.OkHttpClient;
 
 /**
@@ -43,11 +45,18 @@ import okhttp3.OkHttpClient;
  * @author Andrea Arighi [andrea@chino.io]
  */
 public class Consents extends ChinoBaseAPI {
-    
-    public Consents(String hostUrl, OkHttpClient clientInitialized) {
-        super(hostUrl, clientInitialized);
+
+    /**
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
+     *                        {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
+     */
+    public Consents(String baseApiUrl, ChinoAPI parentApiClient) {
+        super(baseApiUrl, parentApiClient);
     }
-    
+
     /**
      * List all the available {@link Consent consents}, filtering by the
      * specified user_id. The results are paginated
@@ -216,7 +225,7 @@ public class Consents extends ChinoBaseAPI {
      * @see Consent#Consent(io.chino.api.consent.Consent, java.lang.String)  Consent  constructor by user_id
      * 
      * @param base the base {@link Consent} object
-     * @param userId the new {@link #userId userId}. <b>Cannot be {@code null}</b>
+     * @param userId the new {@link User#getUserId()}  userId}. <b>Cannot be {@code null}</b>
      * @return the {@link Consent} object that was just created on Chino.io.
      * @throws java.io.IOException request could not be executed
      * (but it might have arrived to the server).

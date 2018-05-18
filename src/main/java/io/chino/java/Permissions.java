@@ -10,8 +10,16 @@ import okhttp3.OkHttpClient;
 import java.io.IOException;
 
 public class Permissions extends ChinoBaseAPI {
-    public Permissions(String hostUrl, OkHttpClient clientInitialized){
-        super(hostUrl, clientInitialized);
+
+    /**
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
+     *                        {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
+     */
+    public Permissions(String baseApiUrl, ChinoAPI parentApiClient) {
+        super(baseApiUrl, parentApiClient);
     }
 
     /**
