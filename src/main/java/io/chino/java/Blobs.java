@@ -5,7 +5,6 @@ import io.chino.api.blob.*;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.MD5Calc;
 import io.chino.api.common.SHA1Calc;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 

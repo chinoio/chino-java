@@ -7,7 +7,7 @@ import io.chino.api.document.CreateDocumentRequest;
 import io.chino.api.document.Document;
 import io.chino.api.document.GetDocumentResponse;
 import io.chino.api.document.GetDocumentsResponse;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 import java.util.HashMap;
 

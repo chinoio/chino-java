@@ -8,7 +8,7 @@ import io.chino.api.collection.GetCollectionsResponse;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.document.GetDocumentsResponse;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 
 public class Collections extends ChinoBaseAPI {

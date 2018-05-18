@@ -7,7 +7,6 @@ import io.chino.api.group.CreateGroupRequest;
 import io.chino.api.group.GetGroupResponse;
 import io.chino.api.group.GetGroupsResponse;
 import io.chino.api.group.Group;
-import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.util.HashMap;

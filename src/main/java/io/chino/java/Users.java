@@ -7,7 +7,7 @@ import io.chino.api.user.CreateUserRequest;
 import io.chino.api.user.GetUserResponse;
 import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 import java.util.HashMap;
 

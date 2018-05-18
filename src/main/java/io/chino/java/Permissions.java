@@ -6,7 +6,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.permission.GetPermissionsResponse;
 import io.chino.api.permission.PermissionRule;
 import io.chino.api.permission.PermissionRuleCreatedDocument;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 
 public class Permissions extends ChinoBaseAPI {

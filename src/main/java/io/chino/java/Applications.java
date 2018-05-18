@@ -1,10 +1,9 @@
 package io.chino.java;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.application.*;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
-import okhttp3.OkHttpClient;
-import com.fasterxml.jackson.databind.*;
 
 import java.io.IOException;
 

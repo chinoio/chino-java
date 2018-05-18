@@ -6,7 +6,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.repository.GetRepositoriesResponse;
 import io.chino.api.repository.GetRepositoryResponse;
 import io.chino.api.repository.Repository;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 
 public class Repositories extends ChinoBaseAPI {

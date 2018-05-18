@@ -3,15 +3,15 @@ package io.chino.java;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.application.Application;
 import io.chino.api.application.ClientType;
-import io.chino.api.auth.*;
+import io.chino.api.auth.LoggedUser;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.ErrorResponse;
 import io.chino.api.common.LoggingInterceptor;
 import io.chino.api.user.GetUserResponse;
 import io.chino.api.user.User;
 import okhttp3.*;
+
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

@@ -26,18 +26,12 @@ package io.chino.java;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
-import io.chino.api.consent.Consent;
-import io.chino.api.consent.ConsentHistory;
-import io.chino.api.consent.ConsentList;
-import io.chino.api.consent.ConsentListWrapper;
-import io.chino.api.consent.Purpose;
-import io.chino.api.consent.DataController;
+import io.chino.api.consent.*;
+import io.chino.api.user.User;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
-import io.chino.api.user.User;
-import okhttp3.OkHttpClient;
 
 /**
  * Base API client for Consent Management.

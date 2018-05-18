@@ -1,9 +1,8 @@
 package io.chino.java;
 
 import io.chino.api.common.LoggingInterceptor;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
 
-import java.rmi.server.RemoteRef;
 import java.util.concurrent.TimeUnit;
 
 public class ChinoAPI {

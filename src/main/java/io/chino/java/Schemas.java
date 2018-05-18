@@ -5,7 +5,7 @@ import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
 import io.chino.api.schema.*;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 import java.util.List;
 

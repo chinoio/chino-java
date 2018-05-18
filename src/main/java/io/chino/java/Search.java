@@ -8,7 +8,7 @@ import io.chino.api.search.FilterOption;
 import io.chino.api.search.SearchRequest;
 import io.chino.api.search.SortOption;
 import io.chino.api.user.GetUsersResponse;
-import okhttp3.OkHttpClient;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
