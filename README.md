@@ -1,4 +1,4 @@
-#  CHINO.io Java SDK # [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java)
+#  CHINO.io Java SDK # [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java)
 *Official* Java wrapper for **CHINO.io** API,
 
 Docs are available [here](http://docs.chino.io)
@@ -17,7 +17,7 @@ If you're using Maven, then edit your project's "pom.xml" and add this:
 <dependency>
 	<groupId>com.github.chinoio</groupId>
 	    <artifactId>chino-java</artifactId>
-	<version>1.1</version>
+	<version>1.2.1</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ allprojects {
 
 dependencies {
     // ...
-    compile 'com.github.chinoio:chino-java:1.1'
+    compile 'com.github.chinoio:chino-java:1.2.1'
 }
 ```
 
