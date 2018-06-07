@@ -8,8 +8,19 @@ description = """chino-java-library"""
 
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
+
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
+}
+
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar
 }
 
 buildscript {
@@ -20,7 +31,7 @@ buildscript {
 
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
-        classpath 'com.android.tools.build:gradle:0.5.+'
+//        classpath 'com.android.tools.build:gradle:0.5.+'
     }
 }
 

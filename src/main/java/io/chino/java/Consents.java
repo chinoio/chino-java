@@ -124,7 +124,7 @@ public class Consents extends ChinoBaseAPI {
     /**
      * Create a new {@link Consent} on Chino.io, passing a local {@link Consent}
      * object.
-     * @param consentData
+     * @param consentData the {@link Consent}'s data to be sent to Chino.io
      * @return the data sent by Chino in the API call response,
      * mapped to a {@link Consent} object.
      */
