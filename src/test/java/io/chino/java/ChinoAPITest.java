@@ -237,20 +237,107 @@ public class ChinoAPITest {
             // delete the repository
             step = "delete repository";
             apiClient.repositories.delete(rep.getRepositoryId(), true);
-            boolean deleted = false;
-            try {
-                apiClient.repositories.read(rep.getRepositoryId());
-            } catch (ChinoApiException x) {
-                if (x.getCode().equals("404"))
-                    deleted = true;
-            } finally {
-                assertTrue(deleted);
-            }
+
+            assertRepositoryWasDeleted(apiClient, rep);
         } catch (ChinoApiException ex) {
             fail("Thrown ChinoApiException. Failed to " + step + ". \n" + ex.getMessage());
         } catch (IOException ex) {
             tearDownClass();
             fail("Thrown IOException. Reason: " + ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testSetCustomer() {
+        String step = "initialize";
+        ChinoAPI apiClient = new ChinoAPI(ChinoBaseTest.URL);
+        assertClientWasCreated(apiClient);
+        try {
+            // create a repository using costomer credentials
+            step = "create repository";
+            Repository rep = apiClient.setCustomer(TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY) // set credentials in client
+                                      .repositories.create("test_repo for ChinoAPITest");
+            assertNotNull(rep);
+
+            // delete the repository
+            step = "delete repository";
+            apiClient.repositories.delete(rep.getRepositoryId(), true); // client should keep the credentials saved.
+            assertRepositoryWasDeleted(apiClient, rep);
+        } catch (ChinoApiException ex) {
+            fail("Thrown ChinoApiException. Failed to " + step + ". \n" + ex.getMessage());
+        } catch (IOException ex) {
+            tearDownClass();
+            fail("Thrown IOException. Reason: " + ex.getMessage());
+        }
+    }
+
+    @Test
+    public void testSetBearerToken() {
+        // authenticate user
+        String step = "initialize";
+        ChinoAPI chino_user = new ChinoAPI(ChinoBaseTest.URL);
+        String accessToken = null,
+                refreshToken = null;
+        LoggedUser user = null;
+        try {
+            step = "authenticate user with username '" + TestConstants.USERNAME + "' and password '" + TestConstants.PASSWORD + "'";
+            user = chino_user.auth.loginWithPassword(TestConstants.USERNAME, TestConstants.PASSWORD, APP_ID, APP_SECRET);
+            accessToken = user.getAccessToken();
+            System.out.println("1st access token: " + accessToken);
+            refreshToken = user.getRefreshToken();
+            System.out.println("1st refresh token: " + refreshToken);
+
+            // Do some operations with the bearer token client
+            ChinoAPI apiClient = new ChinoAPI(ChinoBaseTest.URL);
+            assertClientWasCreated(apiClient);
+            // give the user permission to CRUD and List repositories
+            step = "grant perms on repositories";
+            PermissionRule repo_grant = new PermissionRule();
+            repo_grant.setManage("C", "R", "U", "D", "L");
+            chino_customer.permissions.permissionsOnResources("grant", "repositories", "users", USER_ID, repo_grant);
+
+            // use the access token to create a new repo
+            step = "create repository";
+            Repository rep = apiClient.setBearerToken(accessToken)              // set token in API client
+                                        .repositories.create("test_repo");
+            assertNotNull(apiClient.repositories.read(rep.getRepositoryId()));  // client should keep the token saved
+
+            // refresh token - access token is automatically updated in apiClient
+            step = "refresh token";
+            user = apiClient.auth.refreshToken(refreshToken, APP_ID, APP_SECRET);
+            accessToken = user.getAccessToken();
+            System.out.println("2nd access token: " + accessToken);
+            refreshToken = user.getRefreshToken();
+            System.out.println("2nd refresh token: " + refreshToken);
+
+            // use the new access token to delete the repository
+            step = "delete repository";
+            String repId = rep.getRepositoryId();
+            apiClient.setBearerToken(accessToken)                                 // set new token in API client
+                    .repositories.delete(repId, true);
+
+            assertRepositoryWasDeleted(apiClient, rep);
+
+            // log out from the api client
+            step = "logout";
+            apiClient.auth.logout(accessToken, APP_ID, APP_SECRET);
+        } catch (ChinoApiException ex) {
+            fail("Thrown ChinoApiException. Failed to " + step + ". \n" + ex.getMessage());
+        } catch (IOException ex) {
+            tearDownClass();
+            fail("Thrown IOException. Reason: " + ex.getMessage());
+        }
+    }
+
+    private static void assertRepositoryWasDeleted(ChinoAPI apiClient, Repository repository) throws IOException {
+        boolean deleted = false;
+        try {
+            apiClient.repositories.read(repository.getRepositoryId());
+        } catch (ChinoApiException x) {
+            if (x.getCode().equals("404"))
+                deleted = true;
+        } finally {
+            assertTrue(deleted);
         }
     }
 

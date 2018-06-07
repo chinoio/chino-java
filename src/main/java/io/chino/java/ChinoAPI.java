@@ -1,8 +1,11 @@
 package io.chino.java;
 
+import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.LoggingInterceptor;
+import io.chino.api.user.User;
 import okhttp3.OkHttpClient;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class ChinoAPI {
@@ -114,5 +117,35 @@ public class ChinoAPI {
         } else {
             this.client = builder.addNetworkInterceptor(authInterceptor).build();
         }
+    }
+
+    /**
+     * Change this ChinoAPI authentication method to Bearer token
+     * @param token the new bearer token that will be used to authenticate API calls to Chino.io API
+     *
+     * @return this {@link ChinoAPI} client with the new authentication method
+     */
+    public ChinoAPI setBearerToken(String token) {
+        checkNotNull(token, "token");
+        updateHttpAuth(new LoggingInterceptor(token));
+        return this;
+    }
+
+    /**
+     * Change this ChinoAPI authentication method to Basic Auth,
+     * using the customer credentials. </br>
+     * </br>
+     * <b>WARNING: don't use this in confidential {@link Applications}</b>
+     *
+     * @param customerId the Chino.io customer ID
+     * @param customerKey the Chino.io customer key
+     *
+     * @return this {@link ChinoAPI} client with the new authentication method
+     */
+    public ChinoAPI setCustomer(String customerId, String customerKey) {
+        checkNotNull(customerId, "customer id");
+        checkNotNull(customerKey, "customer key");
+        updateHttpAuth(new LoggingInterceptor(customerId, customerKey));
+        return this;
     }
 }
