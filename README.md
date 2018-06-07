@@ -1,4 +1,4 @@
-#  CHINO.io Java SDK # [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java)
+#  CHINO.io Java SDK # [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java)
 *Official* Java wrapper for **CHINO.io** API,
 
 Docs are available [here](http://docs.chino.io)
@@ -17,7 +17,7 @@ If you're using Maven, then edit your project's "pom.xml" and add this:
 <dependency>
 	<groupId>com.github.chinoio</groupId>
 	    <artifactId>chino-java</artifactId>
-	<version>1.1</version>
+	<version>1.2.2</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ allprojects {
 
 dependencies {
     // ...
-    compile 'com.github.chinoio:chino-java:1.1'
+    compile 'com.github.chinoio:chino-java:1.2.2'
 }
 ```
 
@@ -121,6 +121,33 @@ chino.documents.create(<schema_id>, <HashMap or String of the content>)
 ```
 
 See io.chino.examples.documents.HelloWorldDocument for full documentation example
+
+### ChinoAPI
+Base client for sending API calls to [Chino.io](https://chino.io).
+
+You can create an authenticated client, which uses the specified auth method for every API call:
+
+- `new ChinoAPI(<host_url>, <customer_id>, <customer_key>)` 
+    authenticated with **customer credentials**
+- `new ChinoAPI(<host_url>, <bearer_token>)` 
+    authenticated with **bearer token**
+- `new ChinoAPI(<host_url>`
+    **non authenticated** - you will need to login.
+    
+**New in version 1.2.2**: You can change the auth method with:
+
+- `setBearerToken(<bearer_token>)`
+- `setCustomer(<customer_id>, <customer_key>)`
+
+Example:
+```Java
+    ChinoAPI chino = new ChinoAPI("<host_url>", "<customer_id>", "<customer_key>");
+
+    chino.documents.read("<document_id>");     // using customer credentials:
+    
+    chino.setBearerToken("<bearer_token>").documents.read("<document_id>"); // using bearer token:
+    chino.documents.read("<document_id>"); // using bearer token:
+```   
     
 ### Auth
 Class to manage authentication, `chino.auth`
