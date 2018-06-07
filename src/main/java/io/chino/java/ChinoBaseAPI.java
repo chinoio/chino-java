@@ -116,7 +116,7 @@ public class ChinoBaseAPI {
      * The default function to make a GET call to the server saved in hostUrl.
      * This call allows to pass any value as a URL parameter with the call.
      * @param path the path of the URL
-     * @param urlParameters a <code>&lt</code><code>key, value</code><code>&gt</code>
+     * @param urlParameters a <code>&lt;</code><code>key, value</code><code>&gt;</code>
      * {@link HashMap} containing the URL parameters.
      * @return JsonNode Object with the response of the server if there are no errors
      * @throws IOException

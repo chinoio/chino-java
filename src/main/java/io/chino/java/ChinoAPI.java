@@ -133,8 +133,8 @@ public class ChinoAPI {
 
     /**
      * Change this ChinoAPI authentication method to Basic Auth,
-     * using the customer credentials. </br>
-     * </br>
+     * using the customer credentials. <br>
+     * <br>
      * <b>WARNING: don't use this in confidential {@link Applications}</b>
      *
      * @param customerId the Chino.io customer ID
