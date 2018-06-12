@@ -8,4 +8,4 @@ out/
 /nbproject/*
 build.xml
 manifest.mf
-src/test/java/io/chino/java/tmp/
+src/test/java/io/chino/java/replicate_errors/

@@ -32,21 +32,23 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * It uploads an entire File
-     * @param path the path of the file to upload (without the name of the file)
-     * @param documentId the id of the Document to which upload the file
-     * @param field the name of the Field in the Document
-     * @param fileName the name of the file to upload
-     * @return CommitBlobUploadResponse Object which contains the status of the operation
+     * Upload a local file to Chino.io as a BLOB. This method fully handles the upload of a BLOB.
+     *
+     * @param folderPath the path to the folder which contains the local file
+     * @param documentId the id of the Chino.io Document which contains this BLOB
+     * @param field the name of the field (of type "blob") that refers to this BLOB in the Document
+     * @param fileName the name of the local file to upload
+     *
+     * @return A {@link CommitBlobUploadResponse} Object with information about the outcome of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
-    public CommitBlobUploadResponse uploadBlob(String path, String documentId, String field, String fileName) throws IOException, ChinoApiException{
-        checkNotNull(path, "path");
+    public CommitBlobUploadResponse uploadBlob(String folderPath, String documentId, String field, String fileName) throws IOException, ChinoApiException{
+        checkNotNull(folderPath, "path");
         CreateBlobUploadResponse blobResponse = initUpload(documentId, field, fileName);
         String upload_id = blobResponse.getBlob().getUploadId();
 
-        File file = new File(path+File.separator+fileName);
+        File file = new File(folderPath+File.separator+fileName);
         RandomAccessFile raf = new RandomAccessFile(file, "r");
 
         byte[] bytes;
@@ -71,10 +73,11 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Returns the Blob requested
+     * Returns the requested BLOB
+     *
      * @param blobId the id of the blob to retrieve
      * @param destination the path where to save the file
-     * @return GetBlobResponse Object which contains the Blob Object
+     * @return GetBlobResponse Object which contains the BLOB Object
      * @throws IOException
      * @throws ChinoApiException
      * @throws NoSuchAlgorithmException
@@ -126,11 +129,17 @@ public class Blobs extends ChinoBaseAPI {
 
 
     /**
-     * It initialize the upload
-     * @param documentId the id of the Document to which upload the file
-     * @param field the name of the Field in the Document
+     * Create a BLOB object on Chino.io. This method is called by {@link #uploadBlob(String, String, String, String) uploadBlod()}
+     * and should be <b>never called directly</b>. Its purpose is to initialize the metadata of the file that will be uploaded.
+     *
+     * @see #uploadBlob(String, String, String, String)
+     *
+     * @param documentId the Chino.io ID of the Document the new BLOB belongs to.
+     * @param field the name of the field (with type "blob") in the Document.
      * @param fileName the name of the file to upload
-     * @return CreateBlobUploadResponse Object which contains the upload_id used for the upload of the Blob
+     *
+     * @return a {@link CreateBlobUploadResponse}, which contains the upload_id that is needed for upload the file.
+     *
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -145,12 +154,16 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * It uploads a chunk of data
-     * @param uploadId the upload_id created on the initialization of the upload
-     * @param chunkData an array of bytes that represents a chunk
-     * @param offset the offset of the chunk
+     * Upload a chunk of data to the server. This method is called automatically by {@link #uploadBlob(String, String, String, String) uploadBlob()},
+     * thus should be <b>never called directly</b>.
+     *
+     * @see #uploadBlob(String, String, String, String)
+     *
+     * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload()}
+     * @param chunkData a chunk of data in the form of a byte array
+     * @param offset the offset of the chunk relative to the beginning of the file
      * @param length the length of the chunk
-     * @return CreateBlobUploadResponse Object which contains the status of the operation
+     * @return A {@link CreateBlobUploadResponse}, which contains the status of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -163,9 +176,14 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * It does the final commit when all the chunks are uploaded
-     * @param uploadId the upload_id created on the initialization of the upload
-     * @return CommitBlobUploadResponse Object which contains the status of the operation
+     * Confirm and complete the upload on Chino.io.This method is called automatically by {@link #uploadBlob(String, String, String, String) uploadBlob()},
+     * thus should be <b>never called directly</b>.
+     *
+     * @see #uploadBlob(String, String, String, String)
+     *
+     * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload()}
+     *
+     * @return A {@link CommitBlobUploadResponse}, which contains the status of the operation
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -180,9 +198,10 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * It deletes a Blob
-     * @param blobId the id of the Blob to delete
-     * @param force if true, the resource cannot be restored
+     * Delete a BLOB from Chino.io
+     *
+     * @param blobId the id of the BLOB to delete
+     * @param force if true, the resource cannot be restored. Otherwise, it will only become inactive.
      * @return a String with the result of the operation
      * @throws IOException
      * @throws ChinoApiException
