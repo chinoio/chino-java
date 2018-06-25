@@ -17,7 +17,7 @@ If you're using Maven, then edit your project's "pom.xml" and add this:
 <dependency>
 	<groupId>com.github.chinoio</groupId>
 	    <artifactId>chino-java</artifactId>
-	<version>1.2.2</version>
+	<version>1.2.3</version>
 </dependency>
 ```
 
@@ -33,7 +33,7 @@ allprojects {
 
 dependencies {
     // ...
-    compile 'com.github.chinoio:chino-java:1.2.2'
+    compile 'com.github.chinoio:chino-java:1.2.3'
 }
 ```
 
@@ -134,7 +134,7 @@ You can create an authenticated client, which uses the specified auth method for
 - `new ChinoAPI(<host_url>`
     **non authenticated** - you will need to login.
     
-**New in version 1.2.2**: You can change the auth method with:
+You can change the auth method with:
 
 - `setBearerToken(<bearer_token>)`
 - `setCustomer(<customer_id>, <customer_key>)`
@@ -195,7 +195,11 @@ Class to manage users, `chino.users`
 - `create(<username>, <password>, <attributes>, <user_schema_id>)`
 - `update(<user_id>, <username>, <password>, <attributes>)`
 - `update(<user_id>, <attributes>)`
-    This is for a partial update (for example one attribute)
+    ***WARNING: Deprecated in version 1.2.3*** - This is for a partial update
+    (for example one attribute).
+- `updatePartial(<user_id>, <username>, <password>, <attributes>)`
+    **New in version 1.2.3** update some of the attributes of a User
+- `updatePartial(<user_id>, <attributes>)` **New in version 1.2.3**
 - `delete(<user_id>, <force>)`
     `force` is a boolean and if it's true, the resource cannot be restored
 
