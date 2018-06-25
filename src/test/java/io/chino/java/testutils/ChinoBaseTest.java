@@ -23,14 +23,8 @@ public class ChinoBaseTest {
 
     private static ChinoBaseAPI test = null;
 
-    static boolean continueTests = true;
+    protected static boolean continueTests = true;
     static String errorMsg = "init() method not called";
-
-    static {
-        TestConstants.init(USERNAME, PASSWORD);
-        if (Objects.equals(System.getenv("automated_test"), "allow")) // null-safe 'equals()'
-            TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
-    }
 
 
     /**
@@ -40,6 +34,7 @@ public class ChinoBaseTest {
      * @return the API client that has been set for this instance
      */
     public static ChinoBaseAPI init(ChinoBaseAPI testedAPIClient) {
+
         errorMsg = "no errors";
         test = testedAPIClient;
 
@@ -47,7 +42,11 @@ public class ChinoBaseTest {
     }
 
     @BeforeClass
-    public static void beforeClass() throws IOException, ChinoApiException {}
+    public static void beforeClass() throws IOException, ChinoApiException {
+        TestConstants.init(USERNAME, PASSWORD);
+        if (Objects.equals(System.getenv("automated_test"), "allow")) // null-safe 'equals()'
+            TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
+    }
 
     @Before
     public void before() {
@@ -69,6 +68,7 @@ public class ChinoBaseTest {
         errorMsg =  "init() method not called";
         continueTests = true;
         test = null;
+        System.gc();
     }
 
 
@@ -94,7 +94,7 @@ public class ChinoBaseTest {
         if (! resourceIsEmpty) {
             if (! TestConstants.FORCE_DELETE_ALL_ON_TESTS) {
             Scanner scanner = new Scanner(System.in);
-            System.err.println("WARNING: this account has" + resourceName + "stored. If you run the tests they will be deleted.");
+            System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
             System.err.println("To hide this message, set the constant TestConstants.FORCE_DELETE_ALL_ON_TESTS to 'true' and re-run the tests.");
             } else {
                 System.out.println("TestConstants.FORCE_DELETE_ALL_ON_TESTS = true");
