@@ -17,20 +17,15 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-# tests with 'openjdk7' are run in a build stage after passing test with 'oraclejdk8'
-jdk:
-  - oraclejdk8
-
-before_install:
-  - echo $JAVA_HOME
-  - chmod +x gradlew
-
 jobs:
   include:
-#    - stage: test-jdk8
-#      jdk: oraclejdk8
-#      script:
-#        - gradle test --info
+    - stage: test-jdk8
+      jdk: oraclejdk8
+      before_install:
+        - echo $JAVA_HOME
+        - chmod +x gradlew
+      script:
+        - gradle test --info
     - stage: test-jdk7
       jdk: openjdk7
       if: branch != master
