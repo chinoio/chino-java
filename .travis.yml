@@ -17,8 +17,8 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+# tests with 'openjdk7' are run in a build stage after passing test with 'oraclejdk8'
 jdk:
-  # tests with 'openjdk7' are run in a stage after passing test with 'oraclejdk8'
   - oraclejdk8
 
 before_install:
@@ -27,17 +27,18 @@ before_install:
 
 jobs:
   include:
-    - stage: test-jdk8
-      jdk: oraclejdk8
-      script:
-        - gradle test --info
+#    - stage: test-jdk8
+#      jdk: oraclejdk8
+#      script:
+#        - gradle test --info
     - stage: test-jdk7
       jdk: openjdk7
       if: branch != master
-      script:
+      before_install:
         - sudo wget "https://bouncycastle.org/download/bcprov-ext-jdk15on-158.jar" -O "${JAVA_HOME}/jre/lib/ext/bcprov-ext-jdk15on-158.jar"
         - sudo perl -pi.bak -e 's/^(security\.provider\.)([0-9]+)/$1.($2+1)/ge' /etc/java-7-openjdk/security/java.security
         - echo "security.provider.1=org.bouncycastle.jce.provider.BouncyCastleProvider" | sudo tee -a /etc/java-7-openjdk/security/java.security
+      script:
         - gradle test --info
 stages:
   - test-jdk8
