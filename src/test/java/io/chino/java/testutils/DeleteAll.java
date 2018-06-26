@@ -24,10 +24,15 @@ public class DeleteAll {
      *     <ul>
      *         <li>{@link Applications}: delete all {@link Application} objects</li>
      *         <li>{@link Consents}: delete all the {@link Consent} objects</li>
-     *         <li>{@link UserSchemas} OR {@link Users}: delete all the {@link User} objects that are stored in every {@link UserSchema}</li>
-     *         <li><i>Other elements to be added soon...</i></li>
+     *         <li>{@link Users}: delete all the {@link User} objects that are stored in every UserSchema, but keeps the UserSchemas</li>
+     *         <li>{@link UserSchemas}: delete all the User objects that are stored in every {@link UserSchema} and the UserSchemas themselves</li>
+     *         <li>{@link Documents}: delete all the {@link Document} objects in every Schema, but keeps the Schemas and the Repositories</li>
+     *         <li>{@link Schemas}: delete all the Document objects and every {@link Schema}, but keeps the Repositories</li>
+     *         <li>{@link Repositories}: delete all the Document, every Schema and every {@link Repository} from the account.</li>
      *     </ul>
+     *
      * @param apiClient one of the allowed implementation of {@link ChinoBaseAPI} listed above
+     *
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -65,10 +70,16 @@ public class DeleteAll {
                     for(Document d : documents){
                         chino.documents.delete(d.getDocumentId(), true);
                     }
-                    chino.schemas.delete(s.getSchemaId(), true);
+                    if (!(apiClient instanceof Documents)) {
+                        chino.schemas.delete(s.getSchemaId(), true);
+                    }
                 }
-                chino.repositories.delete(r.getRepositoryId(), true);
+                if (!(apiClient instanceof Documents) && !(apiClient instanceof Schemas)) {
+                    chino.repositories.delete(r.getRepositoryId(), true);
+                }
             }
+        } else if(apiClient instanceof Auth) {
+            // do nothing
         } else {
             throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() + ") is not supported.");
         }
@@ -87,18 +98,7 @@ public class DeleteAll {
         for(Application a : applications){
             temp.applications.delete(a.getAppId(), true);
         }
-        List<Repository> repositories = temp.repositories.list().getRepositories();
-        for(Repository r : repositories){
-            List<Schema> schemas = temp.schemas.list(r.getRepositoryId()).getSchemas();
-            for(Schema s : schemas){
-                List<Document> documents = temp.documents.list(s.getSchemaId()).getDocuments();
-                for(Document d : documents){
-                    temp.documents.delete(d.getDocumentId(), true);
-                }
-                temp.schemas.delete(s.getSchemaId(), true);
-            }
-            temp.repositories.delete(r.getRepositoryId(), true);
-        }
+        deleteAll(temp.repositories);
         List<UserSchema> userSchemas = temp.userSchemas.list().getUserSchemas();
         for(UserSchema u : userSchemas){
             List<User> users = temp.users.list(u.getUserSchemaId()).getUsers();

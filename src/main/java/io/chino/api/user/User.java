@@ -219,4 +219,55 @@ public class User {
 
     	return s;
     }
+
+    /**
+     * Compare this User to another object and tell whether they are equal.
+     * The following conditions will cause this method to return {@code false}:
+     * <ul>
+     *     <li>
+     *         One of the Users represents an updated version of the other,
+     *     </li>
+     *     <li>
+     *         One of the Users has both the userId and the username set to {@code null}
+     *         (the identity of a User can not be verified without those parameters),
+     *     </li>
+     *     <li>
+     *         One of the objects is null.
+     *     </li>
+     * </ul>
+     *
+     * @param obj the {@link Object} to compare
+     * @return {@code true} if the two objects represent the same User object on Chino.io
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true; // same instance
+
+        if (!(obj instanceof User))
+            return false; // obj is null, or is not an instance of class User
+
+        User other = (User) obj;
+        boolean condition;
+        if (userId != null && other.getUserId() != null) {
+            // compare userId
+            condition = other.getUserId().equalsIgnoreCase(userId);
+        } else if (username != null && other.getUsername() != null){
+            // userId is null - compare username
+            condition = other.getUsername().equals(username);
+        } else {
+            // not enough information to tell whether the two Users are the same
+            condition = false;
+        }
+
+        // perform checks on the updated status of the User
+        try {
+            return condition
+                    && other.getInsertDate().equals(insertDate)
+                    && other.getLastUpdate().equals(lastUpdate)
+                    && other.getAttributesAsHashMap().equals(this.getAttributesAsHashMap());
+        } catch (NullPointerException e) {
+            return false;
+        }
+    }
 }
