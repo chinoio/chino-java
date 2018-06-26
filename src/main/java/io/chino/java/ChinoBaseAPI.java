@@ -324,31 +324,6 @@ public class ChinoBaseAPI {
         return fieldsList;
     }
 
-//    //Function used to convert a String to a HashMap
-//    protected HashMap<String, Object> fromStringToHashMap(String value){
-//        checkNotNull(value, "content/attributes");
-//        HashMap<String, Object> map = new HashMap<String, Object>();
-//        value = value.replaceAll("\\s", "");
-//        value = value.replaceAll("\"", "");
-//        String[] pairs = value.split(",");
-//        for (String pair : pairs) {
-//            String[] keyValue = pair.split(":");
-//            //To check if it's a digit
-//            if(keyValue[1].matches("^-?\\d+$"))
-//                map.put(keyValue[0], Integer.parseInt(keyValue[1]));
-//                //To check if it is a double
-//            else if(keyValue[1].matches("^[-+]?[0-9]*\\.?[0-9]+$"))
-//                map.put(keyValue[0], Double.parseDouble(keyValue[1]));
-//            else if (keyValue[1].equals("true"))
-//                map.put(keyValue[0], true);
-//            else if (keyValue[1].equals("false"))
-//                map.put(keyValue[0], false);
-//            else
-//                map.put(keyValue[0], keyValue[1]);
-//        }
-//        return map;
-//    }
-
     protected HashMap<String, Object> fromStringToHashMap(String value) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         //convert JSON string to Map
