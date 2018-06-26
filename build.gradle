@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'io.chino.library'
-version = '1.2.2'
+version = '1.2.3'
 
 description = """chino-java-library"""
 
@@ -31,7 +31,6 @@ buildscript {
 
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
-//        classpath 'com.android.tools.build:gradle:0.5.+'
     }
 }
 
@@ -48,4 +47,5 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.1'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
+    compile 'org.jetbrains:annotations:15.0'
 }
