@@ -1,13 +1,13 @@
 package io.chino.java;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.istack.internal.Nullable;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.user.CreateUserRequest;
 import io.chino.api.user.GetUserResponse;
 import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.util.HashMap;

@@ -47,4 +47,5 @@ dependencies {
     compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
     compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.1'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
+    compile 'org.jetbrains:annotations:15.0'
 }

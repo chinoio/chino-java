@@ -2,6 +2,7 @@ package io.chino.java;
 
 import io.chino.api.common.Field;
 import io.chino.api.document.Document;
+import io.chino.api.schema.SchemaStructure;
 import io.chino.api.userschema.UserSchemaStructure;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
@@ -11,6 +12,9 @@ import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
+/**
+ *  (Work in progress)
+ */
 public class BlobsTest extends ChinoBaseTest {
 
     ChinoAPI chino_customer;
@@ -19,7 +23,7 @@ public class BlobsTest extends ChinoBaseTest {
     static String repoID, schemaID;
     Document owner;
 
-    @BeforeClass
+    // @BeforeClass
     public void setUpClass() throws Exception {
         chino_customer = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = (Blobs) ChinoBaseTest.init(chino_customer.blobs);
@@ -27,32 +31,33 @@ public class BlobsTest extends ChinoBaseTest {
 
         repoID = chino_customer.repositories.create("BlobsTest").getRepositoryId();
         LinkedList<Field> fields = new LinkedList<>();
-        UserSchemaStructure s = new UserSchemaStructure();
-        schemaID = chino_customer.schemas.create(repoID, "This schema is used for Documents that store BLOBs in  BlobsTest");
+        SchemaStructure s = new SchemaStructure();
+        s.setFields(fields);
+        schemaID = chino_customer.schemas.create(repoID, "This schema is used for Documents that store BLOBs in BlobsTest", s).getSchemaId();
     }
 
-    @Before
+    // @Before
     public void setUp() throws Exception {
-        owner = chino_customer.documents.create()
+//        owner = chino_customer.documents.create()
     }
 
-    @Test
+    // @Test
     public void uploadBlob() {
     }
 
-    @Test
+    // @Test
     public void get() {
     }
 
-    @Test
+    // @Test
     public void delete() {
     }
 
-    @After
+    // @After
     public void tearDown() throws Exception {
     }
 
-    @AfterClass
+    // @AfterClass
     public void tearDownClass() throws Exception {
         ChinoBaseTest.afterClass();
     }
