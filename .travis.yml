@@ -1,9 +1,12 @@
 language: java
 
+
+# NOTE: branch 'develop' is not tested. When a deployable version is ready
+# the commits must be merged into branch 'travis-ci-test' and a build will be
+# triggered automatically. When the build passes, merge the new code into 'master'.
 branches:
     only:
     - master
-#    - develop
     - travis-ci-test
 
 before_cache:
