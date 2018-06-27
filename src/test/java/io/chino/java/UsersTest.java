@@ -10,7 +10,9 @@ import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import io.chino.java.testutils.UserSchemaStructureSample;
-import org.junit.*;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -23,13 +25,11 @@ import static org.junit.Assert.*;
 public class UsersTest extends ChinoBaseTest {
 
     private static final String PWD = "defaultPwd";
+    private static final int MAX_USERS = 10;
     private static ChinoAPI chino_admin;
     private static Users test;
-
     private static UserSchema userSchema;
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("YYYY-MM-dd");
-
-    private static final int MAX_USERS = 10;
 
     @BeforeClass
     public static void setUpClass() throws Exception {
@@ -53,6 +53,35 @@ public class UsersTest extends ChinoBaseTest {
     @Before
     public void setUp() throws IOException, ChinoApiException {
         new DeleteAll().deleteAll(test);
+    }
+
+    @Test
+    public void checkPasswordTest() throws IOException, ChinoApiException {
+        User u = newUser("checkPasswordTest");
+
+        try {
+            // try to login without authenticating
+            test.checkPassword(TestConstants.PASSWORD);
+        } catch (ChinoApiException ex) {
+            assertEquals("403", ex.getCode());
+            assertTrue(ex.getMessage().contains("Only User can get user info"));
+        }
+
+        // verify that login is enabled with new credentials
+        Application app = chino_admin.applications.create("test Application for checkPasswordTest", "password", "", ClientType.PUBLIC);
+        ChinoAPI client = null;
+        String token = null;
+        try {
+            client = new ChinoAPI(TestConstants.HOST);
+            token = client.auth.loginWithPassword(u.getUsername(), TestConstants.PASSWORD, app.getAppId()).getAccessToken();
+
+            assertFalse("Returned TRUE with wrong password", client.users.checkPassword("wrong password!"));
+            assertTrue("Returned FALSE with correct password", client.users.checkPassword(TestConstants.PASSWORD));
+        } finally {
+            if (client != null && token == null)
+                client.auth.logout(token, app.getAppId());
+            chino_admin.applications.delete(app.getAppId(), true);
+        }
     }
 
     @Test

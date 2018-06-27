@@ -1,5 +1,8 @@
 package io.chino.java;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
@@ -23,6 +26,48 @@ public class Users extends ChinoBaseAPI {
      */
     public Users(String baseApiUrl, ChinoAPI parentApiClient) {
         super(baseApiUrl, parentApiClient);
+    }
+
+
+
+    /**
+     * Check the validity of a {@link User}'s password.<br>
+     * <b>WARNING: you must be logged in as a {@link User}</b>,
+     * i.e. you must have used one of the loginWith*** methods.
+     *
+     * @param password the password to verify, as a {@link String}
+     *
+     * @return {@code true} if the password is valid, {@code false} otherwise
+     *
+     * @see Auth#loginWithPassword(String, String, String)
+     * @see Auth#loginWithPassword(String, String, String, String)
+     * @see Auth#loginWithAuthenticationCode(String, String, String, String)
+     * @see Auth#loginWithBearerToken(String)
+     * @see ChinoAPI#setBearerToken(String)
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public boolean checkPassword(String password) throws IOException, ChinoApiException {
+        checkNotNull(password, "password");
+
+        @JsonInclude(JsonInclude.Include.ALWAYS)
+        class Password {
+            private Password(String p) {
+                password = p;
+            }
+
+            @JsonProperty("password")
+            private final String password;
+        }
+
+        JsonNode data = postResource("/users/psw_check", new Password(password));
+        HashMap<String, Boolean> value = mapper.convertValue(
+                data,
+                new TypeReference<HashMap<String, Boolean>>() {}
+        );
+
+        return value.get("valid");
     }
 
     /**
