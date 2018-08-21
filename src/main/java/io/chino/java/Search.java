@@ -1,5 +1,6 @@
 package io.chino.java;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
@@ -125,6 +126,7 @@ public class Search extends ChinoBaseAPI {
 
     /**
      * It searches Documents
+     *
      * @param schemaId the id of the Schema
      * @param resultType the type of result of the response
      * @param filterType the type of filter
@@ -132,7 +134,9 @@ public class Search extends ChinoBaseAPI {
      * @param filter the list of FilterOption
      * @param offset the offset from which it retrieves the Applications
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     *
      * @return GetDocumentsResponse Object which contains the list of Documents
+     *
      * @throws IOException
      * @throws ChinoApiException
      */
@@ -208,7 +212,8 @@ public class Search extends ChinoBaseAPI {
     {
         //This simply adds a new SortOption to the private List "sort" of the class
         SortOption sortOption = new SortOption(field, "asc");
-        sort.add(sortOption);
+        if (!sort.contains(sortOption))
+            sort.add(sortOption);
         //Every time you add a new SortOption you have to store the List in the searchRequest variable, which will be finally used to make the request
         searchRequest.setSort(sort);
         return this;
@@ -218,7 +223,8 @@ public class Search extends ChinoBaseAPI {
     public Search sortDescBy(String field)
     {
         SortOption sortOption = new SortOption(field, "desc");
-        sort.add(sortOption);
+        if (!sort.contains(sortOption))
+            sort.add(sortOption);
         searchRequest.setSort(sort);
         return this;
     }
@@ -348,5 +354,12 @@ public class Search extends ChinoBaseAPI {
         return this;
     }
 
-
+    @Override
+    public String toString() {
+        try {
+            return mapper.writeValueAsString(searchRequest);
+        } catch (JsonProcessingException e) {
+            return super.toString();
+        }
+    }
 }
