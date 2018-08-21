@@ -54,13 +54,16 @@ public class Consents extends ChinoBaseAPI {
     /**
      * List all the available {@link Consent consents}, filtering by the
      * specified user_id. The results are paginated
+     *
      * @param userId a {@link String} which uniquely identifies a user,
      * as in {@link Consent#userId}.
      * @param offset page offset of the results.
-     * @param limit the number of results
+     * @param limit the max amount of results to be returned
+     *
      * (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return a {@link ConsentList} of objects that match
      * the specified {@code userId}
+     *
      * @throws java.io.IOException request could not be executed
      * (but it might have arrived to the server).
      * @throws io.chino.api.common.ChinoApiException Chino.io
