@@ -12,6 +12,7 @@ import java.util.Objects;
     "field",
     "order"
 })
+@Deprecated
 public class SortOption {
 
     @JsonProperty("field")
