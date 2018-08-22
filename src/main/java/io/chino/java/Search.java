@@ -46,10 +46,7 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(schemaId, "schema_id");
         JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, offset, limit);
-        this.searchRequest = new SearchRequest();
-        this.sort = new ArrayList<SortOption>();
-        this.filter = new ArrayList<FilterOption>();
-        this.filterOption = new FilterOption();
+        resetSearch();
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
 
@@ -68,10 +65,7 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(schemaId, "schema_id");
         JsonNode data = postResource("/search/documents/"+schemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
-        this.searchRequest = new SearchRequest();
-        this.sort = new ArrayList<SortOption>();
-        this.filter = new ArrayList<FilterOption>();
-        this.filterOption = new FilterOption();
+        resetSearch();
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
 
@@ -92,10 +86,7 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, offset, limit);
-        this.searchRequest = new SearchRequest();
-        this.sort = new ArrayList<SortOption>();
-        this.filter = new ArrayList<FilterOption>();
-        this.filterOption = new FilterOption();
+        resetSearch();
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
 
@@ -114,10 +105,7 @@ public class Search extends ChinoBaseAPI {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(userSchemaId, "user_schema_id");
         JsonNode data = postResource("/search/users/"+userSchemaId, searchRequest, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
-        this.searchRequest = new SearchRequest();
-        this.sort = new ArrayList<SortOption>();
-        this.filter = new ArrayList<FilterOption>();
-        this.filterOption = new FilterOption();
+        resetSearch();
         if(data!=null)
             return mapper.convertValue(data, GetUsersResponse.class);
 
@@ -278,10 +266,20 @@ public class Search extends ChinoBaseAPI {
         return searchUsers(searchRequest, userSchemaId, offset, limit);
     }
 
+    /**
+     * Empty this {@link Search} object
+     */
+    private void resetSearch() {
+        this.searchRequest = new SearchRequest();
+        this.sort = new ArrayList<SortOption>();
+        this.filter = new ArrayList<FilterOption>();
+        this.filterOption = new FilterOption();
+    }
+
     //This function is called if you want to make a request with filter_type set to "and"
     public Search and(String field) throws ChinoApiException {
         //If filter_type value is set to "or" it raises an error
-        if (searchRequest.getFilterType() == "or")
+        if (searchRequest.getFilterType().equals("or"))
             throw new ChinoApiException("Wrong filter operations!");
         //If the value is "and" or is "null"(which is the case of the first call) it sets the value to "and"
         searchRequest.setFilterType("and");
@@ -290,7 +288,7 @@ public class Search extends ChinoBaseAPI {
 
     //This function is called if you want to make a request with filter_type set to "or"
     public Search or(String field) throws ChinoApiException {
-        if (searchRequest.getFilterType() == "and")
+        if (searchRequest.getFilterType().equals("and"))
             throw new ChinoApiException("Wrong filter operations!");
         searchRequest.setFilterType("or");
         return filterOperation(field);
