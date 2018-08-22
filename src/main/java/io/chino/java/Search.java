@@ -16,9 +16,23 @@ import java.util.List;
 
 public class Search extends ChinoBaseAPI {
 
+    /* OLD SEARCH  */
+    @Override
+    public String toString() {
+        try {
+            return mapper.writeValueAsString(searchRequest);
+        } catch (JsonProcessingException e) {
+            return super.toString();
+        }
+    }
+
+    @Deprecated
     private SearchRequest searchRequest = new SearchRequest();
+    @Deprecated
     private List<SortOption> sort = new ArrayList<SortOption>();
+    @Deprecated
     private List<FilterOption> filter = new ArrayList<FilterOption>();
+    @Deprecated
     private FilterOption filterOption;
 
     /**
@@ -42,6 +56,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(schemaId, "schema_id");
@@ -61,6 +76,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId) throws IOException, ChinoApiException {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(schemaId, "schema_id");
@@ -82,6 +98,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(userSchemaId, "user_schema_id");
@@ -101,6 +118,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId) throws IOException, ChinoApiException {
         checkNotNull(searchRequest, "search_request");
         checkNotNull(userSchemaId, "user_schema_id");
@@ -128,6 +146,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
@@ -146,6 +165,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
@@ -164,6 +184,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
         SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
@@ -184,6 +205,7 @@ public class Search extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
+    @Deprecated
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
         SearchRequest searchRequest = new SearchRequest(resultType, filterType, sort, filter);
@@ -196,6 +218,7 @@ public class Search extends ChinoBaseAPI {
      */
 
     //This is called when you want to make a sort of a certain field in an ascending order
+    @Deprecated
     public Search sortAscBy(String field)
     {
         //This simply adds a new SortOption to the private List "sort" of the class
@@ -208,6 +231,7 @@ public class Search extends ChinoBaseAPI {
     }
 
     //This is called when you want to make a sort of a certain field in a descending order
+    @Deprecated
     public Search sortDescBy(String field)
     {
         SortOption sortOption = new SortOption(field, "desc");
@@ -218,6 +242,7 @@ public class Search extends ChinoBaseAPI {
     }
 
     //This is called when you want to specify a result type. If you don't call this function the default value is "FULL_CONTENT"
+    @Deprecated
     public Search resultType(String resultType)
     {
         searchRequest.setResultType(resultType);
@@ -228,8 +253,10 @@ public class Search extends ChinoBaseAPI {
      * This is the first function that needs to be called and sets result_type and without_index variables at their default value.
      * It also calls the filterOperation function which creates a new FilterOption and sets its "field" value;
      */
+    @Deprecated
     public Search where(String field)
     {
+        resetSearch();
         searchRequest.setResultType("FULL_CONTENT");
         filterOperation(field);
         return this;
@@ -239,12 +266,14 @@ public class Search extends ChinoBaseAPI {
      * This is the last function called which sets filter_type to "or" if there is only one FilterOption (initialized by the where(...) function)
      * It sets the schemaId and finally performs the search request, calling the function searchDocuments passing the class variable searchRequest
      */
+    @Deprecated
     public GetDocumentsResponse searchDocuments(String schemaId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         if (searchRequest.getFilterType() == null)
             searchRequest.setFilterType("or");
         return searchDocuments(searchRequest, schemaId, offset, limit);
     }
+    @Deprecated
     public GetDocumentsResponse searchDocuments(String schemaId) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         if (searchRequest.getFilterType() == null)
@@ -252,6 +281,7 @@ public class Search extends ChinoBaseAPI {
         return searchDocuments(searchRequest, schemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
 
+    @Deprecated
     public GetUsersResponse searchUsers(String userSchemaId) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
         if (searchRequest.getFilterType() == null)
@@ -259,6 +289,7 @@ public class Search extends ChinoBaseAPI {
         return searchUsers(searchRequest, userSchemaId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
 
+    @Deprecated
     public GetUsersResponse searchUsers(String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
         if (searchRequest.getFilterType() == null)
@@ -277,6 +308,7 @@ public class Search extends ChinoBaseAPI {
     }
 
     //This function is called if you want to make a request with filter_type set to "and"
+    @Deprecated
     public Search and(String field) throws ChinoApiException {
         //If filter_type value is set to "or" it raises an error
         if (searchRequest.getFilterType().equals("or"))
@@ -287,6 +319,7 @@ public class Search extends ChinoBaseAPI {
     }
 
     //This function is called if you want to make a request with filter_type set to "or"
+    @Deprecated
     public Search or(String field) throws ChinoApiException {
         if (searchRequest.getFilterType().equals("and"))
             throw new ChinoApiException("Wrong filter operations!");
@@ -295,6 +328,7 @@ public class Search extends ChinoBaseAPI {
     }
 
     //This function creates a new FilterOption and adds it to the private List "filter", then sets the value of the searchRequest.filter variable to the List updated
+    @Deprecated
     private Search filterOperation(String field)
     {
         filterOption = new FilterOption();
@@ -305,6 +339,7 @@ public class Search extends ChinoBaseAPI {
     }
 
     //Those functions below set the value and type of the FilterOption
+    @Deprecated
     public Search eq(Object value)
     {
         filterOption.setValue(value);
@@ -312,6 +347,7 @@ public class Search extends ChinoBaseAPI {
         return this;
     }
 
+    @Deprecated
     public Search gt(Object value)
     {
         filterOption.setValue(value);
@@ -319,6 +355,7 @@ public class Search extends ChinoBaseAPI {
         return this;
     }
 
+    @Deprecated
     public Search gte(Object value)
     {
         filterOption.setValue(value);
@@ -326,6 +363,7 @@ public class Search extends ChinoBaseAPI {
         return this;
     }
 
+    @Deprecated
     public Search lt(Object value)
     {
         filterOption.setValue(value);
@@ -333,6 +371,7 @@ public class Search extends ChinoBaseAPI {
         return this;
     }
 
+    @Deprecated
     public Search lte(Object value)
     {
         filterOption.setValue(value);
@@ -340,24 +379,17 @@ public class Search extends ChinoBaseAPI {
         return this;
     }
 
+    @Deprecated
     public Search is(Boolean value){
         filterOption.setValue(value);
         filterOption.setType("is");
         return this;
     }
 
+    @Deprecated
     public Search in(ArrayList<String> value){
         filterOption.setValue(value);
         filterOption.setType("in");
         return this;
-    }
-
-    @Override
-    public String toString() {
-        try {
-            return mapper.writeValueAsString(searchRequest);
-        } catch (JsonProcessingException e) {
-            return super.toString();
-        }
     }
 }
