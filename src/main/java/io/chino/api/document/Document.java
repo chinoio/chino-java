@@ -84,7 +84,7 @@ public class Document {
      *     The content
      */
     @JsonProperty("content")
-    public void setContent(HashMap<String, Object> content) {
+    public void setContent(HashMap<? extends String, ?> content) {
         JsonNode jsonContent = new ObjectMapper().valueToTree(content);
         setContent(jsonContent);
     }
