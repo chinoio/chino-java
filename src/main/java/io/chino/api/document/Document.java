@@ -39,57 +39,6 @@ public class Document {
     private JsonNode content;
 
     /**
-     * Get the content of this {@link Document}. Before using this method, the Document's content must be fetched using
-     * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
-     *
-     * @return The content of this {@link Document}
-     *
-     * @throws IllegalStateException the method is invoked on a {@link Document} before its content has been fetched.
-     */
-    public JsonNode getContent() {
-        if (content != null) {
-            return content;
-        } else {
-            throw new IllegalStateException("Content not present. Use documents.read() to fetch the content of this Document.");
-        }
-    }
-
-    @JsonProperty("content")
-    private JsonNode getContentForSerialization() {
-        return content;
-    }
-
-    /**
-     * Check that this {@link Document}'s content has been fetched.
-     *
-     * @return {@code true} if this Document's content is a valid {@link JsonNode}.
-     */
-    public boolean hasContent() {
-        return content != null;
-    }
-
-    /**
-     * 
-     * @param content
-     *     The content
-     */
-    @JsonProperty("content")
-    public void setContent(JsonNode content) {
-        this.content = content;
-    }
-
-    /**
-     *
-     * @param content
-     *     The content
-     */
-    @JsonProperty("content")
-    public void setContent(HashMap<? extends String, ?> content) {
-        JsonNode jsonContent = new ObjectMapper().valueToTree(content);
-        setContent(jsonContent);
-    }
-
-    /**
      * 
      * @return
      *     The repositoryId
@@ -210,6 +159,22 @@ public class Document {
     }
 
     /**
+     * Get the content of this {@link Document}. Before using this method, the Document's content must be fetched using
+     * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
+     *
+     * @return The content of this {@link Document}
+     *
+     * @throws IllegalStateException the method is invoked on a {@link Document} before its content has been fetched.
+     */
+    public JsonNode getContent() {
+        if (content != null) {
+            return content;
+        } else {
+            throw new IllegalStateException("Content not present. Use documents.read() to fetch the content of this Document.");
+        }
+    }
+
+    /**
      * Get this Document's content as an instance of {@link HashMap}.
      * Before using this method, the Document's content must be fetched using
      * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
@@ -220,9 +185,44 @@ public class Document {
      */
     public HashMap<String, Object> getContentAsHashMap(){
         ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, Object> result = mapper.convertValue(this.getContent(), HashMap.class);
-        return result;
+        return mapper.convertValue(this.getContent(), HashMap.class);
     }
+
+    @JsonProperty("content")
+    private JsonNode getContentForSerialization() {
+        return content;
+    }
+
+    /**
+     * Check that this {@link Document}'s content has been fetched.
+     *
+     * @return {@code true} if this Document's content is a valid {@link JsonNode}.
+     */
+    public boolean hasContent() {
+        return content != null;
+    }
+
+    /**
+     *
+     * @param content
+     *     The content
+     */
+    @JsonProperty("content")
+    public void setContent(JsonNode content) {
+        this.content = content;
+    }
+
+    /**
+     *
+     * @param content
+     *     The content
+     */
+    @JsonProperty("content")
+    public void setContent(HashMap<? extends String, ?> content) {
+        JsonNode jsonContent = new ObjectMapper().valueToTree(content);
+        setContent(jsonContent);
+    }
+
 
     @Override
     public String toString(){
