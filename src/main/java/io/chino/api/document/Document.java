@@ -1,16 +1,15 @@
 
 package io.chino.api.document;
 
-import java.util.Date;
-import java.util.HashMap;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.java.ChinoBaseAPI;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.Date;
+import java.util.HashMap;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -40,13 +39,33 @@ public class Document {
     private JsonNode content;
 
     /**
-     * 
-     * @return
-     *     The content
+     * Get the content of this {@link Document}. Before using this method, the Document's content must be fetched using
+     * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
+     *
+     * @return The content of this {@link Document}
+     *
+     * @throws IllegalStateException the method is invoked on a {@link Document} before its content has been fetched.
      */
-    @JsonProperty("content")
     public JsonNode getContent() {
+        if (content != null) {
+            return content;
+        } else {
+            throw new IllegalStateException("Content not present. Use documents.read() to fetch the content of this Document.");
+        }
+    }
+
+    @JsonProperty("content")
+    private JsonNode getContentForSerialization() {
         return content;
+    }
+
+    /**
+     * Check that this {@link Document}'s content has been fetched.
+     *
+     * @return {@code true} if this Document's content is a valid {@link JsonNode}.
+     */
+    public boolean hasContent() {
+        return content != null;
     }
 
     /**
@@ -57,6 +76,17 @@ public class Document {
     @JsonProperty("content")
     public void setContent(JsonNode content) {
         this.content = content;
+    }
+
+    /**
+     *
+     * @param content
+     *     The content
+     */
+    @JsonProperty("content")
+    public void setContent(HashMap<String, Object> content) {
+        JsonNode jsonContent = new ObjectMapper().valueToTree(content);
+        setContent(jsonContent);
     }
 
     /**
@@ -179,26 +209,38 @@ public class Document {
         this.lastUpdate = lastUpdate;
     }
 
+    /**
+     * Get this Document's content as an instance of {@link HashMap}.
+     * Before using this method, the Document's content must be fetched using
+     * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
+     *
+     * @return an {@link HashMap HashMap&lt;String, Object&gt;} with the content of this Document.
+     *
+     * @throws IllegalStateException the method is invoked on a {@link Document} before its content has been fetched.
+     */
     public HashMap<String, Object> getContentAsHashMap(){
         ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, Object> result = mapper.convertValue(content, HashMap.class);
+        HashMap<String, Object> result = mapper.convertValue(this.getContent(), HashMap.class);
         return result;
     }
 
-    
     @Override
     public String toString(){
-    	String s="\n";
-		s+="document_id: "+documentId;
+    	String s="\ndocument_id: "+documentId;
 		s+=",\nrepository_id: "+repositoryId;
 		s+=",\nschema_id: "+schemaId;
-		s+=",\ninsert_date: "+insertDate.toString();
-		s+=",\nlast_update: "+lastUpdate.toString();
+		s+=",\ninsert_date: "+ insertDate.toString();
+		s+=",\nlast_update: "+ lastUpdate.toString();
 		s+=",\nis_active: "+isActive;
-    	
+
+        s+=",\ncontent: ";
     	try {
-			s+=",\ncontent: "+ ChinoBaseAPI.getMapper().writeValueAsString(content);
-		} catch (Exception e) {} 
+			s += ChinoBaseAPI.getMapper().writeValueAsString(content);
+		} catch(IllegalStateException ise) {
+    	    s += "null";
+        }catch (Exception e) {
+    	    s += "n.d. (error)";
+        }
         s+="\n";
     	return s;
     }
