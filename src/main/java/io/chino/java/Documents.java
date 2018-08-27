@@ -173,17 +173,27 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a new Document
-     * @param schemaId the id of the Schema
-     * @param content an HashMap of the content
-     * @return Document Object
+     * Create a new {@link Document} with the specified content on Chino.io. (synchronous)
+     *
+     * @param schemaId the id of an existing {@link io.chino.api.schema.Schema Schema}
+     * @param content a {@link HashMap} with the content of the new Document.
+     *                The map's keys must match the fields of the Schema.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the document,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
      * @throws IOException
      * @throws ChinoApiException
      */
-    public Document create(String schemaId, HashMap content) throws IOException, ChinoApiException {
+    public Document create(String schemaId, HashMap content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(content);
-        JsonNode data = postResource("/schemas/"+schemaId+"/documents", createDocumentRequest);
+        String URL = "/schemas/" + schemaId + "/documents" + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = postResource(URL, createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
 
@@ -203,10 +213,78 @@ public class Documents extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
-    public Document create(String schemaId, String content) throws IOException, ChinoApiException {
+    public Document create(String schemaId, HashMap content) throws IOException, ChinoApiException {
+        return create(schemaId, content, false);
+    }
+
+    /**
+     * Create a new {@link Document} with the specified content on Chino.io. (synchronous)
+     *
+     * @param schemaId the id of an existing {@link io.chino.api.schema.Schema Schema}
+     * @param content a {@link String} with the content of the new Document in JSON format.
+     *                The structure of the JSON must match the one of the Schema.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the document,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public Document create(String schemaId, String content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(fromStringToHashMap(content));
-        JsonNode data = postResource("/schemas/"+schemaId+"/documents", createDocumentRequest);
+        String URL = "/schemas/" + schemaId + "/documents" + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = postResource(URL, createDocumentRequest);
+        if(data!=null)
+            return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
+
+        return null;
+    }
+
+    /**
+     * Create a new {@link Document} with the specified content on Chino.io.
+     *
+     * @param schemaId the id of an existing {@link io.chino.api.schema.Schema Schema}
+     * @param content a {@link String} with the content of the new Document in JSON format.
+     *                The structure of the JSON must match the one of the Schema.
+     *
+     * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public Document create(String schemaId, String content) throws IOException, ChinoApiException {
+        return create(schemaId, content, false);
+    }
+
+    /**
+     * Update a specific {@link Document} on Chino.io with new data. (synchronous)
+     *
+     * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
+     *                   e.g. {@link #list(String) list(schemaId)}
+     * @param content a {@link HashMap} with the content of the new Document.
+     *                The map's keys must match the fields of the Schema.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the update,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public Document update(String documentId, HashMap content, boolean consistent) throws IOException, ChinoApiException {
+        checkNotNull(documentId, "document_id");
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(content);
+        String URL = "/documents/" + documentId + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = putResource(URL, createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
 
@@ -228,9 +306,32 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException
      */
     public Document update(String documentId, HashMap content) throws IOException, ChinoApiException {
+        return update(documentId, content, false);
+    }
+
+    /**
+     * Update a specific {@link Document} on Chino.io with new data. (synchronous)
+     *
+     * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
+     *                   e.g. {@link #list(String) list(schemaId)}
+     * @param content a {@link String} with the content of the new Document in JSON format.
+     *                The structure of the JSON must match the one of the Schema.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the update,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException
+     * @throws ChinoApiException
+     */
+    public Document update(String documentId, String content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
-        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(content);
-        JsonNode data = putResource("/documents/"+documentId, createDocumentRequest);
+        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(fromStringToHashMap(content));
+        String URL = "/documents/" + documentId + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = putResource(URL, createDocumentRequest);
         if(data!=null)
             return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
 
@@ -238,7 +339,6 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     /**
      * Update a specific {@link Document} on Chino.io with new data.
      *
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
@@ -252,14 +352,9 @@ public class Documents extends ChinoBaseAPI {
      * @throws IOException
      * @throws ChinoApiException
      */
-    public Document update(String documentId, String content) throws IOException, ChinoApiException {
-        checkNotNull(documentId, "document_id");
-        CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(fromStringToHashMap(content));
-        JsonNode data = putResource("/documents/"+documentId, createDocumentRequest);
-        if(data!=null)
-            return mapper.convertValue(data, GetDocumentResponse.class).getDocument();
 
-        return null;
+    public Document update(String documentId, String content) throws IOException, ChinoApiException {
+        return update(documentId, content, false);
     }
 
     /**
