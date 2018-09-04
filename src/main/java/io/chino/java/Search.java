@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.document.GetDocumentsResponse;
-import io.chino.api.search.FilterOption;
-import io.chino.api.search.SearchRequest;
-import io.chino.api.search.SortOption;
+import io.chino.api.search.*;
 import io.chino.api.user.GetUsersResponse;
 
 import java.io.IOException;
@@ -15,6 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Search extends ChinoBaseAPI {
+
+    public DocumentsSearch documents(String schemaId) {
+        return new DocumentsSearch(this, schemaId);
+    }
+
+    public UsersSearch users(String userSchemaId) {
+        return new UsersSearch(this, userSchemaId);
+    }
 
     /* OLD SEARCH  */
     @Override
@@ -27,11 +33,11 @@ public class Search extends ChinoBaseAPI {
     }
 
     @Deprecated
-    private SearchRequest searchRequest = new SearchRequest();
+    private SearchRequest searchRequest = null;
     @Deprecated
-    private List<SortOption> sort = new ArrayList<SortOption>();
+    private List<SortOption> sort = null;
     @Deprecated
-    private List<FilterOption> filter = new ArrayList<FilterOption>();
+    private List<FilterOption> filter = null;
     @Deprecated
     private FilterOption filterOption;
 
@@ -302,8 +308,8 @@ public class Search extends ChinoBaseAPI {
      */
     private void resetSearch() {
         this.searchRequest = new SearchRequest();
-        this.sort = new ArrayList<SortOption>();
-        this.filter = new ArrayList<FilterOption>();
+        this.sort = new ArrayList<>();
+        this.filter = new ArrayList<>();
         this.filterOption = new FilterOption();
     }
 
@@ -312,7 +318,7 @@ public class Search extends ChinoBaseAPI {
     public Search and(String field) throws ChinoApiException {
         //If filter_type value is set to "or" it raises an error
         if (searchRequest.getFilterType().equals("or"))
-            throw new ChinoApiException("Wrong filter operations!");
+            throw new ChinoApiException("Wrong filter operations! Filter type is already set to 'or'. If you want to do a more complex search, please use the new Search system");
         //If the value is "and" or is "null"(which is the case of the first call) it sets the value to "and"
         searchRequest.setFilterType("and");
         return filterOperation(field);
@@ -322,7 +328,7 @@ public class Search extends ChinoBaseAPI {
     @Deprecated
     public Search or(String field) throws ChinoApiException {
         if (searchRequest.getFilterType().equals("and"))
-            throw new ChinoApiException("Wrong filter operations!");
+            throw new ChinoApiException("Wrong filter operations! Filter type is already set to 'and'. If you want to do a more complex search, please use the new Search system.");
         searchRequest.setFilterType("or");
         return filterOperation(field);
     }

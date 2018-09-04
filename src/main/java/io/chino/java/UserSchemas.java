@@ -103,7 +103,8 @@ public class UserSchemas extends ChinoBaseAPI {
     /**
      * It creates a new UserSchema based on the variables in the class "myClass"
      * @param description the description
-     * @param myClass the Class that represents the structure of the UserSchema
+     * @param myClass the Class that represents the structure of the UserSchema. Mark fields that need to be indexed
+     *                with the annotation  {@link io.chino.api.common.indexed @indexed}.
      * @return UserSchema Object
      * @throws IOException
      * @throws ChinoApiException

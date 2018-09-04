@@ -1,11 +1,8 @@
 package io.chino.java;
 
-import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.LoggingInterceptor;
-import io.chino.api.user.User;
 import okhttp3.OkHttpClient;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class ChinoAPI {

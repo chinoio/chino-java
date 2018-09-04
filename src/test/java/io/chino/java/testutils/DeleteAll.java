@@ -63,11 +63,11 @@ public class DeleteAll {
         } else if(apiClient instanceof Repositories || apiClient instanceof Schemas || apiClient instanceof Documents) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             List<Repository> repositories = chino.repositories.list().getRepositories();
-            for(Repository r : repositories){
+            for (Repository r : repositories) {
                 List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
-                for(Schema s : schemas){
+                for (Schema s : schemas) {
                     List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
-                    for(Document d : documents){
+                    for (Document d : documents) {
                         chino.documents.delete(d.getDocumentId(), true);
                     }
                     if (!(apiClient instanceof Documents)) {
@@ -78,6 +78,10 @@ public class DeleteAll {
                     chino.repositories.delete(r.getRepositoryId(), true);
                 }
             }
+        } else if(apiClient instanceof Search) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            deleteAll(chino.repositories);
+            deleteAll(chino.userSchemas);
         } else if(apiClient instanceof Auth) {
             // do nothing
         } else {
