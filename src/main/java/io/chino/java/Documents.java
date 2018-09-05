@@ -91,7 +91,7 @@ public class Documents extends ChinoBaseAPI {
         checkNotNull(schemaId, "schema_id");
         JsonNode data;
         if(fullDocument) {
-            data = getResource("/schemas/" + schemaId + "/documents?full_document=true");
+            data = getResource("/schemas/" + schemaId + "/documents?full_document=true" + "&offset=" + offset + "&limit=" + limit);
         } else {
             data = getResource("/schemas/" + schemaId + "/documents", offset, limit);
         }

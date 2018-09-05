@@ -10,6 +10,7 @@ import io.chino.java.ChinoBaseAPI;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -217,12 +218,35 @@ public class Document {
      * @param content
      *     The content
      */
-    @JsonProperty("content")
     public void setContent(HashMap<? extends String, ?> content) {
         JsonNode jsonContent = new ObjectMapper().valueToTree(content);
         setContent(jsonContent);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Document))
+            return false;
+        Document other = (Document) obj;
+        return other.documentId.equals(documentId)
+                && (other.schemaId.equals(schemaId))
+                && (other.repositoryId.equals(repositoryId))
+                && (other.insertDate.equals(insertDate))
+                && (other.lastUpdate.equals(lastUpdate))
+                && (other.hasContent() == this.hasContent())
+                && (other.getContentAsHashMap().equals(getContentAsHashMap())
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(documentId)
+                + Objects.hashCode(schemaId)
+                + Objects.hashCode(repositoryId)
+                + Objects.hashCode(insertDate)
+                + Objects.hashCode(lastUpdate)
+                + Objects.hashCode(getContentAsHashMap());
+    }
 
     @Override
     public String toString(){

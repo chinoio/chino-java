@@ -1,15 +1,17 @@
 package io.chino.java;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
 import io.chino.api.document.Document;
 import io.chino.api.document.GetDocumentsResponse;
 import io.chino.api.schema.SchemaStructure;
 import io.chino.api.search.DocumentsSearch;
+import io.chino.api.search.ResultType;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.DeleteAll;
+import io.chino.java.testutils.MappedDocument;
 import io.chino.java.testutils.TestConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -25,7 +27,7 @@ import static org.junit.Assert.*;
 
 public class DocumentsTest extends ChinoBaseTest {
 
-    private static ChinoAPI chino_admin, testClient;
+    private static ChinoAPI chino_admin;
     private static Documents test;
 
     private static String REPO_ID, SCHEMA_ID;
@@ -45,7 +47,7 @@ public class DocumentsTest extends ChinoBaseTest {
                     .getRepositoryId();
 
         LinkedList<Field> fields = new LinkedList<>();
-        fields.add(new Field("testMethod", "string"));
+        fields.add(new Field("testMethod", "string", true));
 
         SCHEMA_ID = chino_admin.schemas.create(
                 REPO_ID,
@@ -76,8 +78,9 @@ public class DocumentsTest extends ChinoBaseTest {
         String variant = "1 param";
 
         try {
+            List<Document> docList = test.list(SCHEMA_ID, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT, true).getDocuments();
             assertTrue(
-                    test.list(SCHEMA_ID).getDocuments().contains(doc)
+                    docList.contains(doc)
             );
 
             variant = "2 params";
@@ -91,12 +94,14 @@ public class DocumentsTest extends ChinoBaseTest {
             );
 
             variant = "3 params - expected 1 document";
+            docsList = test.list(SCHEMA_ID, 0, 1, true).getDocuments();
             assertTrue(
-                    test.list(SCHEMA_ID, 0, 1).getDocuments().contains(doc)
+                    docsList.contains(doc)
             );
             variant = "3 params - expected no documents";
+            docsList = test.list(SCHEMA_ID, 1, 1, true).getDocuments();
             assertFalse(
-                    test.list(SCHEMA_ID, 1, 1).getDocuments().contains(doc)
+                    docsList.contains(doc)
             );
 
             // 4 params variant is ignored bc already tested with the previous calls
@@ -129,10 +134,6 @@ public class DocumentsTest extends ChinoBaseTest {
         );
 
         // read and map to class
-        class MappedDocument {
-            @JsonProperty("testMethod")
-            public String testMethod;
-        }
 
         MappedDocument docMapped = (MappedDocument) test.read(
                 docHM.getDocumentId(),
@@ -145,7 +146,6 @@ public class DocumentsTest extends ChinoBaseTest {
 
         clear(docHM);
         clear(docStr);
-        clear(check);
     }
 
     @Test
@@ -156,6 +156,7 @@ public class DocumentsTest extends ChinoBaseTest {
         content.put("testMethod", methodName);
 
         Document docHM = test.create(SCHEMA_ID, content, true);
+        docHM.setContent(content);
         Document check = test.read(docHM.getDocumentId());
         assertEquals( "Different content than expected was read in fetched Document (created with HashMap)",
                 docHM.getContentAsHashMap(),
@@ -164,11 +165,12 @@ public class DocumentsTest extends ChinoBaseTest {
 
         // create json string / read
         String jsonContent = new ObjectMapper().writeValueAsString(docHM.getContentAsHashMap());
-        DocumentsSearch search = (DocumentsSearch) testClient.search.documents(SCHEMA_ID)
+        DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID)
                 .with("testMethod", EQUALS, methodName)
                 .buildSearch();
 
         Document docStr = test.create(SCHEMA_ID, jsonContent, true);
+        docStr.setContent(docHM.getContentAsHashMap());
         GetDocumentsResponse result = search.execute();
         assertTrue(
                 result.getDocuments().contains(docStr)
@@ -176,7 +178,6 @@ public class DocumentsTest extends ChinoBaseTest {
 
         clear(docHM);
         clear(docStr);
-        clear(check);
     }
 
     @Test
@@ -239,10 +240,12 @@ public class DocumentsTest extends ChinoBaseTest {
         content.put("testMethod", newName);
 
 
-        DocumentsSearch search = (DocumentsSearch) testClient.search.documents(SCHEMA_ID)
+        DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID)
                 .with("testMethod", EQUALS, newName)
-                .buildSearch();
-        test.update(doc.getDocumentId(), content);
+                .buildSearch()
+                .setResultType(ResultType.FULL_CONTENT);
+        doc = test.update(doc.getDocumentId(), content, true);
+        doc.setContent(content);
         GetDocumentsResponse result = search.execute();
         assertTrue(
                 result.getDocuments().contains(doc)
