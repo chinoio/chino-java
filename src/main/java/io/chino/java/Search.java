@@ -317,7 +317,7 @@ public class Search extends ChinoBaseAPI {
     @Deprecated
     public Search and(String field) throws ChinoApiException {
         //If filter_type value is set to "or" it raises an error
-        if (searchRequest.getFilterType().equals("or"))
+        if (searchRequest != null && searchRequest.getFilterType() != null && searchRequest.getFilterType().equals("or"))
             throw new ChinoApiException("Wrong filter operations! Filter type is already set to 'or'. If you want to do a more complex search, please use the new Search system");
         //If the value is "and" or is "null"(which is the case of the first call) it sets the value to "and"
         searchRequest.setFilterType("and");

@@ -11,7 +11,6 @@ import io.chino.api.search.*;
 import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
 import io.chino.java.testutils.ChinoBaseTest;
-import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -23,7 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.chino.api.search.SearchQueryBuilder.with;
 import static org.junit.Assert.*;
 
 public class SearchTest extends ChinoBaseTest {
@@ -99,7 +97,7 @@ public class SearchTest extends ChinoBaseTest {
     }
 
     @Test
-    public void testSearchDocuments() throws IOException, ChinoApiException, InterruptedException {
+    public void testNewSearchDocuments() throws IOException, ChinoApiException, InterruptedException {
         DocumentsSearch searchDocs = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID).setResultType(ResultType.FULL_CONTENT).addSortRule("order", SortRule.Order.ASC)
                 .with("test_method", FilterOperator.EQUALS, "search documents test")
                 .buildSearch();
@@ -148,22 +146,20 @@ public class SearchTest extends ChinoBaseTest {
     }
 
     @Test
-    public void testSearchUsers_FULLCONTENT_COUNT() throws IOException, ChinoApiException, InterruptedException {
+    public void testNewSearchUsers_FULLCONTENT_COUNT() throws IOException, ChinoApiException, InterruptedException {
         UsersSearch searchUsers = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.FULL_CONTENT).addSortRule("order", SortRule.Order.ASC)
                 .with("test_method", FilterOperator.EQUALS, "search users test")
                 .buildSearch();
 
         GetUsersResponse response_FULL = searchUsers.execute();
         List<User> users = response_FULL.getUsers();
-        List<String> ids = new LinkedList<>();
-        assertNotNull("search docs returned 'null' list", users);
+        assertNotNull("search users returned 'null' list", users);
 
         for (User u : users) {
-            assertNotNull("Null document found", u);
-            ids.add(u.getUserId());
+            assertNotNull("Null user found", u);
 
             assertFalse(
-                    "Document search with FULL_CONTENT doesn't return Document's content",
+                    "User search with FULL_CONTENT doesn't return User's attributes",
                     u.getAttributesAsHashMap() == null || u.getAttributesAsHashMap().isEmpty()
             );
         }
@@ -186,7 +182,7 @@ public class SearchTest extends ChinoBaseTest {
 //    TODO: check USERNAME_EXISTS and EXISTS, then reactivate tests
 //
 //    @Test
-//    public void testSearchUsers_EXISTS() throws IOException, ChinoApiException {
+//    public void testNewSearchUsers_EXISTS() throws IOException, ChinoApiException {
 //        UsersSearch search = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.EXISTS).addSortRule("order", SortRule.Order.ASC)
 //                .with("order", FilterOperator.GREATER_THAN, 5)
 //                .and(
@@ -201,7 +197,7 @@ public class SearchTest extends ChinoBaseTest {
 //    }
 //
 //    @Test
-//    public void testSearchUsers_USERNAMEEXISTS() throws IOException, ChinoApiException {
+//    public void testNewSearchUsers_USERNAMEEXISTS() throws IOException, ChinoApiException {
 //        UsersSearch search = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.USERNAME_EXISTS).addSortRule("order", SortRule.Order.ASC)
 //                .with("order", FilterOperator.GREATER_THAN, 5)
 //                .and(
@@ -214,5 +210,94 @@ public class SearchTest extends ChinoBaseTest {
 //                Objects.requireNonNull(search.execute()).toString()
 //        );
 //    }
+
+
+    @Test
+    @Deprecated
+    public void testOldSearchDocuments_FULLCONTENT_COUNT() throws ChinoApiException, IOException {
+        GetDocumentsResponse response_FULL = chino_admin.search
+                .where("test_method").eq("search documents test")
+                .resultType("FULL_CONTENT")
+                .sortAscBy("order")
+                .searchDocuments(SCHEMA_ID);
+        List<Document> docs = response_FULL.getDocuments();
+        List<String> ids = new LinkedList<>();
+        assertNotNull("search docs returned 'null' list", docs);
+
+        for (Document d : docs) {
+            assertNotNull("Null document found", d);
+            assertTrue("Document search with FULL_CONTENT doesn't return Document's content", d.hasContent());
+
+            ids.add(d.getDocumentId());
+        }
+
+        GetDocumentsResponse response_ONLYID = chino_admin.search
+                .where("test_method").eq("search documents test")
+                .resultType("ONLY_ID")
+                .sortAscBy("order")
+                .searchDocuments(SCHEMA_ID);
+
+        for (Document shortDocument : response_ONLYID.getDocuments()) {
+            assertFalse("Document fetched with ONLY_ID should not have content", shortDocument.hasContent());
+            assertTrue("Document not found in docs list", ids.contains(shortDocument.getDocumentId()));
+        }
+
+        GetDocumentsResponse response_COUNT = chino_admin.search
+                .where("test_method").eq("search documents test")
+                .resultType("COUNT")
+                .sortAscBy("order")
+                .searchDocuments(SCHEMA_ID);
+        assertEquals(
+                "COUNT is different from previous search result number",
+                (long) response_FULL.getTotalCount(),
+                (long) response_COUNT.getCount()
+        );
+        assertTrue(response_COUNT.getDocuments().isEmpty());
+        List<Document> docMetadata = response_COUNT.getDocuments();
+
+        for (Document d : docMetadata) {
+            assertFalse(d.hasContent());
+        }
+
+        for (Document d : docs) {
+            System.out.print(d.getContentAsHashMap().get("value"));
+        }
+    }
+
+    @Test
+    @Deprecated
+    public void testOldSearchUsers_FULLCONTENT_COUNT() throws ChinoApiException, IOException {
+        GetUsersResponse response_FULL = chino_admin.search
+                .where("username").eq("asdfgh_6")
+                .and("order").gt(5)
+                .resultType("FULL_CONTENT")
+                .sortAscBy("order")
+                .searchUsers(USER_SCHEMA_ID);
+        for (User u : response_FULL.getUsers()) {
+            assertNotNull("Null user found", u);
+            assertFalse(
+                    "User search with FULL_CONTENT doesn't return User's attributes",
+                    u.getAttributesAsHashMap() == null || u.getAttributesAsHashMap().isEmpty()
+            );
+        }
+
+
+        GetUsersResponse response_COUNT = chino_admin.search
+                .where("username").eq("asdfgh_6")
+                .and("order").gt(5)
+                .resultType("COUNT")
+                .sortAscBy("order")
+                .searchUsers(USER_SCHEMA_ID);
+        assertEquals(
+                "COUNT is different from previous search result number",
+                response_FULL.getTotalCount(),
+                response_COUNT.getCount()
+        );
+
+
+        for (User u : response_COUNT.getUsers()) {
+            System.out.print(u.getAttributesAsHashMap().get("value"));
+        }
+    }
 
 }

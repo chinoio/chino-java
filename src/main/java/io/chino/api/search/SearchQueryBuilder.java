@@ -176,6 +176,9 @@ public class SearchQueryBuilder {
     }
 
 
+    public static SearchQueryBuilder with(SearchQueryBuilder query) {
+        return query;
+    }
 
     public static SearchQueryBuilder with(String fieldName, FilterOperator type, int value) {
         return new SearchQueryBuilder(new IntegerSearchLeaf(fieldName, type, value), null);

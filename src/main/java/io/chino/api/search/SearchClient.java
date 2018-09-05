@@ -47,6 +47,10 @@ public abstract class SearchClient<ResponseType extends Object> {
         return this;
     }
 
+    public SearchQueryBuilder with(SearchQueryBuilder query) {
+        return query;
+    }
+
     public SearchQueryBuilder with(String fieldName, FilterOperator type, int value) {
         return new SearchQueryBuilder(new IntegerSearchLeaf(fieldName, type, value), this);
     }
