@@ -17,8 +17,6 @@ public final class DocumentsSearch extends SearchClient<GetDocumentsResponse> {
     public GetDocumentsResponse execute() throws IOException, ChinoApiException {
         String JSONquery = super.parseSearchRequest();
 
-        System.out.println(JSONquery); // TODO remove
-
         JsonNode response = client.postResource(
                 "/search/documents/" + resourceID,
                 mapper.readValue(JSONquery, JsonNode.class)
