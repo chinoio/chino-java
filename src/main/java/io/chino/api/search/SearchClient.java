@@ -32,11 +32,28 @@ public abstract class SearchClient<ResponseType extends Object> {
         return this;
     }
 
+    /**
+     * Update the result type for the result of this search. Default value is
+     * {@link ResultType#FULL_CONTENT FULL_CONTENT}
+     *
+     * @param resultType the new {@link ResultType}
+     *
+     * @return a {@link SearchClient} subclass with the updated {@link ResultType}
+     */
     public SearchClient<ResponseType> setResultType(ResultType resultType) {
         this.resultType = resultType;
         return this;
     }
 
+    /**
+     * Add a new {@link SortRule} for sorting the results of this Search.
+     * The new rule will have lower priority compared to the existing ones.
+     *
+     * @param fieldName the name of the field that will be used to sort the results. The field must be indexed.
+     * @param order a value in {@link io.chino.api.search.SortRule.Order SortRule.Order}
+     *
+     * @return a {@link SearchClient} subclass with the new {@link SortRule}
+     */
     public SearchClient<ResponseType> addSortRule(String fieldName, SortRule.Order order) {
         if (sort == null) {
             sort = new LinkedList<>();
@@ -47,26 +64,126 @@ public abstract class SearchClient<ResponseType extends Object> {
         return this;
     }
 
+    /**
+     * Add a new {@link SortRule} for sorting the results of this Search.
+     * The new rule will be evaluated based on the provided {@code index}, where a low index means a higher priority.
+     * E.g. in order to evaluate the new rule, set index to 0.
+     *
+     * @param fieldName the name of the field that will be used to sort the results. The field must be indexed.
+     * @param order a value in {@link io.chino.api.search.SortRule.Order SortRule.Order}
+     * @param index a lower value means a higher priority. This value must be equal or higher than 0,
+     *             with '0' meaning 'maximum priority'.
+     *
+     * @see #addSortRule(String, SortRule.Order) How to add rule with minimum priority
+     *
+     * @return a {@link SearchClient} subclass with the new {@link SortRule}
+     */
+    public SearchClient<ResponseType> addSortRule(String fieldName, SortRule.Order order, int index) {
+        if (sort == null) {
+            sort = new LinkedList<>();
+        }
+        if (index > sort.size())
+            index = sort.size();
+        sort.add(
+                index,
+                new SortRule(fieldName, order)
+        );
+        return this;
+    }
+
+    /**
+     * Get the number of {@link SortRule SortRules} that have been added to this client
+     *
+     * @return the current number of {@link SortRule SortRules} currently set for this client.
+     */
+    public int sortRulesCounter() {
+        return sort.size();
+    }
+
+    /**
+     * Start building a query for this client from an existing {@link SearchQueryBuilder}.
+     * If another query was set before for this client, it will be overwritten when calling
+     * {@link SearchQueryBuilder#buildSearch()}.
+     *
+     * @param query an existing {@link SearchQueryBuilder}
+     *
+     * @return a {@link SearchQueryBuilder} that will build this client's query.
+     */
     public SearchQueryBuilder with(SearchQueryBuilder query) {
         return query;
     }
 
+    /**
+     * Start building a query for this client by specifying a search criterion.
+     * If another query was set before for this client, it will be overwritten when calling
+     * {@link SearchQueryBuilder#buildSearch()}.
+     *
+     * @param fieldName the name of an indexed field to add as a search criterion
+     * @param type the {@link FilterOperator} to be evaluated
+     * @param value the expected value of the field
+     *
+     * @return a new {@link SearchQueryBuilder} that will build this client's query
+     */
     public SearchQueryBuilder with(String fieldName, FilterOperator type, int value) {
         return new SearchQueryBuilder(new IntegerSearchLeaf(fieldName, type, value), this);
     }
 
+    /**
+     * Start building a query for this client by specifying a search criterion.
+     * If another query was set before for this client, it will be overwritten when calling
+     * {@link SearchQueryBuilder#buildSearch()}.
+     *
+     * @param fieldName the name of an indexed field to add as a search criterion
+     * @param type the {@link FilterOperator} to be evaluated
+     * @param value the expected value of the field
+     *
+     * @return a new {@link SearchQueryBuilder} that will build this client's query
+     */
     public SearchQueryBuilder with(String fieldName, FilterOperator type, float value) {
         return new SearchQueryBuilder(new FloatSearchLeaf(fieldName, type, value), this);
     }
 
+    /**
+     * Start building a query for this client by specifying a search criterion.
+     * If another query was set before for this client, it will be overwritten when calling
+     * {@link SearchQueryBuilder#buildSearch()}.
+     *
+     * @param fieldName the name of an indexed field to add as a search criterion
+     * @param type the {@link FilterOperator} to be evaluated
+     * @param value the expected value of the field
+     *
+     * @return a new {@link SearchQueryBuilder} that will build this client's query
+     */
     public SearchQueryBuilder with(String fieldName, FilterOperator type, boolean value) {
         return new SearchQueryBuilder(new BooleanSearchLeaf(fieldName, type, value), this);
     }
 
+    /**
+     * Start building a query for this client by specifying a search criterion.
+     * If another query was set before for this client, it will be overwritten when calling
+     * {@link SearchQueryBuilder#buildSearch()}.
+     *
+     * @param fieldName the name of an indexed field to add as a search criterion
+     * @param type the {@link FilterOperator} to be evaluated
+     * @param value the expected value of the field
+     *
+     * @return a new {@link SearchQueryBuilder} that will build this client's query
+     */
     public SearchQueryBuilder with(String fieldName, FilterOperator type, String value) {
         return new SearchQueryBuilder(new StringSearchLeaf(fieldName, type, value), this);
     }
 
+    /**
+     * Start building a query for this client by specifying a search criterion.
+     * If another query was set before for this client, it will be overwritten when calling
+     * {@link SearchQueryBuilder#buildSearch()}.
+     *
+     * @param fieldName the name of an indexed field to add as a search criterion
+     * @param type the {@link FilterOperator} to be evaluated
+     * @param value the expected value of the field
+     *
+     * @return a new {@link SearchQueryBuilder} that will build this client's query
+     */
     public SearchQueryBuilder with(String fieldName, FilterOperator type, List value) {
         if (value == null) {
             return with(fieldName, type, (String) null);
@@ -107,6 +224,15 @@ public abstract class SearchClient<ResponseType extends Object> {
         return query.getString().toString();
     }
 
+    /**
+     * Parse the current query and prints it to {@link System#out} in a human-friendly fashion.
+     *
+     * @return a String containing the JSON representation of the current query for this client
+     */
+    public String toJSONString() {
+        return parseSearchRequest();
+    }
+
     protected String parseSearchRequest() {
         String queryJSON = query.parseJSON(2);
 
@@ -134,9 +260,16 @@ public abstract class SearchClient<ResponseType extends Object> {
         return sb.append("}\n").toString();
     }
 
+    /**
+     * Execute the current query that is contained in this {@link SearchClient}.
+     * Calls Chino.io Search API in order to retrieve the objects that match the provided search criteria.
+     *
+     * @return either a {@link io.chino.api.document.GetDocumentsResponse GetDocumentsResponse} or a
+     * {@link io.chino.api.user.GetUsersResponse GetUsersResponse} (depending on the implementation)
+     * that contains the search results.
+     *
+     * @throws IOException
+     * @throws ChinoApiException
+     */
     public abstract ResponseType execute() throws IOException, ChinoApiException;
-
-    public String toJSONString() {
-        return parseSearchRequest();
-    }
 }
