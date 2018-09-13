@@ -29,8 +29,8 @@ public class Groups extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Groups
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetGroupsResponse Object which contains the list of Groups
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetGroupsResponse list(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/groups", offset, limit);
@@ -42,8 +42,8 @@ public class Groups extends ChinoBaseAPI {
     /**
      * Returns a list of Groups
      * @return GetGroupsResponse Object which contains the list of Groups
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetGroupsResponse list() throws IOException, ChinoApiException {
         JsonNode data = getResource("/groups", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
@@ -56,8 +56,8 @@ public class Groups extends ChinoBaseAPI {
      * It retrieves a specific Group
      * @param groupId the id of the Group
      * @return Group Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Group read(String groupId) throws IOException, ChinoApiException{
         checkNotNull(groupId, "group_id");
@@ -73,8 +73,8 @@ public class Groups extends ChinoBaseAPI {
      * @param groupName the name of the Group
      * @param attributes an HashMap of the attributes
      * @return Group Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Group create(String groupName, HashMap attributes) throws IOException, ChinoApiException {
         CreateGroupRequest createGroupRequest=new CreateGroupRequest(groupName, attributes);
@@ -92,8 +92,8 @@ public class Groups extends ChinoBaseAPI {
      * @param groupName the name of the new Group
      * @param attributes an HashMap of the new attributes
      * @return Group Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Group update(String groupId, String groupName, HashMap attributes) throws IOException, ChinoApiException {
         checkNotNull(groupId, "group_id");
@@ -111,8 +111,8 @@ public class Groups extends ChinoBaseAPI {
      * @param groupId the id of the Group
      * @param force if true, the resource cannot be restored
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String groupId, boolean force) throws IOException , ChinoApiException {
         checkNotNull(groupId, "group_id");
@@ -126,8 +126,8 @@ public class Groups extends ChinoBaseAPI {
      * @param userId the id of the User
      * @param groupId the id of the Group
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String addUserToGroup(String userId, String groupId) throws IOException, ChinoApiException {
         checkNotNull(groupId, "group_id");
@@ -141,8 +141,8 @@ public class Groups extends ChinoBaseAPI {
      * @param userId the id of the User
      * @param groupId the id of the Group
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String removeUserFromGroup(String userId, String groupId) throws IOException, ChinoApiException {
         checkNotNull(groupId, "group_id");
@@ -156,8 +156,8 @@ public class Groups extends ChinoBaseAPI {
      * @param userSchemaId the id of the UserSchema
      * @param groupId the id of the Group
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String addUserSchemaToGroup(String userSchemaId, String groupId) throws IOException, ChinoApiException {
         checkNotNull(groupId, "group_id");
@@ -171,8 +171,8 @@ public class Groups extends ChinoBaseAPI {
      * @param userSchemaId the id of the UserSchema
      * @param groupId the id of the Group
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String removeUserSchemaFromGroup(String userSchemaId, String groupId) throws IOException, ChinoApiException {
         checkNotNull(groupId, "group_id");

@@ -27,8 +27,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Permissions
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissions(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/perms", offset, limit);
@@ -41,8 +41,8 @@ public class Permissions extends ChinoBaseAPI {
     /**
      * It reads Permissions on all Resources
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissions() throws IOException, ChinoApiException {
         JsonNode data = getResource("/perms", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
@@ -59,8 +59,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Permissions
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissionsOnaDocument(String documentId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
@@ -75,8 +75,8 @@ public class Permissions extends ChinoBaseAPI {
      * It reads Permissions on a Document
      * @param documentId the id of the Document
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissionsOnaDocument(String documentId) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
@@ -93,8 +93,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Permissions
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissionsOfaUser(String userId, int offset, int limit) throws IOException, ChinoApiException{
         checkNotNull(userId, "user_id");
@@ -109,8 +109,8 @@ public class Permissions extends ChinoBaseAPI {
      * Used to read Permissions of a User
      * @param userId the id of the User
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissionsOfaUser(String userId) throws IOException, ChinoApiException{
         checkNotNull(userId, "user_id");
@@ -127,8 +127,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Permissions
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissionsOfaGroup(String groupId, int offset, int limit) throws IOException, ChinoApiException{
         checkNotNull(groupId, "group_id");
@@ -143,8 +143,8 @@ public class Permissions extends ChinoBaseAPI {
      * Used to read Permissions of a Group
      * @param groupId the id of the Group
      * @return GetPermissionsResponse Object with a list of Permissions
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetPermissionsResponse readPermissionsOfaGroup(String groupId) throws IOException, ChinoApiException{
         checkNotNull(groupId, "group_id");
@@ -163,8 +163,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRule Object
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String permissionsOnResources(String action, String resourceType, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
         checkNotNull(action, "action");
@@ -185,8 +185,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRule Object
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String permissionsOnaResource(String action, String resourceType, String resourceId, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
         checkNotNull(action, "action");
@@ -209,8 +209,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRule Object
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String permissionsOnResourceChildren(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
         auxFunction(action, resourceType, resourceId, resourceChildren, subjectType, subjectId);
@@ -229,8 +229,8 @@ public class Permissions extends ChinoBaseAPI {
      * @param subjectId the id of the Subject
      * @param permissionRule the PermissionRuleCreatedDocument Object
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String permissionsOnResourceChildren(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId, PermissionRuleCreatedDocument permissionRule) throws IOException, ChinoApiException {
         auxFunction(action, resourceType, resourceId, resourceChildren, subjectType, subjectId);

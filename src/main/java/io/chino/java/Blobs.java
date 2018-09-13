@@ -39,9 +39,10 @@ public class Blobs extends ChinoBaseAPI {
      * @param field the name of the field (of type "blob") that refers to this BLOB in the Document
      * @param fileName the name of the local file to upload
      *
-     * @return A {@link CommitBlobUploadResponse} Object with information about the outcome of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @return A {@link CommitBlobUploadResponse} Object with information about the outcome of the operation.
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public CommitBlobUploadResponse uploadBlob(String folderPath, String documentId, String field, String fileName) throws IOException, ChinoApiException{
         checkNotNull(folderPath, "path");
@@ -76,11 +77,13 @@ public class Blobs extends ChinoBaseAPI {
      * Returns the requested BLOB
      *
      * @param blobId the id of the blob to retrieve
-     * @param destination the path where to save the file
-     * @return GetBlobResponse Object which contains the BLOB Object
-     * @throws IOException
-     * @throws ChinoApiException
-     * @throws NoSuchAlgorithmException
+     * @param destination the path to a file where the BLOB will be saved
+     *
+     * @return {@link GetBlobResponse} which contains the BLOB Object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     * @throws NoSuchAlgorithmException can't find MD5 / SHA algorythm
      */
     public GetBlobResponse get(String blobId, String destination) throws IOException, ChinoApiException, NoSuchAlgorithmException {
         checkNotNull(blobId, "blob_id");
@@ -140,8 +143,8 @@ public class Blobs extends ChinoBaseAPI {
      *
      * @return a {@link CreateBlobUploadResponse}, which contains the upload_id that is needed for upload the file.
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public CreateBlobUploadResponse initUpload(String documentId, String field, String fileName) throws IOException, ChinoApiException {
         CreateBlobUploadRequest createBlobUploadRequest=new CreateBlobUploadRequest(documentId, field, fileName);
@@ -164,8 +167,8 @@ public class Blobs extends ChinoBaseAPI {
      * @param offset the offset of the chunk relative to the beginning of the file
      * @param length the length of the chunk
      * @return A {@link CreateBlobUploadResponse}, which contains the status of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset, int length) throws IOException, ChinoApiException {
         JsonNode data = putResource("/blobs/"+uploadId, chunkData, offset, length);
@@ -184,8 +187,8 @@ public class Blobs extends ChinoBaseAPI {
      * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload()}
      *
      * @return A {@link CommitBlobUploadResponse}, which contains the status of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public CommitBlobUploadResponse commitUpload(String uploadId) throws IOException, ChinoApiException {
         CommitBlobUploadRequest commitBlobUploadRequest = new CommitBlobUploadRequest(uploadId);
@@ -203,8 +206,9 @@ public class Blobs extends ChinoBaseAPI {
      * @param blobId the id of the BLOB to delete
      * @param force if true, the resource cannot be restored. Otherwise, it will only become inactive.
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String blobId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(blobId, "blob_id");

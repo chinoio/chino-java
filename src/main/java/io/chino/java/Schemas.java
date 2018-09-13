@@ -28,8 +28,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Schemas
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetSchemasResponse Object which contains the list of Schemas
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetSchemasResponse list(String repositoryId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
@@ -43,8 +43,8 @@ public class Schemas extends ChinoBaseAPI {
      * Returns a list of Schemas
      * @param repositoryId the id of the Repository
      * @return GetSchemasResponse Object which contains the list of Schemas
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetSchemasResponse list(String repositoryId) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
@@ -58,8 +58,8 @@ public class Schemas extends ChinoBaseAPI {
      * It retrieves a specific Schema
      * @param schemaId the id of the Schema
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema read(String schemaId) throws IOException, ChinoApiException{
         checkNotNull(schemaId, "schema_id");
@@ -75,8 +75,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param repositoryId the id of the Repository
      * @param schemaRequest the SchemaRequest Object
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema create(String repositoryId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
@@ -94,8 +94,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param description the description
      * @param myClass the Class that represents the structure of the Schema
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema create(String repositoryId, String description, Class myClass) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
@@ -119,8 +119,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param description the description
      * @param schemaStructure the SchemaStructure Object
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema create(String repositoryId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
@@ -135,8 +135,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param description the description
      * @param schemaStructure the SchemaStructure Object
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema update(String schemaId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -154,8 +154,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param schemaId the id of the Schema
      * @param schemaRequest the SchemaRequest Object
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema update(String schemaId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -172,8 +172,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param description the description
      * @param myClass the Class that represents the structure of the Schema
      * @return Schema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Schema update(String schemaId, String description, Class myClass) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -196,8 +196,8 @@ public class Schemas extends ChinoBaseAPI {
      * @param schemaId the id of the Schema
      * @param force if true, the resource cannot be restored
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String schemaId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");

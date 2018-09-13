@@ -25,8 +25,8 @@ public class Applications extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Applications
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetApplicationsResponse Object that contains the list of the Applications
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetApplicationsResponse list(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/auth/applications", offset, limit);
@@ -37,9 +37,11 @@ public class Applications extends ChinoBaseAPI {
 
     /**
      * Returns the list of Applications
+     *
      * @return GetApplicationsResponse Object that contains the list of the Applications
-     * @throws IOException
-     * @throws ChinoApiException
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetApplicationsResponse list() throws IOException, ChinoApiException {
         JsonNode data = getResource("/auth/applications", 0 , ChinoApiConstants.QUERY_DEFAULT_LIMIT);
@@ -52,8 +54,8 @@ public class Applications extends ChinoBaseAPI {
      * It retrieves the Application requested
      * @param applicationId the id of the Application
      * @return Application Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Application read(String applicationId) throws IOException, ChinoApiException{
         checkNotNull(applicationId, "application_id");
@@ -71,8 +73,8 @@ public class Applications extends ChinoBaseAPI {
      * i.e. the authentication method.
      * @param redirectUrl (used only with the "authorization-code" method)
      * @return an {@link Application} object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Application create(String name, String grantType, String redirectUrl) throws IOException, ChinoApiException {
         CreateApplicationRequest applicationRequest = new CreateApplicationRequest(name, grantType, redirectUrl);
@@ -93,8 +95,8 @@ public class Applications extends ChinoBaseAPI {
      * See <a href="https://docs.chino.io/#header-client-types">Chino.io API Docs</a>
      * to learn more about cliet types.
      * @return an {@link Application} object
-     * @throws IOException
-     * @throws ChinoApiException 
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Application create(String name, String grantType, String redirectUrl, ClientType clientType) throws IOException, ChinoApiException {
         if (clientType == ClientType.CONFIDENTIAL)
@@ -114,8 +116,8 @@ public class Applications extends ChinoBaseAPI {
      * @param name the new name for the Application
      * @param grantType "authorization-code" or "password", it indicates the method for the authentication
      * @return Application Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Application update(String applicationId, String name, String grantType, String redirectUrl) throws IOException, ChinoApiException {
         checkNotNull(applicationId, "application_id");
@@ -132,8 +134,8 @@ public class Applications extends ChinoBaseAPI {
      * @param applicationId the id of the Application
      * @param force if true, the resource cannot be restored
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String applicationId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(applicationId, "application_id");

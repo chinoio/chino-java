@@ -29,8 +29,8 @@ public class Collections extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Collections
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetCollectionsResponse Object which contains the list of Collections
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetCollectionsResponse list(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/collections", offset, limit);
@@ -42,8 +42,8 @@ public class Collections extends ChinoBaseAPI {
     /**
      * Returns a list of Collections
      * @return GetCollectionsResponse Object which contains the list of Collections
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetCollectionsResponse list() throws IOException, ChinoApiException {
         JsonNode data = getResource("/collections", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
@@ -56,8 +56,8 @@ public class Collections extends ChinoBaseAPI {
      * It retrieves a single Collection
      * @param collectionId the id of the Collection to read
      * @return Collection Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Collection read(String collectionId) throws IOException, ChinoApiException{
         checkNotNull(collectionId, "collection_id");
@@ -72,8 +72,8 @@ public class Collections extends ChinoBaseAPI {
      * It creates a new Collection
      * @param name the name of the Collection
      * @return Collection Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Collection create(String name) throws IOException, ChinoApiException {
         CreateCollectionRequest collectionRequest = new CreateCollectionRequest(name);
@@ -89,8 +89,8 @@ public class Collections extends ChinoBaseAPI {
      * @param collectionId the id of the Collection to update
      * @param name the name of the new Collection
      * @return GetCollection Object which contains the Collection object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetCollectionResponse update(String collectionId, String name) throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
@@ -107,8 +107,8 @@ public class Collections extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Collections
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetDocumentsResponse Object which contains the list of Documents
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetDocumentsResponse listDocuments(String collectionId, int offset, int limit)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
@@ -122,8 +122,8 @@ public class Collections extends ChinoBaseAPI {
      * Returns a list of Documents in a Collection
      * @param collectionId the id of the Collection
      * @return GetDocumentsResponse Object which contains the list of Documents
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetDocumentsResponse listDocuments(String collectionId)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
@@ -138,8 +138,8 @@ public class Collections extends ChinoBaseAPI {
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String addDocument(String collectionId, String documentId)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
@@ -153,8 +153,8 @@ public class Collections extends ChinoBaseAPI {
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String removeDocument(String collectionId, String documentId)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
@@ -168,8 +168,8 @@ public class Collections extends ChinoBaseAPI {
      * @param collectionId the id of the Collection to delete
      * @param force if true, the resource cannot be restored
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String collectionId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");

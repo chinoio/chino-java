@@ -44,8 +44,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return a {@link LoggedUser} object
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public LoggedUser loginWithPassword(String username, String password, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
         checkNotNull(username, "username");
@@ -89,8 +89,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return a {@link LoggedUser} object
      *
-     * @throws IOException
-     * @throws ChinoApiException 
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error 
      */
     public LoggedUser loginWithPassword (String username, String password, final String applicationId) throws IOException, ChinoApiException {
         return loginWithPassword(username, password, applicationId, "");
@@ -146,8 +146,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return LoggedUser Object
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public LoggedUser loginWithAuthenticationCode(String code, String redirectUrl, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
         checkNotNull(code, "code");
@@ -189,8 +189,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     private LoggedUser parseTokensAndUpdateAuth(Response response) throws IOException, ChinoApiException{
         checkNotNull(response, "response");
@@ -220,8 +220,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return LoggedUser Object updated
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public LoggedUser refreshToken(String refreshToken, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
         checkNotNull(refreshToken, "refresh_token");
@@ -249,8 +249,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return User Object that contains the status of the logged user
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public User checkUserStatus() throws IOException, ChinoApiException {
         JsonNode data = getResource("/users/me");
@@ -269,8 +269,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return a String with the result of the operation
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String logout(String token, final String applicationId, final String applicationSecret) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
@@ -325,8 +325,8 @@ public class Auth extends ChinoBaseAPI {
      *
      * @return a String with the result of the operation
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String logout(String token, final String applicationId) throws IOException, ChinoApiException {
         return logout(token, applicationId, "");

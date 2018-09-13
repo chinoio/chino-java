@@ -84,8 +84,8 @@ public class Documents extends ChinoBaseAPI {
      * @see #read(String)
      * @see GetDocumentsResponse#getDocuments()
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetDocumentsResponse list(String schemaId, int offset, int limit, boolean fullDocument) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -112,8 +112,8 @@ public class Documents extends ChinoBaseAPI {
      * @see #read(String)
      * @see GetDocumentsResponse#getDocuments()
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetDocumentsResponse list(String schemaId, boolean fullDocument) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -136,8 +136,8 @@ public class Documents extends ChinoBaseAPI {
      *
      * @return a {@link Document} object.
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document read(String documentId) throws IOException, ChinoApiException{
         checkNotNull(documentId, "document_id");
@@ -158,8 +158,8 @@ public class Documents extends ChinoBaseAPI {
      *
      * @return an instance of {@code myClass}, where the retrieved Document has been mapped.
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Object read(String documentId, Class myClass) throws IOException, ChinoApiException{
         checkNotNull(documentId, "document_id");
@@ -186,8 +186,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document create(String schemaId, HashMap content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -210,8 +210,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document create(String schemaId, HashMap content) throws IOException, ChinoApiException {
         return create(schemaId, content, false);
@@ -231,8 +231,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document create(String schemaId, String content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -255,8 +255,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of a new Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document create(String schemaId, String content) throws IOException, ChinoApiException {
         return create(schemaId, content, false);
@@ -277,8 +277,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document update(String documentId, HashMap content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
@@ -302,8 +302,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document update(String documentId, HashMap content) throws IOException, ChinoApiException {
         return update(documentId, content, false);
@@ -324,8 +324,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Document update(String documentId, String content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
@@ -349,8 +349,8 @@ public class Documents extends ChinoBaseAPI {
      * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
      *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
 
     public Document update(String documentId, String content) throws IOException, ChinoApiException {
@@ -367,8 +367,8 @@ public class Documents extends ChinoBaseAPI {
      *
      * @return a {@link String} containing either a success message or an error
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String documentId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");

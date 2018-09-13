@@ -1,12 +1,17 @@
 package io.chino.java;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.chino.api.common.*;
-import okhttp3.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.ErrorResponse;
+import io.chino.api.common.Field;
+import io.chino.api.common.indexed;
 import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-import com.fasterxml.jackson.databind.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
@@ -43,8 +48,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param resource the Object that would be mapped in a JSON format for the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode postResource(String path, Object resource) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -69,8 +74,8 @@ public class ChinoBaseAPI {
      * @param offset the offset value in the request
      * @param limit the limit value in the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode postResource(String path, Object resource, int offset, int limit) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -95,8 +100,8 @@ public class ChinoBaseAPI {
      * @param offset the offset value in the request
      * @param limit the limit value in the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode getResource(String path, int offset, int limit) throws IOException, ChinoApiException {
         Request request = new Request.Builder()
@@ -120,8 +125,8 @@ public class ChinoBaseAPI {
      * @param urlParameters a <code>&lt;</code><code>key, value</code><code>&gt;</code>
      * {@link HashMap} containing the URL parameters.
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode getResource(String path, HashMap<String, String> urlParameters) throws IOException, ChinoApiException {
         // parse parameters
@@ -155,8 +160,8 @@ public class ChinoBaseAPI {
      * It makes a GET call to the server saved in hostUrl
      * @param path the path of the URL
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode getResource(String path) throws IOException, ChinoApiException {
         Request request = new Request.Builder()
@@ -177,8 +182,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param resource the Object that would be mapped in a JSON format for the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode putResource(String path, Object resource) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -201,8 +206,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param resource the Object that would be mapped in a JSON format for the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode patchResource(String path, Object resource) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -227,8 +232,8 @@ public class ChinoBaseAPI {
      * @param offset the offset value in the request
      * @param length the length value in the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode putResource(String path, byte[] resource, int offset, int length) throws IOException, ChinoApiException {
         RequestBody requestBody = RequestBody.create(OCTET_STREAM, resource);
@@ -254,8 +259,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param force the force parameter in the request
      * @return String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String deleteResource(String path, boolean force) throws IOException, ChinoApiException {
         Request request;

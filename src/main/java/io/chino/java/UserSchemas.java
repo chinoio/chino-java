@@ -27,8 +27,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the UserSchemas
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetUserSchemasResponse Object with the list of UserSchemas
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetUserSchemasResponse list(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/user_schemas", offset, limit);
@@ -40,8 +40,8 @@ public class UserSchemas extends ChinoBaseAPI {
     /**
      * Returns a list of UserSchemas
      * @return GetUserSchemasResponse Object with the list of UserSchemas
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetUserSchemasResponse list() throws IOException, ChinoApiException {
         JsonNode data = getResource("/user_schemas", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
@@ -54,8 +54,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * It reads a specific UserSchema
      * @param userSchemaId the id of the UserSchema
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public UserSchema read(String userSchemaId) throws IOException, ChinoApiException{
         checkNotNull(userSchemaId, "user_schema_id");
@@ -70,8 +70,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param description the description
      * @param userSchemaStructure the UserSchemaStructure Object
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public UserSchema create(String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
         checkNotNull(userSchemaStructure, "user_schema_structure");
@@ -88,8 +88,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * It creates a new UserSchema
      * @param userSchemaRequest the UserSchemaRequest Object
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public UserSchema create(UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
         checkNotNull(userSchemaRequest, "user_schema_request");
@@ -106,8 +106,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param myClass the Class that represents the structure of the UserSchema. Mark fields that need to be indexed
      *                with the annotation  {@link io.chino.api.common.indexed @indexed}.
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
      public UserSchema create(String description, Class myClass) throws IOException, ChinoApiException {
         List<Field> fieldsList = returnFields(myClass);
@@ -127,8 +127,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param description the description
      * @param userSchemaStructure the UserSchemaStructure Object
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public UserSchema update(String userSchemaId, String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
@@ -146,8 +146,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param userSchemaId the id of the UserSchema
      * @param userSchemaRequest the UserSchemaRequest Object
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
      public UserSchema update(String userSchemaId, UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
          checkNotNull(userSchemaId, "user_schema_id");
@@ -164,8 +164,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param description the description
      * @param myClass the Class that represents the structure of the UserSchema
      * @return UserSchema Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public UserSchema update(String userSchemaId, String description, Class myClass) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
@@ -184,8 +184,8 @@ public class UserSchemas extends ChinoBaseAPI {
      * @param userSchemaId the id of the UserSchema
      * @param force if true, the resource cannot be restored
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String userSchemaId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");

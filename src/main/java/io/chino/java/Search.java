@@ -59,8 +59,8 @@ public class Search extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Documents
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetDocumentsResponse Object with the list of Documents
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId, int offset, int limit) throws IOException, ChinoApiException {
@@ -79,8 +79,8 @@ public class Search extends ChinoBaseAPI {
      * @param searchRequest the SearchRequest Object
      * @param schemaId the id of the schema
      * @return GetDocumentsResponse Object with the list of Documents
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetDocumentsResponse searchDocuments(SearchRequest searchRequest, String schemaId) throws IOException, ChinoApiException {
@@ -101,8 +101,8 @@ public class Search extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Documents
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetUsersResponse Object with the list of Users
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId, int offset, int limit) throws IOException, ChinoApiException {
@@ -121,8 +121,8 @@ public class Search extends ChinoBaseAPI {
      * @param searchRequest the SearchRequest Object
      * @param userSchemaId the id of the UserSchema
      * @return GetUsersResponse Object with the list of Users
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetUsersResponse searchUsers(SearchRequest searchRequest, String userSchemaId) throws IOException, ChinoApiException {
@@ -149,8 +149,8 @@ public class Search extends ChinoBaseAPI {
      *
      * @return GetDocumentsResponse Object which contains the list of Documents
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
@@ -168,8 +168,8 @@ public class Search extends ChinoBaseAPI {
      * @param sort the list of SortOption
      * @param filter the list of FilterOption
      * @return GetDocumentsResponse Object which contains the list of Documents
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetDocumentsResponse searchDocuments(String schemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
@@ -187,8 +187,8 @@ public class Search extends ChinoBaseAPI {
      * @param sort the list of SortOption
      * @param filter the list of FilterOption
      * @return GetUsersResponse Object which contains the list of Users
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter) throws IOException, ChinoApiException {
@@ -208,8 +208,8 @@ public class Search extends ChinoBaseAPI {
      * @param offset the offset from which it retrieves the Applications
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
      * @return GetUsersResponse Object which contains the list of Users
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     @Deprecated
     public GetUsersResponse searchUsers(String userSchemaId, String resultType, String filterType, List<SortOption> sort, List<FilterOption> filter, int offset, int limit) throws IOException, ChinoApiException {
