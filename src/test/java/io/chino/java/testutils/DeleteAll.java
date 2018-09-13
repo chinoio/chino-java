@@ -1,6 +1,5 @@
 package io.chino.java.testutils;
 
-import io.chino.java.*;
 import io.chino.api.application.Application;
 import io.chino.api.collection.Collection;
 import io.chino.api.common.ChinoApiException;
@@ -12,6 +11,7 @@ import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
+import io.chino.java.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -82,6 +82,21 @@ public class DeleteAll {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             deleteAll(chino.repositories);
             deleteAll(chino.userSchemas);
+        } else if(apiClient instanceof Blobs) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            for (Repository r : chino.repositories.list().getRepositories()) {
+                if (r.getDescription().contains("BlobsTest")) {
+                    List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
+                    for (Schema s : schemas) {
+                        List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
+                        for (Document d : documents) {
+                            chino.documents.delete(d.getDocumentId(), true);
+                        }
+                        chino.schemas.delete(s.getSchemaId(), true);
+                    }
+                }
+                chino.repositories.delete(r.getRepositoryId(), true);
+            }
         } else if(apiClient instanceof Auth) {
             // do nothing
         } else {
