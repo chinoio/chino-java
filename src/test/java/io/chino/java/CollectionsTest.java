@@ -163,7 +163,6 @@ public class CollectionsTest extends ChinoBaseTest {
                 limit - offset,
                 test.list(offset, limit).getCollections().size()
         );
-
     }
 
     private Document newDoc(String docTitle) throws IOException, ChinoApiException {

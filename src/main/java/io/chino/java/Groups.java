@@ -7,6 +7,7 @@ import io.chino.api.group.CreateGroupRequest;
 import io.chino.api.group.GetGroupResponse;
 import io.chino.api.group.GetGroupsResponse;
 import io.chino.api.group.Group;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -25,10 +26,14 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Groups
-     * @param offset the offset from which it retrieves the Groups
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
-     * @return GetGroupsResponse Object which contains the list of Groups
+     * Get the list of existing {@link Group Groups}
+     *
+     * @param offset the list offset (how many are skipped)
+     * @param limit maximum number of results (must be below
+     *              {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     *
+     * @return a {@link GetGroupsResponse} which wraps a {@link java.util.List} of {@link Group Groups}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -40,8 +45,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Groups
-     * @return GetGroupsResponse Object which contains the list of Groups
+     * Get the list of existing {@link Group Groups}
+     *
+     * @return a {@link GetGroupsResponse} which wraps a {@link java.util.List} of {@link Group Groups}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -53,9 +60,12 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It retrieves a specific Group
-     * @param groupId the id of the Group
-     * @return Group Object
+     * Get information about a specific {@link Group}
+     *
+     * @param groupId the id of the {@link Group}
+     *
+     * @return the {@link Group} with the specified ID
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -69,15 +79,20 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a new Group
-     * @param groupName the name of the Group
-     * @param attributes an HashMap of the attributes
-     * @return Group Object
+     * Create a new {@link Group} on Chino.io
+     *
+     * @param groupName the name of the new {@link Group}
+     * @param attributes an {@link HashMap} containing the Group's attributes.
+     *                   If you don't want to set attributes, you have to pass an empty map.<br>
+     *                   <b>Do not pass a {@code null} reference</b> or you will get an exception.
+     *
+     * @return the new {@link Group}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public Group create(String groupName, HashMap attributes) throws IOException, ChinoApiException {
-        CreateGroupRequest createGroupRequest=new CreateGroupRequest(groupName, attributes);
+    public Group create(String groupName, @NotNull HashMap attributes) throws IOException, ChinoApiException {
+        CreateGroupRequest createGroupRequest = new CreateGroupRequest(groupName, attributes);
 
         JsonNode data = postResource("/groups", createGroupRequest);
         if(data!=null)
@@ -87,11 +102,14 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It updates a Group
+     * Update an existing {@link Group}
+     *
      * @param groupId the id of the Group
      * @param groupName the name of the new Group
      * @param attributes an HashMap of the new attributes
-     * @return Group Object
+     *
+     * @return the updated {@link Group}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -107,10 +125,14 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It deletes a Group
-     * @param groupId the id of the Group
-     * @param force if true, the resource cannot be restored
+     * Delete a {@link Group} from Chino.io
+     *
+     * @param groupId the id of the Group to delete
+     * @param force if set to {@code true}, the {@link Group} cannot be restored.
+     *              Otherwise it will only get deactivated.
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -119,13 +141,16 @@ public class Groups extends ChinoBaseAPI {
         return deleteResource("/groups/"+groupId, force);
     }
 
-    //--------------------------- Group Membership ----------------------------------
+    //--------------------------- Group Membership ----------------------------------//
 
     /**
-     * It adds a User to a Group
-     * @param userId the id of the User
-     * @param groupId the id of the Group
+     * Add a {@link io.chino.api.user.User} to a {@link Group}
+     *
+     * @param userId the id of the {@link io.chino.api.user.User} to add
+     * @param groupId the id of the {@link Group}
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -137,10 +162,13 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It removes a User from a Group
-     * @param userId the id of the User
-     * @param groupId the id of the Group
+     * Remove a {@link io.chino.api.user.User} from a {@link Group}
+     *
+     * @param userId the id of the {@link io.chino.api.user.User} to remove
+     * @param groupId the id of the {@link Group}
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -152,10 +180,14 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It adds a UserSchema to a Group
-     * @param userSchemaId the id of the UserSchema
-     * @param groupId the id of the Group
+     * Add all {@link io.chino.api.user.User Users} of a {@link io.chino.api.userschema.UserSchema} to a {@link Group}.
+     * The new Group membership is applied to all users of the UserSchema, even if created later than this call.
+     *
+     * @param userSchemaId the id of the {@link io.chino.api.userschema.UserSchema}
+     * @param groupId the id of the {@link Group}
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -167,10 +199,14 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * It removes a UserSchema from a Group
-     * @param userSchemaId the id of the UserSchema
-     * @param groupId the id of the Group
+     * Remove all {@link io.chino.api.user.User Users} of a {@link io.chino.api.userschema.UserSchema} from a {@link Group}.
+     * The new Group membership is applied to all users of the UserSchema, even if created later than this call.
+     *
+     * @param userSchemaId the id of the {@link io.chino.api.userschema.UserSchema}
+     * @param groupId the id of the {@link Group}
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */

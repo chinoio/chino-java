@@ -107,6 +107,15 @@ public class DeleteAll {
                 }
                 collections = chino.collections.list().getCollections();
             }
+        } else if (apiClient instanceof Groups) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            List<Group> groups = chino.groups.list().getGroups();
+            while (! groups.isEmpty()) {
+                for (Group g : groups) {
+                    chino.groups.delete(g.getGroupId(), true);
+                }
+                groups = chino.groups.list().getGroups();
+            }
         } else if (apiClient instanceof Auth) {
             // do nothing
         } else {
