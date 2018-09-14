@@ -99,6 +99,16 @@ public class CollectionsTest extends ChinoBaseTest {
                 test.listDocuments(coll.getCollectionId()).getDocuments().size()
         );
 
+        assertEquals("Wrong list size",
+                1,
+                test.listDocuments(coll.getCollectionId(), 2, 2).getDocuments().size()
+        );
+
+        assertEquals("Wrong list size",
+                2,
+                test.listDocuments(coll.getCollectionId(), 1, 2).getDocuments().size()
+        );
+
         /* REMOVE */
         test.removeDocument(coll.getCollectionId(), docs[0].getDocumentId());
         List<Document> ls = test.listDocuments(coll.getCollectionId()).getDocuments();
