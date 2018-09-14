@@ -37,7 +37,7 @@ public class BlobsTest extends ChinoBaseTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        test = (Blobs) ChinoBaseTest.init(chino_admin.blobs);
+        test = ChinoBaseTest.init(chino_admin.blobs);
         ChinoBaseTest.beforeClass();
 
         // Create a repository and a Schema for the Blob's Document

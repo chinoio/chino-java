@@ -35,7 +35,7 @@ public class UsersTest extends ChinoBaseTest {
     public static void setUpClass() throws Exception {
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        test = (Users) ChinoBaseTest.init(chino_admin.users);
+        test = ChinoBaseTest.init(chino_admin.users);
 
         ChinoBaseTest.checkResourceIsEmpty(
                 chino_admin.userSchemas.list().getUserSchemas().isEmpty(),

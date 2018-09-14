@@ -33,12 +33,12 @@ public class ChinoBaseTest {
      * @param testedAPIClient the {@link ChinoBaseAPI} that will be used to perform the tests.
      * @return the API client that has been set for this instance
      */
-    public static ChinoBaseAPI init(ChinoBaseAPI testedAPIClient) {
+    public static <APIClient extends ChinoBaseAPI> APIClient init(APIClient testedAPIClient) {
 
         errorMsg = "no errors";
         test = testedAPIClient;
 
-        return test;
+        return (APIClient) test;
     }
 
     @BeforeClass

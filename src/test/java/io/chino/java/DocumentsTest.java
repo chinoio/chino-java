@@ -36,7 +36,7 @@ public class DocumentsTest extends ChinoBaseTest {
     public static void beforeClass() throws IOException, ChinoApiException {
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        test = (Documents) ChinoBaseTest.init(chino_admin.documents);
+        test = ChinoBaseTest.init(chino_admin.documents);
 
         // create a repository and a Schema
         ChinoBaseTest.checkResourceIsEmpty(

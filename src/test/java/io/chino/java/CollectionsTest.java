@@ -29,7 +29,7 @@ public class CollectionsTest extends ChinoBaseTest {
     public static void beforeClass() throws IOException, ChinoApiException {
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        test = (Collections) ChinoBaseTest.init(chino_admin.collections);
+        test = ChinoBaseTest.init(chino_admin.collections);
 
         // create a repository and a Schema
 

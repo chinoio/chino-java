@@ -36,7 +36,7 @@ public class AuthTest extends ChinoBaseTest {
     public static void beforeClass() throws IOException, ChinoApiException {
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        test = (Auth) ChinoBaseTest.init(new ChinoAPI(TestConstants.HOST).auth);
+        test = ChinoBaseTest.init(new ChinoAPI(TestConstants.HOST).auth);
 
         // create a userschema and a user
         ChinoBaseTest.checkResourceIsEmpty(
