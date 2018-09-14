@@ -25,10 +25,14 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Collections
-     * @param offset the offset from which it retrieves the Collections
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
-     * @return GetCollectionsResponse Object which contains the list of Collections
+     * List all the {@link Collection Collections} that currently exist in Chino.io
+     *
+     * @param offset the list offset (how many are skipped)
+     * @param limit maximum number of results (must be below
+     *              {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     *
+     * @return A {@link GetCollectionsResponse} which wraps the {@link java.util.List} of {@link Collection Collections}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -40,8 +44,10 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Collections
-     * @return GetCollectionsResponse Object which contains the list of Collections
+     * List all the {@link Collection Collections} that currently exist in Chino.io
+     *
+     * @return A {@link GetCollectionsResponse} which wraps the {@link java.util.List} of {@link Collection Collections}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -53,9 +59,12 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * It retrieves a single Collection
+     * Read a single Collection based on its ID
+     *
      * @param collectionId the id of the Collection to read
-     * @return Collection Object
+     *
+     * @return the requested instance of {@link Collection}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -69,9 +78,12 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a new Collection
-     * @param name the name of the Collection
-     * @return Collection Object
+     * Create a new {@link Collection} on Chino.io
+     *
+     * @param name the name of the new Collection. Must be 36 characters or less.
+     *
+     * @return the new {@link Collection}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -85,10 +97,13 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * It updates a Collection
-     * @param collectionId the id of the Collection to update
-     * @param name the name of the new Collection
-     * @return GetCollection Object which contains the Collection object
+     * Update the name of a {@link Collection}
+     *
+     * @param collectionId the id of the {@link Collection} to update
+     * @param name the new name of the {@link Collection}
+     *
+     * @return a {@link GetCollectionResponse} which wraps the updated Collection.
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -102,11 +117,15 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Documents in a Collection
+     * Get the {@link io.chino.api.document.Document Documents} in a Collection
+     *
      * @param collectionId the id of the Collection
-     * @param offset the offset from which it retrieves the Collections
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
-     * @return GetDocumentsResponse Object which contains the list of Documents
+     * @param offset the list offset (how many are skipped)
+     * @param limit maximum number of results (must be below {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     *
+     * @return a {@link GetDocumentsResponse} which wraps the {@link java.util.List} of
+     *          {@link io.chino.api.document.Document Documents}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -119,9 +138,13 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Documents in a Collection
+     * Get the {@link io.chino.api.document.Document Documents} in a Collection
+     *
      * @param collectionId the id of the Collection
-     * @return GetDocumentsResponse Object which contains the list of Documents
+     *
+     * @return a {@link GetDocumentsResponse} which wraps the {@link java.util.List} of
+     *          {@link io.chino.api.document.Document Documents}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -134,10 +157,13 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * It adds a new Document to a Collection
+     * Add a {@link io.chino.api.document.Document} to a {@link Collection}
+     *
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -149,10 +175,13 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * It removes a Document from a Collection
+     * Remove a {@link io.chino.api.document.Document} from a {@link Collection}
+     *
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -164,10 +193,14 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * It deletes a Collection
+     * Delete a Collection
+     *
      * @param collectionId the id of the Collection to delete
-     * @param force if true, the resource cannot be restored
+     * @param force if set to {@code true}, the {@link Collection} cannot be restored.
+     *              Otherwise it will only get deactivated.
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */

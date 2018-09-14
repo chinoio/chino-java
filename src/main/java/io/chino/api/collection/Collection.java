@@ -1,10 +1,11 @@
 package io.chino.api.collection;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import java.util.Date;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -128,6 +129,22 @@ public class Collection {
         this.collectionId = collectionId;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Collection that = (Collection) o;
+        return Objects.equals(insertDate, that.insertDate) &&
+                Objects.equals(isActive, that.isActive) &&
+                Objects.equals(lastUpdate, that.lastUpdate) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(collectionId, that.collectionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(insertDate, isActive, lastUpdate, name, collectionId);
+    }
 
     @Override
     public String toString(){

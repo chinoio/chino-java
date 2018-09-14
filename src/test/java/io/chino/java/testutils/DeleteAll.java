@@ -97,7 +97,17 @@ public class DeleteAll {
                 }
                 chino.repositories.delete(r.getRepositoryId(), true);
             }
-        } else if(apiClient instanceof Auth) {
+        } else if (apiClient instanceof Collections) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            deleteAll(chino.repositories);
+            List<Collection> collections = chino.collections.list().getCollections();
+            while (! collections.isEmpty()) {
+                for (Collection c : collections) {
+                    chino.collections.delete(c.getCollectionId(), true);
+                }
+                collections = chino.collections.list().getCollections();
+            }
+        } else if (apiClient instanceof Auth) {
             // do nothing
         } else {
             throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() + ") is not supported.");
