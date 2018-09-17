@@ -134,7 +134,6 @@ public class DocumentsTest extends ChinoBaseTest {
         );
 
         // read and map to class
-
         MappedDocument docMapped = (MappedDocument) test.read(
                 docHM.getDocumentId(),
                 MappedDocument.class
