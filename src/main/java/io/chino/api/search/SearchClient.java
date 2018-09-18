@@ -40,9 +40,9 @@ public abstract class SearchClient<ResponseType extends Object> {
      *
      * @return a {@link SearchClient} subclass with the updated {@link ResultType}
      */
-    public SearchClient<ResponseType> setResultType(ResultType resultType) {
+    protected  <Client extends SearchClient<ResponseType>> Client setResultType(ResultType resultType) {
         this.resultType = resultType;
-        return this;
+        return null;
     }
 
     /**
@@ -54,14 +54,14 @@ public abstract class SearchClient<ResponseType extends Object> {
      *
      * @return a {@link SearchClient} subclass with the new {@link SortRule}
      */
-    public SearchClient<ResponseType> addSortRule(String fieldName, SortRule.Order order) {
+    protected <Client extends SearchClient<ResponseType>> Client addSortRule(String fieldName, SortRule.Order order) {
         if (sort == null) {
             sort = new LinkedList<>();
         }
         sort.add(
                 new SortRule(fieldName, order)
         );
-        return this;
+        return null;
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class SearchClient<ResponseType extends Object> {
      *
      * @return a {@link SearchClient} subclass with the new {@link SortRule}
      */
-    public SearchClient<ResponseType> addSortRule(String fieldName, SortRule.Order order, int index) {
+    protected <Client extends SearchClient<ResponseType>> Client addSortRule(String fieldName, SortRule.Order order, int index) {
         if (sort == null) {
             sort = new LinkedList<>();
         }
@@ -88,16 +88,7 @@ public abstract class SearchClient<ResponseType extends Object> {
                 index,
                 new SortRule(fieldName, order)
         );
-        return this;
-    }
-
-    /**
-     * Get the number of {@link SortRule SortRules} that have been added to this client
-     *
-     * @return the current number of {@link SortRule SortRules} currently set for this client.
-     */
-    public int sortRulesCounter() {
-        return sort.size();
+        return null;
     }
 
     /**

@@ -24,6 +24,7 @@ public class ChinoAPI {
     /**
      * Construct an API client which authenticates calls with a {@code (customerID, customerKey)} pair.
      * To be used <b>only in secure clients</b>.
+     *
      * @param hostUrl the base URL for the API calls
      * @param customerId the customer id provided by Chino.io
      * @param customerKey the customer key provided by Chino.io
@@ -42,6 +43,7 @@ public class ChinoAPI {
      * Construct an unauthenticated API client.
      * Mainly used for client-side applications.
      * Users will need to authenticate via {@link Auth ChinoAPI.auth} using username and password or an authentication code
+     *
      * @param hostUrl the base URL for the API calls
      */
     public ChinoAPI(String hostUrl) {

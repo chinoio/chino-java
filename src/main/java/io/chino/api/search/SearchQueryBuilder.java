@@ -12,7 +12,7 @@ public class SearchQueryBuilder {
 
     private SearchClient queryExecutor;
 
-    protected SearchQueryBuilder(SearchTreeNode rootNode, SearchClient client) {
+    protected <Client extends SearchClient> SearchQueryBuilder(SearchTreeNode rootNode, Client client) {
         treeTop = rootNode;
         queryExecutor = client;
     }

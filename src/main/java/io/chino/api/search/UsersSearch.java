@@ -25,4 +25,22 @@ public final class UsersSearch extends SearchClient<GetUsersResponse> {
 
         return null;
     }
+
+    @Override
+    public UsersSearch setResultType(ResultType resultType) {
+        super.setResultType(resultType);
+        return this;
+    }
+
+    @Override
+    public UsersSearch addSortRule(String fieldName, SortRule.Order order) {
+        super.addSortRule(fieldName, order);
+        return this;
+    }
+
+    @Override
+    public UsersSearch addSortRule(String fieldName, SortRule.Order order, int index) {
+        super.addSortRule(fieldName, order, index);
+        return this;
+    }
 }

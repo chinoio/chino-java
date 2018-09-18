@@ -7,7 +7,10 @@ import io.chino.api.common.indexed;
 import io.chino.api.document.Document;
 import io.chino.api.document.GetDocumentsResponse;
 import io.chino.api.schema.SchemaStructure;
-import io.chino.api.search.*;
+import io.chino.api.search.DocumentsSearch;
+import io.chino.api.search.ResultType;
+import io.chino.api.search.SortRule;
+import io.chino.api.search.UsersSearch;
 import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
 import io.chino.java.testutils.ChinoBaseTest;
@@ -22,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
+import static io.chino.api.search.FilterOperator.EQUALS;
 import static org.junit.Assert.*;
 
 public class SearchTest extends ChinoBaseTest {
@@ -31,16 +35,6 @@ public class SearchTest extends ChinoBaseTest {
     private static String REPO_ID, SCHEMA_ID, USER_SCHEMA_ID;
 
     private final static String outputString = "test passed";
-    private static class SampleUser {
-        @JsonProperty("test_method")
-        @indexed
-        public String test_method;
-        @JsonProperty("value")
-        public String value;
-        @JsonProperty("order")
-        @indexed
-        public int order;
-    }
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
@@ -91,15 +85,26 @@ public class SearchTest extends ChinoBaseTest {
         }
     }
 
+    private static class SampleUser {
+        @JsonProperty("test_method")
+        @indexed
+        public String test_method;
+        @JsonProperty("value")
+        public String value;
+        @JsonProperty("order")
+        @indexed
+        public int order;
+    }
+
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
         ChinoBaseTest.afterClass();
     }
 
     @Test
-    public void testNewSearchDocuments() throws IOException, ChinoApiException, InterruptedException {
+    public void testNewSearchDocuments() throws IOException, ChinoApiException {
         DocumentsSearch searchDocs = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID).setResultType(ResultType.FULL_CONTENT).addSortRule("order", SortRule.Order.ASC)
-                .with("test_method", FilterOperator.EQUALS, "search documents test")
+                .with("test_method", EQUALS, "search documents test")
                 .buildSearch();
 
         GetDocumentsResponse response_FULL = searchDocs.execute();
@@ -146,9 +151,9 @@ public class SearchTest extends ChinoBaseTest {
     }
 
     @Test
-    public void testNewSearchUsers_FULLCONTENT_COUNT() throws IOException, ChinoApiException, InterruptedException {
+    public void testNewSearchUsers_FULLCONTENT_COUNT() throws IOException, ChinoApiException {
         UsersSearch searchUsers = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.FULL_CONTENT).addSortRule("order", SortRule.Order.ASC)
-                .with("test_method", FilterOperator.EQUALS, "search users test")
+                .with("test_method", EQUALS, "search users test")
                 .buildSearch();
 
         GetUsersResponse response_FULL = searchUsers.execute();

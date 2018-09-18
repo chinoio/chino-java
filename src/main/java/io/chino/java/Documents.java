@@ -173,7 +173,7 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Create a new {@link Document} with the specified content on Chino.io. (synchronous)
+     * Create a new {@link Document} with the specified content on Chino.io (synchronous)
      *
      * @param schemaId the id of an existing {@link io.chino.api.schema.Schema Schema}
      * @param content a {@link HashMap} with the content of the new Document.
@@ -218,7 +218,7 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Create a new {@link Document} with the specified content on Chino.io. (synchronous)
+     * Create a new {@link Document} with the specified content on Chino.io (synchronous)
      *
      * @param schemaId the id of an existing {@link io.chino.api.schema.Schema Schema}
      * @param content a {@link String} with the content of the new Document in JSON format.
@@ -263,7 +263,7 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Update a specific {@link Document} on Chino.io with new data. (synchronous)
+     * Update a specific {@link Document} on Chino.io with new data (synchronous)
      *
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
      *                   e.g. {@link #list(String) list(schemaId)}
@@ -310,7 +310,7 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
-     * Update a specific {@link Document} on Chino.io with new data. (synchronous)
+     * Update a specific {@link Document} on Chino.io with new data (synchronous)
      *
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
      *                   e.g. {@link #list(String) list(schemaId)}

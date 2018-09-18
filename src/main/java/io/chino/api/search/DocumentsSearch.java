@@ -26,4 +26,22 @@ public final class DocumentsSearch extends SearchClient<GetDocumentsResponse> {
 
         return null;
     }
+
+    @Override
+    public DocumentsSearch setResultType(ResultType resultType) {
+        super.setResultType(resultType);
+        return this;
+    }
+
+    @Override
+    public DocumentsSearch addSortRule(String fieldName, SortRule.Order order) {
+        super.addSortRule(fieldName, order);
+        return this;
+    }
+
+    @Override
+    public DocumentsSearch addSortRule(String fieldName, SortRule.Order order, int index) {
+        super.addSortRule(fieldName, order, index);
+        return this;
+    }
 }
