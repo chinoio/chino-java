@@ -8,11 +8,12 @@ import io.chino.api.permission.GetPermissionsResponse;
 import io.chino.api.permission.PermissionRule;
 import io.chino.api.permission.PermissionRuleCreatedDocument;
 import io.chino.api.user.User;
+import javafx.util.Pair;
 
 import java.io.IOException;
 
 // TODO rewrite the Permissions interface (reduce/remove Strings from method parameters):
-// * add enums instead of String constants
+// * use enums instead of String constants
 // * add overloaded methods that read IDs from Java objects instead of Strings
 // * check that one can not recursively add PermissionRuleCreatedDocument
 // * in general, fix this class and objects in io.chino.api.permission.*
@@ -42,6 +43,7 @@ public class Permissions extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException either a server error or this method was invoked by a customer client
      */
+    @Deprecated
     public GetPermissionsResponse readPermissions(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/perms", offset, limit);
         if(data!=null)
@@ -76,14 +78,15 @@ public class Permissions extends ChinoBaseAPI {
      * {@code R} Permission on the document.
      *
      * @param documentId the id of a {@link io.chino.api.document.Document} on Chino.io
-     * @param offset page offset of the results.
-     * @param limit the max amount of results to be returned
+     * @param offset page offset of the results. - <b>DEPRECATED</b>: this parameter is ignored by Chino.io API for this call
+     * @param limit the max amount of results to be returned - <b>DEPRECATED</b>: this parameter is ignored by Chino.io API for this call
      *
      * @return A {@link GetPermissionsResponse} that wraps a list of {@link io.chino.api.permission.Permission Permissions}
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
+    @Deprecated
     public GetPermissionsResponse readPermissionsOnaDocument(String documentId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
         JsonNode data = getResource("/perms/documents/"+documentId, offset, limit);
@@ -123,14 +126,15 @@ public class Permissions extends ChinoBaseAPI {
      * see their own Permissions.
      *
      * @param userId the id of a {@link User User} on Chino.io
-     * @param offset page offset of the results.
-     * @param limit the max amount of results to be returned
+     * @param offset page offset of the results - <b>DEPRECATED</b>: this parameter is ignored by Chino.io API for this call
+     * @param limit the max amount of results to be returned - <b>DEPRECATED</b>: this parameter is ignored by Chino.io API for this call
      *
      * @return A {@link GetPermissionsResponse} that wraps a list of {@link io.chino.api.permission.Permission Permissions}
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error, or the User is unauthorized to see these permissions.
      */
+    @Deprecated
     public GetPermissionsResponse readPermissionsOfaUser(String userId, int offset, int limit) throws IOException, ChinoApiException{
         checkNotNull(userId, "user_id");
         JsonNode data = getResource("/perms/users/"+userId, offset, limit);
@@ -171,14 +175,15 @@ public class Permissions extends ChinoBaseAPI {
      * specify the ID of a {@link Group Group} they belong to.
      *
      * @param groupId the ID of a {@link Group Group} on Chino.io
-     * @param offset page offset of the results.
-     * @param limit the max amount of results to be returned
+     * @param offset page offset of the results. - <b>DEPRECATED</b>: this parameter is ignored by Chino.io API for this call
+     * @param limit the max amount of results to be returned - <b>DEPRECATED</b>: this parameter is ignored by Chino.io API for this call
      *
      * @return A {@link GetPermissionsResponse} that wraps a list of {@link io.chino.api.permission.Permission Permissions}
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error, or the User doesn't belong to the specified Group.
      */
+    @Deprecated
     public GetPermissionsResponse readPermissionsOfaGroup(String groupId, int offset, int limit) throws IOException, ChinoApiException{
         checkNotNull(groupId, "group_id");
         JsonNode data = getResource("/perms/groups/"+groupId, offset, limit);
@@ -294,7 +299,15 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public String permissionsOnResourceChildren(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId, PermissionRule permissionRule) throws IOException, ChinoApiException {
-        checkNotNull(action, resourceType, resourceId, resourceChildren, subjectType, subjectId);
+        checkNotNull(
+                new Pair<>(action, "action"),
+                new Pair<>(resourceType, "resource_type"),
+                new Pair<>(resourceId, "resource_id"),
+                new Pair<>(resourceChildren, "resource_children"),
+                new Pair<>(subjectType, "subject_type"),
+                new Pair<>(subjectId, "subject_id"),
+                new Pair<>(permissionRule, "permission_rule_created_document")
+        );
         checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+resourceChildren+"/"+subjectType+"/"+subjectId, permissionRule);
         return "success";
@@ -327,22 +340,17 @@ public class Permissions extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public String permissionsOnResourceChildren(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId, PermissionRuleCreatedDocument permissionRule) throws IOException, ChinoApiException {
-        checkNotNull(action, resourceType, resourceId, resourceChildren, subjectType, subjectId);
-        checkNotNull(permissionRule, "permission_rule_created_document");
+        checkNotNull(
+                new Pair<>(action, "action"),
+                new Pair<>(resourceType, "resource_type"),
+                new Pair<>(resourceId, "resource_id"),
+                new Pair<>(resourceChildren, "resource_children"),
+                new Pair<>(subjectType, "subject_type"),
+                new Pair<>(subjectId, "subject_id"),
+                new Pair<>(permissionRule, "permission_rule_created_document")
+        );
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+resourceChildren+"/"+subjectType+"/"+subjectId, permissionRule);
         return "success";
-    }
-
-    /**
-     * Verify that the parameters are not {@code null}
-     */
-    private void checkNotNull(String action, String resourceType, String resourceId, String resourceChildren, String subjectType, String subjectId){
-        checkNotNull(action, "action");
-        checkNotNull(resourceType, "resource_type");
-        checkNotNull(resourceId, "resource_id");
-        checkNotNull(resourceChildren, "resource_children");
-        checkNotNull(subjectType, "subject_type");
-        checkNotNull(subjectId, "subject_id");
     }
 
     /* MACROS */

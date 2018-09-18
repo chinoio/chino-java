@@ -7,6 +7,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.ErrorResponse;
 import io.chino.api.common.Field;
 import io.chino.api.common.indexed;
+import javafx.util.Pair;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -339,9 +340,35 @@ public class ChinoBaseAPI {
         return map;
     }
 
+    /**
+     * Verify that the {@link Object} is not a {@code null} reference; otherwise
+     * interrupts execution with an exception, specifying the name of the {@code null} Object.
+     *
+     * @param object an {@link Object}
+     * @param name a name that identifies the Object for the dev
+     *
+     * @throws NullPointerException the object (whose name is reported in the Exception) is {@code null}.
+     */
     protected void checkNotNull(Object object, String name){
         if(object == null){
             throw new NullPointerException(name);
+        }
+    }
+
+    /**
+     * Verify that every {@link Pair} in the varargs contains a non-{@code null} {@link Object} reference; otherwise
+     * interrupts execution with an exception, specifying the name of the {@code null} Object.
+     *
+     * @param elements a list of {@link Pair} where the first element is an {@link Object}
+     *                 and the second is a {@link String}.
+     *
+     * @see #checkNotNull(Object, String)
+     *
+     * @throws NullPointerException one of the objects (whose name is reported in the Exception) is {@code null}.
+     */
+    protected void checkNotNull(Pair<Object, String>... elements){
+        for (Pair<Object, String> element : elements) {
+            checkNotNull(element.getKey(), element.getValue());
         }
     }
 }

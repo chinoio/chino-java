@@ -49,15 +49,19 @@ public class DeleteAll {
             for (Consent consent:items) {
                 consentsClient.delete(consent.getConsentId());
             }
-        } else if(apiClient instanceof UserSchemas || apiClient instanceof Users) {
+        } else if(apiClient instanceof UserSchemas || apiClient instanceof Users || apiClient instanceof Permissions) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             UserSchemas userSchemaClient = chino.userSchemas;
             Users userClient = chino.users;
             List<UserSchema> schemasList = userSchemaClient.list().getUserSchemas();
             for (UserSchema userSchema:schemasList) {
                 List<User> usersList = userClient.list(userSchema.getUserSchemaId()).getUsers();
-                for (User user:usersList) {
-                    userClient.delete(user.getUserId(), true);
+                if (apiClient instanceof Users) { // only delete users
+                    for (User user:usersList) {
+                        userClient.delete(user.getUserId(), true);
+                    }
+                } else { // delete users & u. schema
+                    userSchemaClient.delete(userSchema.getUserSchemaId(), true);
                 }
             }
         } else if(apiClient instanceof Repositories || apiClient instanceof Schemas || apiClient instanceof Documents) {

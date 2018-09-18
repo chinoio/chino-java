@@ -5,8 +5,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -17,20 +18,44 @@ import java.util.List;
 public class PermissionRule {
 
     @JsonProperty("manage")
-    private List<String> manage = new ArrayList<String>();
+    private List<String> manage = new LinkedList<>();
+
     @JsonProperty("authorize")
-    private List<String> authorize = new ArrayList<String>();
+    private List<String> authorize = new LinkedList<>();
+
+    public PermissionRule() {
+        super();
+    }
+
+    public PermissionRule(List<String> manage, List<String> authorize) {
+        this();
+        if (manage != null)
+            this.manage = new LinkedList<>(manage);
+        else
+            this.manage = new LinkedList<>();
+
+        if (authorize != null)
+            this.authorize = new LinkedList<>(authorize);
+        else
+            this.authorize = new LinkedList<>();
+    }
+
+    public PermissionRule(String[] manage, String[] authorize) {
+        this(
+                (manage == null) ? null : Arrays.asList(manage),
+                (authorize == null) ? null : Arrays.asList(authorize)
+        );
+    }
 
     public List<String> getManage() {
         return manage;
     }
 
     public void setManage(String... strings) {
-        if(strings == null){
-            throw new NullPointerException("manage");
+        manage = new LinkedList<>();
+        if(strings != null) {
+            Collections.addAll(manage, strings);
         }
-        manage = new ArrayList<String>();
-        Collections.addAll(manage, strings);
     }
 
     public List<String> getAuthorize() {
@@ -38,11 +63,10 @@ public class PermissionRule {
     }
 
     public void setAuthorize(String... strings) {
-        if(strings == null){
-            throw new NullPointerException("authorize");
+        authorize = new LinkedList<>();
+        if(strings != null){
+            Collections.addAll(authorize, strings);
         }
-        authorize = new ArrayList<String>();
-        Collections.addAll(authorize, strings);
     }
 
     @Override
