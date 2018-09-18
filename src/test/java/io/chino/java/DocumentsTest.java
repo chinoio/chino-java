@@ -99,7 +99,7 @@ public class DocumentsTest extends ChinoBaseTest {
                     docsList.contains(doc)
             );
             variant = "3 params - expected no documents";
-            docsList = test.list(SCHEMA_ID, 1, 1, true).getDocuments();
+            docsList = test.list(SCHEMA_ID, 1, 6, true).getDocuments();
             assertFalse(
                     docsList.contains(doc)
             );
@@ -239,10 +239,9 @@ public class DocumentsTest extends ChinoBaseTest {
         content.put("testMethod", newName);
 
 
-        DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID)
+        DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID).setResultType(ResultType.FULL_CONTENT)
                 .with("testMethod", EQUALS, newName)
-                .buildSearch()
-                .setResultType(ResultType.FULL_CONTENT);
+                .buildSearch();
         doc = test.update(doc.getDocumentId(), content, true);
         doc.setContent(content);
         GetDocumentsResponse result = search.execute();
