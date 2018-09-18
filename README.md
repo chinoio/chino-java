@@ -287,6 +287,10 @@ Class to manage documents, `chino.documents`
 - `delete(<document_id>, <force>)`
     `force` is a boolean and if it's true, the resource cannot be restored
 
+***New in 1.2.4-alpha***: wait for indexing of Documents to end before returning - use the following methods:
+- `create(<schema_id>, <content>, <consistent>)`
+- `update(<schema_id>, <content>, <consistent>)`
+
 ### BLOBs
 Class to manage BLOBs, `chino.blobs`
 
