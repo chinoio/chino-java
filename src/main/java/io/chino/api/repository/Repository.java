@@ -1,11 +1,12 @@
 
 package io.chino.api.repository;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+
+import java.util.Date;
+import java.util.Objects;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -140,4 +141,20 @@ public class Repository {
     	return s;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Repository that = (Repository) o;
+        return Objects.equals(repositoryId, that.repositoryId) &&
+                Objects.equals(description, that.description) &&
+                Objects.equals(isActive, that.isActive) &&
+                Objects.equals(lastUpdate, that.lastUpdate) &&
+                Objects.equals(insertDate, that.insertDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(repositoryId, description, isActive, lastUpdate, insertDate);
+    }
 }
