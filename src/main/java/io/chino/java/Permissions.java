@@ -72,7 +72,7 @@ public class Permissions extends ChinoBaseAPI {
 
 
     /**
-     * Reads Permissions that are set on a single {@link io.chino.api.document.Document}.<br>
+     * Reads Permissions that are set on a single {@link io.chino.api.document.Document Document}.<br>
      * <br>
      * Customers can always perform this call, while {@link User Users} must have
      * {@code R} Permission on the document.
@@ -97,12 +97,15 @@ public class Permissions extends ChinoBaseAPI {
     }
 
     /**
-     * Reads Permissions that are set on a single {@link io.chino.api.document.Document}.<br>
+     * Reads Permissions that are set on a single {@link io.chino.api.document.Document Document}.
+     * This call only returns Permissions that were specifically set on the
+     * {@link io.chino.api.document.Document Document} using
+     * {@link #permissionsOnaResource(String, String, String, String, String, PermissionRule) permissionsOnaResource(...)}<br>
      * <br>
      * Customers can always perform this call, while {@link User Users} must have
      * {@code R} Permission on the document.
      *
-     * @param documentId the id of a {@link io.chino.api.document.Document} on Chino.io
+     * @param documentId the id of a {@link io.chino.api.document.Document Document} on Chino.io
      *
      * @return A {@link GetPermissionsResponse} that wraps a list of {@link io.chino.api.permission.Permission Permissions}
      *
@@ -363,16 +366,16 @@ public class Permissions extends ChinoBaseAPI {
             REVOKE = "revoke";
 
     /* resource types */
-    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.repository.Repository} */
+    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.repository.Repository Repository} */
     public static final String REPOSITORIES = "repositories",
 
-    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.schema.Schema} */
+    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.schema.Schema Schema} */
             SCHEMAS = "schemas",
 
-    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.document.Document} */
+    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.document.Document Document} */
             DOCUMENTS = "documents",
 
-    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.userschema.UserSchema} */
+    /** {@code resource}: apply Permissions changes to a {@link io.chino.api.userschema.UserSchema UserSchema} */
             USER_SCHEMAS = "user_schemas",
 
     /**

@@ -1,7 +1,10 @@
 package io.chino.java;
 
+import io.chino.api.application.Application;
+import io.chino.api.application.ClientType;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.Field;
+import io.chino.api.document.Document;
 import io.chino.api.group.Group;
 import io.chino.api.permission.Permission;
 import io.chino.api.permission.PermissionRule;
@@ -29,7 +32,7 @@ public class PermissionsTest extends ChinoBaseTest {
     private static ChinoAPI chino_admin;
     private static Permissions test;
 
-    private static String REPO_ID, SCHEMA_ID, USER_SCHEMA_ID, APP_ID;
+    private static String REPO_ID, SCHEMA_ID, USER_SCHEMA_ID;
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
@@ -94,9 +97,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
         // read Permissions
         List<Permission> perms = test.readPermissionsOfaUser(user.getUserId()).getPermissions();
-        StringBuilder list = new StringBuilder("[");
-        perms.forEach(p -> list.append(p.toString()).append(" "));
-        list.append("]");
+        StringBuilder list = toString(perms);
         assertEquals("Permission list has wrong size.\n" + list.toString(),1, perms.size());
 
         Permission r = perms.get(0);
@@ -106,6 +107,14 @@ public class PermissionsTest extends ChinoBaseTest {
         List<String> manage = (List<String>) permissions.get("Manage");
         assertEquals("'manage' Permissions over Schema has the wrong size",2, manage.size());
         assertTrue("READ permission wasn't set.\n\n\"manage\":\n" + manage.toString(), manage.contains("R"));
+    }
+
+    private static StringBuilder toString(List<?> list) {
+        StringBuilder builder = new StringBuilder("[\n");
+        list.forEach(
+                p -> builder.append(p.toString()).append(",\n")
+        );
+        return builder.append("]\n");
     }
 
     @Test
@@ -127,9 +136,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
         // read Permissions
         List<Permission> perms = test.readPermissionsOfaUser(user.getUserId()).getPermissions();
-        StringBuilder list = new StringBuilder("[");
-        perms.forEach(p -> list.append(p.toString()).append(" "));
-        list.append("]");
+        StringBuilder list = toString(perms);
         assertEquals("Permission list has wrong size.\n" + list.toString(),1, perms.size());
 
         Permission r = perms.get(0);
@@ -152,9 +159,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
         // read Permissions
         List<Permission> perms = test.readPermissionsOfaGroup(group.getGroupId()).getPermissions();
-        StringBuilder list = new StringBuilder("[\n");
-        perms.forEach(p -> list.append(p.toString()).append(",\n"));
-        list.append("]\n");
+        StringBuilder list = toString(perms);
         assertEquals("Permission list has wrong size.\n" + list.toString(),1, perms.size());
 
         Permission r = perms.get(0);
@@ -181,6 +186,57 @@ public class PermissionsTest extends ChinoBaseTest {
                 new String[] {"C"},
                 new String[] {"R"});
         test.permissionsOnResources(REVOKE, REPOSITORIES, USERS, u.getUserId(), readRepositories);
+    }
+
+    @Test
+    public void test_readPerms_readPermsOnDoc() throws IOException, ChinoApiException {
+        String password = "test_readPerms";
+        User u = makeUser(password);
+
+        HashMap<String, Object> docContent = new HashMap<>();
+        docContent.put("testMethod", password);
+        chino_admin.permissions.permissionsOnResourceChildren(GRANT, SCHEMAS, SCHEMA_ID, childrenOf(SCHEMAS), USERS, u.getUserId(),
+                new PermissionRuleCreatedDocument(new String[]{"R", "D"}, new String[]{"R"},
+                        new PermissionRule(new String[]{"R"}, new String[]{})
+                )
+        );
+        Document doc = chino_admin.documents.create(SCHEMA_ID, docContent);
+
+        ChinoAPI chino_user = new ChinoAPI(TestConstants.HOST);
+        Application app = chino_admin.applications.create("test_readPerms_readPermsOnDoc", "password", "", ClientType.PUBLIC);
+        chino_user.auth.loginWithPassword(u.getUsername(), password, app.getAppId());
+
+        /* READ PERMISSIONS */
+
+        List<Permission> perms = chino_user.permissions.readPermissions().getPermissions();
+
+        assertEquals(1, perms.size());
+        Permission onSchema = perms.get(0);
+        assertEquals(SCHEMA_ID, onSchema.getResourceId());
+
+        chino_admin.permissions.permissionsOnaResource(GRANT, DOCUMENTS, doc.getDocumentId(), USERS, u.getUserId(),
+                new PermissionRule(new String[]{"U"}, new String[]{})
+        );
+        perms = chino_user.permissions.readPermissionsOnaDocument(doc.getDocumentId()).getPermissions();
+        assertEquals(1, perms.size());
+        Permission onDoc = perms.get(0);
+        List<String> canManage = (List<String>) onDoc.getPermission().get("Manage");
+
+        assertTrue(canManage.contains("U"));
+    }
+
+    @Test
+    public void test_childrenOf() {
+        assertEquals(SCHEMAS, childrenOf(REPOSITORIES));
+        assertEquals(DOCUMENTS, childrenOf(SCHEMAS));
+        assertEquals(USERS, childrenOf(USER_SCHEMAS));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void test_exception_childrenOf() {
+        System.out.println(
+                childrenOf(DOCUMENTS)
+        );
     }
 
     @After
