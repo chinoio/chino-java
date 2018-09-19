@@ -67,7 +67,7 @@ public class Repositories extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public Repository read(String repositoryId) throws IOException, ChinoApiException{
+    public Repository read(String repositoryId) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
         JsonNode data = getResource("/repositories/"+repositoryId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)

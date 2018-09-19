@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.Objects;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "type",
@@ -88,5 +90,20 @@ public class Field {
             throw new NullPointerException("indexed");
         }
         this.indexed = indexed;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Field field = (Field) o;
+        return Objects.equals(type, field.type) &&
+                Objects.equals(name, field.name) &&
+                Objects.equals(indexed, field.indexed);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, name, indexed);
     }
 }
