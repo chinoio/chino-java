@@ -157,7 +157,7 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Add a {@link io.chino.api.document.Document} to a {@link Collection}
+     * Add a {@link io.chino.api.document.Document Document} to a {@link Collection}
      *
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document
@@ -175,7 +175,7 @@ public class Collections extends ChinoBaseAPI {
     }
 
     /**
-     * Remove a {@link io.chino.api.document.Document} from a {@link Collection}
+     * Remove a {@link io.chino.api.document.Document Document} from a {@link Collection}
      *
      * @param collectionId the id of the Collection
      * @param documentId the id of the Document

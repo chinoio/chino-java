@@ -26,7 +26,7 @@ public class Schemas extends ChinoBaseAPI {
      * Returns a list of Schemas
      * @param repositoryId the id of the Repository
      * @param offset the offset from which it retrieves the Schemas
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      * @return GetSchemasResponse Object which contains the list of Schemas
      * @throws IOException data processing error
      * @throws ChinoApiException server error

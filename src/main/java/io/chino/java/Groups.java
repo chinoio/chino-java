@@ -144,9 +144,9 @@ public class Groups extends ChinoBaseAPI {
     //--------------------------- Group Membership ----------------------------------//
 
     /**
-     * Add a {@link io.chino.api.user.User} to a {@link Group}
+     * Add a {@link io.chino.api.user.User User} to a {@link Group}
      *
-     * @param userId the id of the {@link io.chino.api.user.User} to add
+     * @param userId the id of the {@link io.chino.api.user.User User} to add
      * @param groupId the id of the {@link Group}
      *
      * @return a String with the result of the operation
@@ -162,9 +162,9 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Remove a {@link io.chino.api.user.User} from a {@link Group}
+     * Remove a {@link io.chino.api.user.User User} from a {@link Group}
      *
-     * @param userId the id of the {@link io.chino.api.user.User} to remove
+     * @param userId the id of the {@link io.chino.api.user.User User} to remove
      * @param groupId the id of the {@link Group}
      *
      * @return a String with the result of the operation
@@ -180,10 +180,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Add all {@link io.chino.api.user.User Users} of a {@link io.chino.api.userschema.UserSchema} to a {@link Group}.
+     * Add all {@link io.chino.api.user.User Users} of a {@link io.chino.api.userschema.UserSchema UserSchema} to a {@link Group}.
      * The new Group membership is applied to all users of the UserSchema, even if created later than this call.
      *
-     * @param userSchemaId the id of the {@link io.chino.api.userschema.UserSchema}
+     * @param userSchemaId the id of the {@link io.chino.api.userschema.UserSchema UserSchema}
      * @param groupId the id of the {@link Group}
      *
      * @return a String with the result of the operation
@@ -199,10 +199,10 @@ public class Groups extends ChinoBaseAPI {
     }
 
     /**
-     * Remove all {@link io.chino.api.user.User Users} of a {@link io.chino.api.userschema.UserSchema} from a {@link Group}.
+     * Remove all {@link io.chino.api.user.User Users} of a {@link io.chino.api.userschema.UserSchema UserSchema} from a {@link Group}.
      * The new Group membership is applied to all users of the UserSchema, even if created later than this call.
      *
-     * @param userSchemaId the id of the {@link io.chino.api.userschema.UserSchema}
+     * @param userSchemaId the id of the {@link io.chino.api.userschema.UserSchema UserSchema}
      * @param groupId the id of the {@link Group}
      *
      * @return a String with the result of the operation

@@ -60,7 +60,7 @@ public class Consents extends ChinoBaseAPI {
      * @param offset page offset of the results.
      * @param limit the max amount of results to be returned
      *
-     * (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      * @return a {@link ConsentList} of objects that match
      * the specified {@code userId}
      *
@@ -95,7 +95,7 @@ public class Consents extends ChinoBaseAPI {
      * List all the available {@link Consent consents}. The results are paginated.
      * @param offset page offset of the results.
      * @param limit the number of results
-     * (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      * @return a {@link ConsentList} of objects that match
      * the specified {@code userId}
      * @throws java.io.IOException request could not be executed

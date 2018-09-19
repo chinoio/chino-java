@@ -23,7 +23,7 @@ public class Applications extends ChinoBaseAPI {
     /**
      * Returns the list of Applications
      * @param offset the offset from which it retrieves the Applications
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      * @return GetApplicationsResponse Object that contains the list of the Applications
      * @throws IOException data processing error
      * @throws ChinoApiException server error

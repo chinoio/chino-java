@@ -25,7 +25,7 @@ public class Repositories extends ChinoBaseAPI {
     /**
      * Returns a list of Repositories
      * @param offset the offset from which it retrieves the Repositories
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
+     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      * @return GetRepositoriesResponse Object which contains the list of Repositories
      * @throws IOException data processing error
      * @throws ChinoApiException server error

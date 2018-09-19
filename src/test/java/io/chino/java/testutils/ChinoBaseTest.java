@@ -97,6 +97,7 @@ public class ChinoBaseTest {
             System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
             System.err.println("To hide this message, set the constant TestConstants.FORCE_DELETE_ALL_ON_TESTS to 'true' and re-run the tests.");
             } else {
+                System.out.println();
                 System.out.println("TestConstants.FORCE_DELETE_ALL_ON_TESTS = true");
                 System.out.println("Every object will be deleted.");
                 new DeleteAll().deleteAll(resourceAPIClient);
