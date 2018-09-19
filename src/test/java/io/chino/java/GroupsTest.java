@@ -84,16 +84,16 @@ public class GroupsTest extends ChinoBaseTest {
 
     @Test
     public void test_list() throws IOException, ChinoApiException {
-        Group[] collections = {
-                test.create("test_list_coll1", new HashMap()),
-                test.create("test_list_coll2", new HashMap()),
-                test.create("test_list_coll3", new HashMap()),
-                test.create("test_list_coll4", new HashMap()),
-                test.create("test_list_coll5", new HashMap())
+        Group[] groups = {
+                test.create("test_list_group1", new HashMap()),
+                test.create("test_list_group2", new HashMap()),
+                test.create("test_list_group3", new HashMap()),
+                test.create("test_list_group4", new HashMap()),
+                test.create("test_list_group5", new HashMap())
         };
         /* LIST (no args) */
-        assertEquals( "Missing collections in list",
-                collections.length,
+        assertEquals( "Missing groups in list",
+                groups.length,
                 test.list().getGroups().size()
         );
 
@@ -105,15 +105,15 @@ public class GroupsTest extends ChinoBaseTest {
                 test.list(offset, limit).getGroups().size()
         );
 
-        offset = collections.length - 1;
-        limit = collections.length;
+        offset = groups.length - 1;
+        limit = groups.length;
         assertEquals( "Wrong list size (2)",
                 1,
                 test.list(offset, limit).getGroups().size()
         );
 
         offset = 2;
-        limit = collections.length;
+        limit = groups.length;
         assertEquals( "Wrong list size (3)",
                 limit - offset,
                 test.list(offset, limit).getGroups().size()
