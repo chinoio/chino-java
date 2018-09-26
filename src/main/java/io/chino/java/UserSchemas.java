@@ -23,12 +23,12 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Get a list of UserSchemas
+     * List all the {@link UserSchema UserSchemas} in the account
      *
-     * @param offset the offset from which it retrieves the UserSchemas
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     * @param offset page offset of the results.
+     * @param limit the max amount of results to be returned.
      *
-     * @return GetUserSchemasResponse Object with the list of UserSchemas
+     * @return a {@link GetUserSchemasResponse} that wraps a {@link List} of {@link UserSchema UserSchemas}
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
@@ -41,8 +41,10 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of UserSchemas
-     * @return GetUserSchemasResponse Object with the list of UserSchemas
+     * List all the {@link UserSchema UserSchemas} in the account
+     *
+     * @return a {@link GetUserSchemasResponse} that wraps a {@link List} of {@link UserSchema UserSchemas}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -54,9 +56,12 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It reads a specific UserSchema
-     * @param userSchemaId the id of the UserSchema
-     * @return UserSchema Object
+     * Read a specific {@link UserSchema}
+     *
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     *
+     * @return the requested {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -69,10 +74,13 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a new UserSchema
-     * @param description the description
-     * @param userSchemaStructure the UserSchemaStructure Object
-     * @return UserSchema Object
+     * Create a new {@link UserSchema} on Chino.io
+     *
+     * @param description a description of the new {@link UserSchema}
+     * @param userSchemaStructure a {@link UserSchemaStructure} object which describes the structure of the new UserSchema.
+     *
+     * @return the new {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -88,9 +96,13 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a new UserSchema
-     * @param userSchemaRequest the UserSchemaRequest Object
-     * @return UserSchema Object
+     * Create a new {@link UserSchema} on Chino.io
+     *
+     * @param userSchemaRequest a {@link UserSchemaRequest} Object which contains a description and the
+     *                          UserSchema's fields
+     *
+     * @return the new {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -104,11 +116,16 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a new UserSchema based on the variables in the class "myClass"
-     * @param description the description
-     * @param myClass the Class that represents the structure of the UserSchema. Mark fields that need to be indexed
-     *                with the annotation  {@link io.chino.api.common.indexed @indexed}.
-     * @return UserSchema Object
+     * Create a new {@link UserSchema} on Chino.io. The attributes of the schema are inferred from the fields
+     * of class "myClass".
+     *
+     * @param description a description of the new {@link UserSchema}
+     * @param myClass a Java {@link Class} that represents the structure of the new UserSchema.
+     *                Mark fields that need to be indexed with the annotation
+     *                {@link io.chino.api.common.indexed @indexed}.
+     *
+     * @return the new {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -125,11 +142,15 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It updates a UserSchema
-     * @param userSchemaId the id of the UserSchema
-     * @param description the description
-     * @param userSchemaStructure the UserSchemaStructure Object
-     * @return UserSchema Object
+     * Update the specified {@link UserSchema}
+     *
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     * @param description the new description for the UserSchema
+     * @param userSchemaStructure a {@link UserSchemaStructure} object which describes the new structure
+     *                            of the UserSchema.
+     *
+     * @return the updated {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -145,10 +166,14 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It updates a UserSchema
-     * @param userSchemaId the id of the UserSchema
-     * @param userSchemaRequest the UserSchemaRequest Object
-     * @return UserSchema Object
+     * Update the specified {@link UserSchema}
+     *
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     * @param userSchemaRequest a {@link UserSchemaRequest} Object which contains the new description and the
+     *                          new structure of the UserSchema's fields
+     *
+     * @return the updated {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -162,11 +187,16 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It updates a UserSchema based on the variables in the class "myClass"
-     * @param userSchemaId the id of the UserSchema
-     * @param description the description
-     * @param myClass the Class that represents the structure of the UserSchema
-     * @return UserSchema Object
+     * Update the specified {@link UserSchema}
+     *
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     * @param description the new description of the {@link UserSchema}
+     * @param myClass a Java {@link Class} that represents the new structure of the UserSchema.
+     *                Mark fields that need to be indexed with the annotation
+     *                {@link io.chino.api.common.indexed @indexed}.
+     *
+     * @return the updated {@link UserSchema}
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -183,10 +213,13 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * It deletes a UserSchema
-     * @param userSchemaId the id of the UserSchema
-     * @param force if true, the resource cannot be restored
+     * Delete a {@link UserSchema} from Chino.io
+     *
+     * @param userSchemaId the id of the {@link UserSchema}
+     * @param force if {@code true}, the resource will be deleted forever. Otherwise, it will only be deactivated.
+     *
      * @return a String with the result of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
