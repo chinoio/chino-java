@@ -23,10 +23,13 @@ public class UserSchemas extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of UserSchemas
+     * Get a list of UserSchemas
+     *
      * @param offset the offset from which it retrieves the UserSchemas
      * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     *
      * @return GetUserSchemasResponse Object with the list of UserSchemas
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */

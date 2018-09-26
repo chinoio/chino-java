@@ -5,7 +5,7 @@ import io.chino.api.common.Field;
 import io.chino.api.schema.Schema;
 import io.chino.api.schema.SchemaRequest;
 import io.chino.api.schema.SchemaStructure;
-import io.chino.java.testutils.BasicUser;
+import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
 import org.junit.BeforeClass;
@@ -22,7 +22,7 @@ public class SchemasTest extends ChinoBaseTest {
     private static ChinoAPI chino_admin;
     private static Schemas test;
 
-    private static String REPO_ID, USER_SCHEMA_ID;
+    private static String REPO_ID;
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
@@ -37,9 +37,6 @@ public class SchemasTest extends ChinoBaseTest {
 
         REPO_ID = chino_admin.repositories.create("SchemasTest")
                 .getRepositoryId();
-
-        LinkedList<Field> fields = new LinkedList<>();
-        fields.add(new Field("title", "string", true));
     }
 
     @Test
@@ -51,7 +48,7 @@ public class SchemasTest extends ChinoBaseTest {
         SchemaStructure struc = new SchemaStructure(fields);
         SchemaRequest req = new SchemaRequest("SchemaTest", struc);
 
-        Schema c_class = test.create(REPO_ID, desc, BasicUser.class);
+        Schema c_class = test.create(REPO_ID, desc, TestClassStructure.class);
         Schema c_struct = test.create(REPO_ID, desc, struc);
         Schema c_req = test.create(REPO_ID, req);
 
@@ -67,7 +64,7 @@ public class SchemasTest extends ChinoBaseTest {
         struc = new SchemaStructure(newFields);
         req = new SchemaRequest("SchemaTest", struc);
 
-        Schema u_class = test.update(c_class.getSchemaId(), newDesc, BasicUser.class);
+        Schema u_class = test.update(c_class.getSchemaId(), newDesc, TestClassStructure.class);
         Schema u_struct = test.update(c_class.getSchemaId(), newDesc, struc);
         Schema u_req = test.update(c_class.getSchemaId(), req);
 
@@ -150,7 +147,7 @@ public class SchemasTest extends ChinoBaseTest {
     private Schema makeSchema(String method, int instanceNumber) throws IOException, ChinoApiException {
         String desc = method + "_" + instanceNumber;
 
-        return test.create(REPO_ID, desc, BasicUser.class);
+        return test.create(REPO_ID, desc, TestClassStructure.class);
     }
 
 }

@@ -4,11 +4,11 @@ import io.chino.api.common.indexed;
 
 import java.util.HashMap;
 
-public class BasicUser {
+public class TestClassStructure {
     @indexed
     String name;
 
-    public BasicUser(String name) {this.name = name;}
+    public TestClassStructure(String name) {this.name = name;}
 
     public HashMap<String, Object> toMap() {
         HashMap<String, Object> map = new HashMap<>();

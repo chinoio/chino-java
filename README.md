@@ -116,7 +116,7 @@ If you already have a valid ACCESS_TOKEN, you can create a `ChinoAPI` object and
 
 `ChinoAPI chino = new ChinoAPI(<hosturl>, <access_token>);`
 
-Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/dev-andrea/src/test/java/io/chino/java/ChinoAPITest.java) to see some practical examples about the use of the `ChinoAPI` class.
+Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java) to see some practical examples about the use of the `ChinoAPI` class.
 
 ### HelloWorldDocument
 To create a simple Document follow these steps:

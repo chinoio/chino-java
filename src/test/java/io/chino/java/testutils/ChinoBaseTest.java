@@ -13,7 +13,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * Base test class for all tests
+ * Base test class for all tests.
+ *
  */
 public class ChinoBaseTest {
 

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.group.Group;
 import io.chino.api.user.User;
-import io.chino.java.testutils.BasicUser;
+import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
 import org.junit.AfterClass;
@@ -43,7 +43,7 @@ public class GroupsTest extends ChinoBaseTest {
                 chino_admin.userSchemas
         );
 
-        USER_SCHEMA_ID = chino_admin.userSchemas.create("GroupsTest", BasicUser.class)
+        USER_SCHEMA_ID = chino_admin.userSchemas.create("GroupsTest", TestClassStructure.class)
                             .getUserSchemaId();
     }
 
@@ -183,7 +183,7 @@ public class GroupsTest extends ChinoBaseTest {
     }
 
     private User makeUser(String name) throws IOException, ChinoApiException {
-        return chino_admin.users.create(name, "1234567890", new BasicUser(name).toMap(), USER_SCHEMA_ID);
+        return chino_admin.users.create(name, "1234567890", new TestClassStructure(name).toMap(), USER_SCHEMA_ID);
     }
 
     @AfterClass
