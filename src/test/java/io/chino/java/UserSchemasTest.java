@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -124,7 +125,31 @@ public class UserSchemasTest extends ChinoBaseTest {
     }
 
     @Test
-    public void test_list(){
-        fail("Test case not implemented yet");
+    public void test_list() throws IOException, ChinoApiException {
+        UserSchema[] userSchemas = {
+                test.create("UserSchema_list_test_1", TestClassStructure.class),
+                test.create("UserSchema_list_test_2", TestClassStructure.class),
+                test.create("UserSchema_list_test_3", TestClassStructure.class),
+                test.create("UserSchema_list_test_4", TestClassStructure.class),
+                test.create("UserSchema_list_test_5", TestClassStructure.class)
+        };
+
+        /* LIST (0 args) */
+
+        List<UserSchema> fetchedList = test.list().getUserSchemas();
+        assertEquals("Couldn't fetch all the UserSchemas!", userSchemas.length, fetchedList.size());
+        for (UserSchema us : userSchemas) {
+            assertTrue(us.getDescription() + " is not in the fetched list!", fetchedList.contains(us));
+        }
+
+        /* LIST (2 args) */
+
+        int limit = 3;
+        fetchedList = test.list(0, limit).getUserSchemas();
+        assertEquals("Couldn't fetch all the UserSchemas!", limit, fetchedList.size());
+
+        int offset = 4;
+        fetchedList = test.list(offset, 10).getUserSchemas();
+        assertEquals("Couldn't fetch all the UserSchemas!", userSchemas.length - offset, fetchedList.size());
     }
 }
