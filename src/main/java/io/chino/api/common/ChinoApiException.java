@@ -2,11 +2,12 @@ package io.chino.api.common;
 
 import java.util.StringTokenizer;
 
+/**
+ * Checked exception that is thrown whenever an error is returned by Chino.io
+ * as a response to an API call
+ */
 public class ChinoApiException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
 	private ErrorResponse errorResponse;
 
 	// Parameterless Constructor

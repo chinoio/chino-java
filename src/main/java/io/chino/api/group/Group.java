@@ -10,6 +10,9 @@ import io.chino.java.ChinoBaseAPI;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * A Group of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "insert_date",

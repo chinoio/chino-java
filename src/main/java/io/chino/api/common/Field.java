@@ -6,6 +6,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.Objects;
 
+/**
+ * This class represents a field of a {@link io.chino.api.userschema.UserSchema UserSchema}
+ * or a {@link io.chino.api.schema.Schema Schema}. It is used to create or update the structure
+ * of those objects
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "type",

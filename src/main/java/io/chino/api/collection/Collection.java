@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * A Collection of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "insert_date",
@@ -15,7 +18,6 @@ import java.util.Objects;
         "name",
         "collection_id"
 })
-
 public class Collection {
 
     @JsonProperty("insert_date")

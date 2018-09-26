@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-
+@Deprecated
 public class JsonDateSerializer extends JsonSerializer<Date> {
 
 //	private static final SimpleDateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ"); //yyyy-MM-dd'T'HH:mm:ss.SSSZ
