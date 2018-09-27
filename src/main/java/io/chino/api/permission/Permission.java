@@ -4,9 +4,13 @@ package io.chino.api.permission;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 
+/**
+ * Contains information about permissions that are active on a Chino.io resource.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "access",
@@ -27,6 +31,13 @@ public class Permission {
     @JsonProperty("permission")
     private HashMap permission;
 
+    /**
+     * Get the access level this {@link Permission} refers to.
+     * May be "Structure" or "Data".
+     *
+     * @return either "Structure" (permission is applied on the resource's metadata)
+     *      or "Data" (permission is applied on the resource's content)
+     */
     public String getAccess() {
         return access;
     }
@@ -35,6 +46,14 @@ public class Permission {
         this.access = access;
     }
 
+    /**
+     * Get the ID on Chino.io of the parent resource of the object of this {@link Permission}
+     *
+     * @see #getResourceId() Get this resource's ID instead
+     *
+     * @return the Chino.io ID of the parent object. If the resource has no parent, returns {@code null}
+     */
+    @Nullable
     public String getParentId() {
         return parentId;
     }
@@ -42,6 +61,12 @@ public class Permission {
     public void setParentId(String parentId) {
         this.parentId = parentId;
     }
+
+    /**
+     * Get the ID on Chino.io of the resource of this {@link Permission}
+     *
+     * @return the Chino.io ID of the object this {@link Permission} applies to.
+     */
 
     public String getResourceId() {
         return resourceId;
@@ -51,6 +76,11 @@ public class Permission {
         this.resourceId = resourceId;
     }
 
+    /**
+     * Get the Chino.io resource type of the object of this {@link Permission}
+     *
+     * @return the name of a Chino.io resource (e.g. Schema, Document, Group...) as a {@link String}
+     */
     public String getResourceType() {
         return resourceType;
     }
@@ -59,6 +89,27 @@ public class Permission {
         this.resourceType = resourceType;
     }
 
+    /**
+     * Get the permissions that are active on this object.
+     *
+     *
+     * @return a {@link HashMap} that may contain up to three lists of Permissions:
+     *  <ul>
+     *      <li>
+     *          <code>"manage"</code> Permissions, i.e. permissions that are active for the user itself.
+     *          Cast to a {@link java.util.List List&lt;String&gt;}.
+     *      </li>
+     *      <li>
+     *          <code>"authorize"</code> Permissions, i.e. permissions the user can grant to third party users.
+     *          Cast to a {@link java.util.List List&lt;String&gt;}.
+     *      </li>
+     *      <li>
+     *          <code>"created_document"</code> Permissions, which defines the default permissions on children
+     *          resources in Repositories, Schemas and UserSchemas. Contains a <code>"manage"</code> and a
+     *          <code>"authorize"</code> list itself.
+     *      </li>
+     *  </ul>
+     */
     public HashMap getPermission() {
         return permission;
     }
