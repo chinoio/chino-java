@@ -4,6 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Contains all the parameters required for creation and update of {@link UserSchema UserSchemas}:
+ * a text description and the definition of the UserSchema's fields.
+ *
+ * @see io.chino.java.UserSchemas#create(UserSchemaRequest)
+ * @see io.chino.java.UserSchemas#update(String, UserSchemaRequest)
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "description", "structure" })
 public class UserSchemaRequest {

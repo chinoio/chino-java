@@ -12,6 +12,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * A User of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "username",
@@ -222,7 +225,7 @@ public class User {
 
     /**
      * Compare this User to another object and tell whether they are equal.
-     * The following conditions will cause this method to return {@code false}:
+     * The following conditions will cause this method to return {@code false} when:
      * <ul>
      *     <li>
      *         One of the Users represents an updated version of the other,

@@ -10,6 +10,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.chino.api.common.Field;
 
+/**
+ * Defines the structure of a {@link UserSchema}, i.e. the name and the data type of each field.
+ *
+ * @see Field
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "fields"

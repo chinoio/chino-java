@@ -1,7 +1,7 @@
 package io.chino.api.search;
 
 /**
- * The type of result that will be returned by a search query
+ * The type of result that will be returned by a search query.
  */
 public enum ResultType {
     /**

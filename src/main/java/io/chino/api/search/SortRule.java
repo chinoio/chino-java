@@ -8,14 +8,15 @@ import static io.chino.api.search.SearchTreeNode.indent;
 public class SortRule {
 
     public enum Order {
-        ASC,
-        DESC;
+        /**  ascending order */ ASC,
+        /** descending order */ DESC;
 
         @Override
         public String toString() {
             return this.name().toLowerCase();
         }
     }
+
 
     private String fieldName;
     private Order order;
