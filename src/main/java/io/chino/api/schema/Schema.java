@@ -9,6 +9,9 @@ import io.chino.java.ChinoBaseAPI;
 import java.util.Date;
 import java.util.Objects;
 
+/**
+ * A Schema of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "repository_id",

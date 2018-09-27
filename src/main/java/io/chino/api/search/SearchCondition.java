@@ -9,6 +9,14 @@ import java.util.ListIterator;
 
 import static io.chino.api.search.SearchTreeNode.indent;
 
+/**
+ * Implementation of {@link SearchTreeNode} that expresses a condition (AND, OR, NOT)
+ * between nodes of a {@link io.chino.java.Search Search} query tree
+ *
+ * @see And
+ * @see Or
+ * @see Not
+ */
 abstract class SearchCondition implements SearchTreeNode {
 
     protected final LinkedList<SearchTreeNode> childTreeNodes;
@@ -118,40 +126,52 @@ abstract class SearchCondition implements SearchTreeNode {
 
 
 
-    /* Implementations are written inside class SearchCondition for better rendering
-     * of class names (e.g.: SearchCondition.And)
-     */
-
-    public static final class And extends SearchCondition {
-
-    And() {
-        super("and");
-    }
+    /*                                                                                  *
+     * Implementations are written inside class SearchCondition for better rendering    *
+     * of class names: SearchCondition.And, SearchCondition.Or, SearchCondition.Not     *
+     *                                                                                  */
 
     /**
-     * Create a new AND condition between the specified clauses
+     * Represents an AND operation between 2 or more {@link SearchTreeNode SearchTreeNodes}
      *
-     * @param clauses a {@link Collection} of {@link SearchTreeNode} that will be evaluated in conjunction (AND)
+     * @see SearchCondition
      */
-    public And(Collection<SearchTreeNode> clauses) {
-        super("and", clauses);
-    }
+    public static final class And extends SearchCondition {
 
-    @Override
-    public void addChild(SearchTreeNode newChild) {
-        if (newChild instanceof And) {
-            childTreeNodes.addAll(((And) newChild).childTreeNodes);
-        } else {
-            childTreeNodes.addLast(newChild);
+        And() {
+            super("and");
         }
-    }
 
-    @Override
-    public void removeChild(SearchTreeNode child) {
+        /**
+         * Create a new AND condition between the specified clauses
+         *
+         * @param clauses a {@link Collection} of {@link SearchTreeNode} that will be evaluated in conjunction (AND)
+         */
+        public And(Collection<SearchTreeNode> clauses) {
+            super("and", clauses);
+        }
+
+        @Override
+        public void addChild(SearchTreeNode newChild) {
+            if (newChild instanceof And) {
+                childTreeNodes.addAll(((And) newChild).childTreeNodes);
+            } else {
+                childTreeNodes.addLast(newChild);
+            }
+        }
+
+        @Override
+        public void removeChild(SearchTreeNode child) {
         childTreeNodes.remove(child);
     }
-}
+    }
 
+
+    /**
+     * Represents an OR operation between 2 or more {@link SearchTreeNode SearchTreeNodes}
+     *
+     * @see SearchCondition
+     */
     public static final class Or extends SearchCondition {
 
         Or() {
@@ -177,6 +197,12 @@ abstract class SearchCondition implements SearchTreeNode {
         }
     }
 
+
+    /**
+     * Represents a NOT operation applied on a {@link SearchTreeNode}
+     *
+     * @see SearchCondition
+     */
     public static final class Not extends SearchCondition {
 
         Not() {

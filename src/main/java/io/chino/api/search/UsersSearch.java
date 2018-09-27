@@ -7,7 +7,13 @@ import io.chino.java.ChinoBaseAPI;
 
 import java.io.IOException;
 
-public final class UsersSearch extends SearchClient<GetUsersResponse> {
+/**
+ * Implementation of a {@link AbstractSearchClient} that executes search queries on
+ * {@link io.chino.api.user.User Users}.
+ *
+ * @see io.chino.java.Search#users(String)
+ */
+public final class UsersSearch extends AbstractSearchClient<GetUsersResponse> {
 
     public UsersSearch(ChinoBaseAPI APIClient, String schemaId) {
         super(APIClient, schemaId);

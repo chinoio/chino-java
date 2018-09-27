@@ -10,6 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Defines the structure of a {@link Schema}, i.e. the name and the data type of each field.
+ *
+ * @see Field
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "fields"
@@ -19,9 +24,7 @@ public class SchemaStructure {
     @JsonProperty("fields")
     private List<Field> fields = new ArrayList<Field>();
 
-    public SchemaStructure(){
-
-    }
+    public SchemaStructure(){}
 
     public SchemaStructure(List<Field> fields){
         setFields(fields);

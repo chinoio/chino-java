@@ -11,7 +11,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public abstract class SearchClient<ResponseType extends Object> {
+/**
+ * Abstract implementation of a API client that can execute search queries on Chino.io
+ *
+ * @param <ResponseType> the class of the response that will be returned by the search operation.
+ */
+public abstract class AbstractSearchClient<ResponseType extends Object> {
 
     private ResultType resultType = ResultType.FULL_CONTENT;
     private SearchTreeNode query;
@@ -22,12 +27,12 @@ public abstract class SearchClient<ResponseType extends Object> {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    protected SearchClient (ChinoBaseAPI APIclient, String resourceID) {
+    protected AbstractSearchClient(ChinoBaseAPI APIclient, String resourceID) {
         client = APIclient;
         this.resourceID = resourceID;
     }
 
-    SearchClient<ResponseType> setQuery(SearchTreeNode query) {
+    AbstractSearchClient<ResponseType> setQuery(SearchTreeNode query) {
         this.query = query;
         return this;
     }
@@ -38,9 +43,9 @@ public abstract class SearchClient<ResponseType extends Object> {
      *
      * @param resultType the new {@link ResultType}
      *
-     * @return a {@link SearchClient} subclass with the updated {@link ResultType}
+     * @return a {@link AbstractSearchClient} subclass with the updated {@link ResultType}
      */
-    protected  <Client extends SearchClient<ResponseType>> Client setResultType(ResultType resultType) {
+    protected  <Client extends AbstractSearchClient<ResponseType>> Client setResultType(ResultType resultType) {
         this.resultType = resultType;
         return null;
     }
@@ -52,9 +57,9 @@ public abstract class SearchClient<ResponseType extends Object> {
      * @param fieldName the name of the field that will be used to sort the results. The field must be indexed.
      * @param order a value in {@link io.chino.api.search.SortRule.Order SortRule.Order}
      *
-     * @return a {@link SearchClient} subclass with the new {@link SortRule}
+     * @return a {@link AbstractSearchClient} subclass with the new {@link SortRule}
      */
-    protected <Client extends SearchClient<ResponseType>> Client addSortRule(String fieldName, SortRule.Order order) {
+    protected <Client extends AbstractSearchClient<ResponseType>> Client addSortRule(String fieldName, SortRule.Order order) {
         if (sort == null) {
             sort = new LinkedList<>();
         }
@@ -76,9 +81,9 @@ public abstract class SearchClient<ResponseType extends Object> {
      *
      * @see #addSortRule(String, SortRule.Order) How to add rule with minimum priority
      *
-     * @return a {@link SearchClient} subclass with the new {@link SortRule}
+     * @return a {@link AbstractSearchClient} subclass with the new {@link SortRule}
      */
-    protected <Client extends SearchClient<ResponseType>> Client addSortRule(String fieldName, SortRule.Order order, int index) {
+    protected <Client extends AbstractSearchClient<ResponseType>> Client addSortRule(String fieldName, SortRule.Order order, int index) {
         if (sort == null) {
             sort = new LinkedList<>();
         }
@@ -252,7 +257,7 @@ public abstract class SearchClient<ResponseType extends Object> {
     }
 
     /**
-     * Execute the current query that is contained in this {@link SearchClient}.
+     * Execute the current query that is contained in this {@link AbstractSearchClient}.
      * Calls Chino.io Search API in order to retrieve the objects that match the provided search criteria.
      *
      * @return either a {@link io.chino.api.document.GetDocumentsResponse GetDocumentsResponse} or a

@@ -1,5 +1,9 @@
 package io.chino.api.search;
 
+
+/**
+ *  Basic element of a {@link io.chino.java.Search Search} query tree
+ */
 public interface SearchTreeNode {
 
     /**

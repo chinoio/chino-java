@@ -2,6 +2,9 @@ package io.chino.api.search;
 
 import static io.chino.api.search.SearchTreeNode.indent;
 
+/**
+ * Defines how the results of a {@link io.chino.java.Search Search} must be ordered.
+ */
 public class SortRule {
 
     public enum Order {

@@ -7,7 +7,13 @@ import io.chino.java.ChinoBaseAPI;
 
 import java.io.IOException;
 
-public final class DocumentsSearch extends SearchClient<GetDocumentsResponse> {
+/**
+ * Implementation of a {@link AbstractSearchClient} that executes search queries on
+ * {@link io.chino.api.document.Document Documents}.
+ *
+ * @see io.chino.java.Search#documents(String)
+ */
+public final class DocumentsSearch extends AbstractSearchClient<GetDocumentsResponse> {
 
     public DocumentsSearch(ChinoBaseAPI APIClient, String schemaId) {
         super(APIClient, schemaId);
