@@ -1,13 +1,9 @@
 package io.chino.api.search.leaf;
 
 import io.chino.api.search.FilterOperator;
-import io.chino.api.search.SearchTreeNode;
 
-import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
-
-import static io.chino.api.search.SearchTreeNode.indent;
 
 /**
  * {@link SearchLeaf} used to search for values in Arrays.

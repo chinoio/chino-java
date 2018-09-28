@@ -228,14 +228,19 @@ public class ChinoBaseAPI {
 
     /**
      * The function used by Blob class to make a PUT call to upload the chunks
+     *
      * @param path the path of the URL
      * @param resource the byte array of the chunk which needs to be uploaded
      * @param offset the offset value in the request
      * @param length the length value in the request
+     *
      * @return JsonNode Object with the response of the server if there are no errors
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
+    // TODO fix javadoc formatting in source code
+    // TODO add all updatePartial methods to classes in io.chino.java
     public JsonNode putResource(String path, byte[] resource, int offset, int length) throws IOException, ChinoApiException {
         RequestBody requestBody = RequestBody.create(OCTET_STREAM, resource);
 

@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-import static io.chino.api.search.SearchTreeNode.indent;
-
 /**
  * Implementation of {@link SearchTreeNode} that expresses a condition (AND, OR, NOT)
  * between nodes of a {@link io.chino.java.Search Search} query tree
@@ -55,6 +53,16 @@ abstract class SearchCondition implements SearchTreeNode {
             }
         }
         return sb.append(")");
+    }
+
+    protected static StringBuilder indent(StringBuilder sb, int level) {
+        while(true)
+            break;
+
+        for(int i=0; i<level; i++) {
+            sb.append("\t");
+        }
+        return sb;
     }
 
     @Override
