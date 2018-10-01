@@ -310,7 +310,7 @@ public class Auth extends ChinoBaseAPI {
 
         String body = response.body().string();
         if (response.code() == 200) {
-            return "success";
+            return SUCCESS_MSG;
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }

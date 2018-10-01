@@ -44,9 +44,7 @@ public class Permissions extends ChinoBaseAPI {
      * and the new Permissions that will be granted.
      */
     public PermissionsRequestBuilder grant() {
-        PermissionsRequestBuilder prb = new PermissionsRequestBuilder(Action.GRANT);
-        prb.init(this);
-        return prb;
+        return new PermissionsRequestBuilder(Action.GRANT, this);
     }
 
     /**
@@ -56,9 +54,7 @@ public class Permissions extends ChinoBaseAPI {
      * and the new Permissions that will be revoked.
      */
     public PermissionsRequestBuilder revoke() {
-        PermissionsRequestBuilder prb =  new PermissionsRequestBuilder(Action.REVOKE);
-        prb.init(this);
-        return prb;
+        return new PermissionsRequestBuilder(Action.REVOKE, this);
     }
 
     /**
@@ -73,7 +69,7 @@ public class Permissions extends ChinoBaseAPI {
      */
     public String executeRequest(PermissionsRequest request) throws IOException, ChinoApiException {
         postResource(request.getUrlPath(), request.getBody());
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -278,9 +274,9 @@ public class Permissions extends ChinoBaseAPI {
 
         public static Type fromString(String type) {
             String stringValue = type;
-            for (Type t : values()) {
-                if (stringValue.equals(t.toString())) {
-                    return t;
+            for (Type value : values()) {
+                if (value.toString().equals(stringValue)) {
+                    return value;
                 }
             }
             throw new IllegalArgumentException(type + " is not a valid permission type string.");
@@ -321,7 +317,22 @@ public class Permissions extends ChinoBaseAPI {
 
         @Override
         public String toString() {
-            return this.name().toLowerCase();
+            if (this == REPOSITORY)
+                return "repositories";
+            return this.name().toLowerCase() + "s";
+        }
+
+        public static ResourceType fromString(String string) {
+            string = string.toUpperCase();
+            for (ResourceType type : values()) {
+                String singular = string.toUpperCase()
+                        .replace("REPOSITORIES", "REPOSITORY")
+                        .replaceAll("[A-Z]*S$", "");
+                if (string.equals(type.name()) || singular.equals(type.name())) {
+                    return type;
+                }
+            }
+            throw new IllegalArgumentException("Invalid Resource Type: " + string);
         }
     }
 
@@ -339,7 +350,7 @@ public class Permissions extends ChinoBaseAPI {
 
         @Override
         public String toString() {
-            return this.name().toLowerCase();
+            return this.name().toLowerCase() + "s";
         }
     }
 
@@ -483,7 +494,7 @@ public class Permissions extends ChinoBaseAPI {
         checkNotNull(subjectId, "subject_id");
         checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+subjectType+"/"+subjectId, permissionRule);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -511,7 +522,7 @@ public class Permissions extends ChinoBaseAPI {
         checkNotNull(subjectId, "subject_id");
         checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+subjectType+"/"+subjectId, permissionRule);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -550,7 +561,7 @@ public class Permissions extends ChinoBaseAPI {
         );
         checkNotNull(permissionRule, "permission_rule");
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+resourceChildren+"/"+subjectType+"/"+subjectId, permissionRule);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -569,7 +580,7 @@ public class Permissions extends ChinoBaseAPI {
                 new Pair<>(permissionRule, "permission_rule_created_document")
         );
         postResource("/perms/"+action+"/"+resourceType+"/"+resourceId+"/"+resourceChildren+"/"+subjectType+"/"+subjectId, permissionRule);
-        return "success";
+        return SUCCESS_MSG;
     }
 
 }

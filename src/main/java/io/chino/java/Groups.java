@@ -158,7 +158,7 @@ public class Groups extends ChinoBaseAPI {
         checkNotNull(groupId, "group_id");
         checkNotNull(userId, "user_id");
         postResource("/groups/"+groupId+"/users/"+userId, null);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -176,7 +176,7 @@ public class Groups extends ChinoBaseAPI {
         checkNotNull(groupId, "group_id");
         checkNotNull(userId, "user_id");
         deleteResource("/groups/"+groupId+"/users/"+userId, false);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -195,7 +195,7 @@ public class Groups extends ChinoBaseAPI {
         checkNotNull(groupId, "group_id");
         checkNotNull(userSchemaId, "user_schema_id");
         postResource("/groups/"+groupId+"/user_schemas/"+userSchemaId, null);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -214,6 +214,6 @@ public class Groups extends ChinoBaseAPI {
         checkNotNull(groupId, "group_id");
         checkNotNull(userSchemaId, "user_schema_id");
         deleteResource("/groups/"+groupId+"/user_schemas/"+userSchemaId, false);
-        return "success";
+        return SUCCESS_MSG;
     }
 }

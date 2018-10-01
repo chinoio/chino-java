@@ -24,6 +24,9 @@ import java.util.List;
 
 public class ChinoBaseAPI {
 
+
+    public final static String SUCCESS_MSG = "success";
+
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
     private final ChinoAPI parent;
@@ -277,7 +280,7 @@ public class ChinoBaseAPI {
         Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
-            return "success";
+            return SUCCESS_MSG;
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }

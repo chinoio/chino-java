@@ -1,9 +1,9 @@
 package io.chino.api.permission;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import io.chino.api.collection.Collection;
 import io.chino.java.Permissions;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,18 +44,22 @@ import java.util.List;
         "authorize",
         "created_document"
 })
-public class PermissionSetter {
+public class PermissionSetter implements PermissionsContainer {
 
-    private HashSet<Permissions.Type> manage;
-    private HashSet<Permissions.Type> authorize;
-    private PermissionRule onCreatedDocuments;
+    @JsonProperty("manage")
+    HashSet<Permissions.Type> manage;
+    @JsonProperty("authorize")
+    HashSet<Permissions.Type> authorize;
+
+    @JsonProperty("created_document")
+    PermissionRule onCreatedDocuments;
 
     /**
      * Create a new, empty {@link PermissionSetter}.
      */
     public PermissionSetter() {
-        manage = null;
-        authorize = null;
+        manage = new HashSet<>();
+        authorize = new HashSet<>();
 
         onCreatedDocuments = null;
     }
@@ -66,23 +70,25 @@ public class PermissionSetter {
      * @param rule a {@link PermissionRule} with the content of the "manage" and "authorize" sets
      */
     public PermissionSetter(@NotNull PermissionRule rule) {
-        manage = new HashSet<>();
-        authorize = new HashSet<>();
+        this();
         mapRule(rule, authorize, manage);
-
-        onCreatedDocuments = null;
     }
 
     /**
-     * Create a new {@link PermissionSetter}
+     * Create a new {@link PermissionSetter}. <br>
+     *     <br>
+     * <b>Note:</b> the "created_document" list can only be set on children of Schemas, i.e. after calling
+     * {@link PermissionsRequestBuilder#onChildrenOf(Permissions.ResourceType, String) PermissionsRequestBuilder.onChildrenOf(SCHEMAS, &lt;schema_id&gt;)}
+     * Trying to set this value for other resources will produce an exception.
+     *
+     * @see PermissionsRequestBuilder#permissions(PermissionSetter)
      *
      * @param onResource a {@link PermissionRule} with the content of the "manage" and "authorize" sets
      * @param onResource a {@link PermissionRule} with the content of the "created_document.manage"
      *                   and "created_document.authorize" sets
      */
     public PermissionSetter(@NotNull PermissionRule onResource, @NotNull PermissionRule onCreatedDocuments) {
-        manage = new HashSet<>();
-        authorize = new HashSet<>();
+        this();
         mapRule(onResource, this.manage, this.authorize);
 
         this.onCreatedDocuments = new PermissionRule();
@@ -99,9 +105,6 @@ public class PermissionSetter {
      * @return this {@link PermissionSetter}
      */
     public PermissionSetter manage(Permissions.Type ... types) {
-        if (this.manage == null) {
-            this.manage = new HashSet<>();
-        }
         this.manage.addAll(
                 Arrays.asList(types)
         );
@@ -118,9 +121,6 @@ public class PermissionSetter {
      * @return this {@link PermissionSetter}
      */
     public PermissionSetter authorize(Permissions.Type ... types) {
-        if (this.authorize == null) {
-            this.authorize = new HashSet<>();
-        }
         this.authorize.addAll(
                 Arrays.asList(types)
         );
@@ -130,13 +130,22 @@ public class PermissionSetter {
     /**
      * Adds the specified permission types to the "created_document.manage" set.
      * If the set already contains some values, the new ones will be appended.
-     * To reset the values, use {@link #PermissionSetter()} or {@link #setPermissionsOnCreatedDocuments(PermissionRule)}
+     * To reset the values, use {@link #PermissionSetter()} or {@link #setPermissionsOnCreatedDocuments(PermissionRule)} <br>
+     *     <br>
+     * <b>Note:</b> the "created_document" list can only be set on children of Schemas, i.e. after calling
+     * {@link PermissionsRequestBuilder#onChildrenOf(Permissions.ResourceType, String) PermissionsRequestBuilder.onChildrenOf(SCHEMAS, &lt;schema_id&gt;)}
+     * Trying to set this value for other resources will produce an exception.
+     *
+     * @see PermissionsRequestBuilder#permissions(PermissionSetter)
      *
      * @param types an array of {@link io.chino.java.Permissions.Type Permissions.Type}.
      *
      * @return this {@link PermissionSetter}
      */
     public PermissionSetter manageOnCreatedDocuments(Permissions.Type ... types) {
+        if (onCreatedDocuments == null) {
+            onCreatedDocuments = new PermissionRule();
+        }
         onCreatedDocuments.setManage(types);
         return this;
     }
@@ -144,13 +153,22 @@ public class PermissionSetter {
     /**
      * Adds the specified permission types to the "created_document.authorize" set.
      * If the set already contains some values, the new ones will be appended.
-     * To reset the values, use {@link #PermissionSetter()} or {@link #setPermissionsOnCreatedDocuments(PermissionRule)}
+     * To reset the values, use {@link #PermissionSetter()} or {@link #setPermissionsOnCreatedDocuments(PermissionRule)} <br>
+     *     <br>
+     * <b>Note:</b> the "created_document" list can only be set on children of Schemas, i.e. after calling
+     * {@link PermissionsRequestBuilder#onChildrenOf(Permissions.ResourceType, String) PermissionsRequestBuilder.onChildrenOf(SCHEMAS, &lt;schema_id&gt;)}
+     * Trying to set this value for other resources will produce an exception.
+     *
+     * @see PermissionsRequestBuilder#permissions(PermissionSetter)
      *
      * @param types an array of {@link io.chino.java.Permissions.Type Permissions.Type}.
      *
      * @return this {@link PermissionSetter}
      */
     public PermissionSetter authorizeOnCreatedDocuments(Permissions.Type ... types) {
+        if (onCreatedDocuments == null) {
+            onCreatedDocuments = new PermissionRule();
+        }
         onCreatedDocuments.setAuthorize(types);
         return this;
     }
@@ -160,6 +178,7 @@ public class PermissionSetter {
      *
      * @param permissions a {@link PermissionRule} containing the new permissions
      */
+    @JsonIgnore
     public void setPermissions(PermissionRule permissions) {
         this.manage = new HashSet<>(permissions.getManageTypes());
         this.authorize = new HashSet<>(permissions.getAuthorizeTypes());
@@ -167,15 +186,23 @@ public class PermissionSetter {
 
     /**
      * Replace the "created_document.manage" and "created_document.authorize" sets with
-     * values from a {@link PermissionRule}
+     * values from a {@link PermissionRule}. <br>
+     *     <br>
+     * <b>Note:</b> the "created_document" list can only be set on children of Schemas, i.e. after calling
+     * {@link PermissionsRequestBuilder#onChildrenOf(Permissions.ResourceType, String) PermissionsRequestBuilder.onChildrenOf(SCHEMAS, &lt;schema_id&gt;)}
+     * Trying to set this value for other resources will produce an exception.
+     *
+     * @see PermissionsRequestBuilder#permissions(PermissionSetter)
      *
      * @param permissions a {@link PermissionRule} containing the new permissions
      */
+    @JsonIgnore
     public void setPermissionsOnCreatedDocuments(PermissionRule permissions) {
         onCreatedDocuments.manage = new HashSet<>(permissions.getManageTypes());
         onCreatedDocuments.authorize = new HashSet<>(permissions.getAuthorizeTypes());
     }
 
+    @JsonIgnore
     public PermissionRule getPermissions() {
         PermissionRule rule = new PermissionRule();
         rule.setManage(
@@ -236,5 +263,33 @@ public class PermissionSetter {
     @JsonProperty("created_document")
     void setCreatedDocument(PermissionRule createdDocument) {
         this.onCreatedDocuments = createdDocument;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Permissions.Type> getManagePermissions() {
+        return new LinkedList<>(manage);
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Permissions.Type> getAuthorizePermissions() {
+        return new LinkedList<>(authorize);
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Permissions.Type> getManagePermissionsOnCreatedDocuments() {
+        if (onCreatedDocuments == null)
+            return null;
+        return new LinkedList<>(onCreatedDocuments.getManageTypes());
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Permissions.Type> getAuthorizePermissionsOnCreatedDocuments() {
+        if (onCreatedDocuments == null)
+            return null;
+        return new LinkedList<>(onCreatedDocuments.getAuthorizeTypes());
     }
 }

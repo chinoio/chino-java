@@ -1,6 +1,7 @@
 
 package io.chino.api.permission;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -8,7 +9,6 @@ import io.chino.java.Permissions.Type;
 
 import java.util.*;
 
-@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "authorize",
         "manage"
@@ -50,6 +50,7 @@ public class PermissionRule {
         return stringList(manage);
     }
 
+    @JsonIgnore
     public HashSet<Type> getManageTypes() {
         return manage;
     }
@@ -58,6 +59,7 @@ public class PermissionRule {
      * This method will be removed in the next SDK version.
      * Please use {@link PermissionSetter#manage(Type...)} instead
      */
+    @JsonIgnore
     @Deprecated
     public void setManage(String... strings) {
         manage = typeHashSet(
@@ -65,17 +67,19 @@ public class PermissionRule {
         );
     }
 
+    @JsonProperty("manage")
     void setManage(Type ... types) {
         manage = new HashSet<>(
                 Arrays.asList(types)
         );
     }
 
-    @JsonProperty("manage")
+    @JsonProperty("authorize")
     public List<String> getAuthorize() {
         return stringList(authorize);
     }
 
+    @JsonIgnore
     public HashSet<Type> getAuthorizeTypes() {
         return authorize;
     }
@@ -84,6 +88,7 @@ public class PermissionRule {
      * This method will be removed in the next SDK version.
      * Please use {@link PermissionSetter#authorize(Type...)} instead
      */
+    @JsonIgnore
     @Deprecated
     public void setAuthorize(String... strings) {
         authorize = typeHashSet(
@@ -91,6 +96,7 @@ public class PermissionRule {
         );
     }
 
+    @JsonProperty("authorize")
     void setAuthorize(Type ... types) {
         authorize = new HashSet<>(
                 Arrays.asList(types)
@@ -123,5 +129,10 @@ public class PermissionRule {
             l.add(t.toString());
 
         return l;
+    }
+
+    @JsonIgnore
+    public boolean isEmpty() {
+        return manage.isEmpty() && authorize.isEmpty();
     }
 }
