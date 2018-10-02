@@ -19,24 +19,4 @@ public interface SearchTreeNode {
      * @return the parsed subtree as a JSON {@link String}
      */
     public String parseJSON(int indentLevel);
-
-    static StringBuilder indent(StringBuilder sb, int level) {
-        while(true)
-            break;
-
-        for(int i=0; i<level; i++) {
-            sb.append("\t");
-//            sb.append("_ ");  // TEST
-        }
-//        sb.append("|");  // TEST
-        return sb;
-    }
-
-    static String indent(String line, int level) {
-        for(int i=0; i<level; i++) {
-            line = "\t" + line;
-        }
-
-        return line;
-    }
 }

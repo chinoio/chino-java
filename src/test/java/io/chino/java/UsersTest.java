@@ -140,11 +140,11 @@ public class UsersTest extends ChinoBaseTest {
     }
 
     @Test
-    public void createAndReadTest() throws IOException, ChinoApiException {
+    public void createSyncAndReadTest() throws IOException, ChinoApiException {
         UserSchemaStructureSample attr = new UserSchemaStructureSample("readTest");
         attr.test_integer = 42;
-        /* CREATE - attrs passed as JSON String*/
-        User local = newUser("createAndReadTest_1 (attributes as String)", attr);
+        /* CREATE - attrs passed as JSON String; synchronous call (consistent = true) */
+        User local = newUser("createAndReadTest_1 (attributes as String)", attr, true);
 
         /* READ 1 params */
         User fetched = test.read(local.getUserId());
@@ -278,10 +278,13 @@ public class UsersTest extends ChinoBaseTest {
      * Utility method to create a new User with custom attributes
      *
      */
-    private User newUser(String testName, UserSchemaStructureSample customAttrs) throws IOException, ChinoApiException {
+    private User newUser(String testName, UserSchemaStructureSample customAttrs, boolean consistent) throws IOException, ChinoApiException {
         String attrs = new ObjectMapper().writeValueAsString(customAttrs);
         String username = testName.trim().split(" ")[0];
-        return test.create(username + "_user@test.chino.io", TestConstants.PASSWORD, attrs, userSchema.getUserSchemaId());
+        if (consistent)
+            return test.create(username + "_user@test.chino.io", TestConstants.PASSWORD, attrs, userSchema.getUserSchemaId(), consistent);
+        else
+            return test.create(username + "_user@test.chino.io", TestConstants.PASSWORD, attrs, userSchema.getUserSchemaId());
     }
 
     /**
@@ -291,6 +294,6 @@ public class UsersTest extends ChinoBaseTest {
     private User newUser(String testName) throws IOException, ChinoApiException {
         UserSchemaStructureSample userAttributes = new UserSchemaStructureSample(testName);
 
-        return newUser(testName, userAttributes);
+        return newUser(testName, userAttributes, false);
     }
 }

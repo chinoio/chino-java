@@ -238,9 +238,6 @@ public class Auth extends ChinoBaseAPI {
                 .post(formBody)
                 .build();
         Response response = parent.getHttpClient().newCall(request).execute();
-        if (response != null){
-            // TODO remove all
-        }
         return parseTokensAndUpdateAuth(response);
     }
 
@@ -310,7 +307,7 @@ public class Auth extends ChinoBaseAPI {
 
         String body = response.body().string();
         if (response.code() == 200) {
-            return "success";
+            return SUCCESS_MSG;
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }

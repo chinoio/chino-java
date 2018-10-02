@@ -27,10 +27,7 @@ public final class DocumentsSearch extends AbstractSearchClient<GetDocumentsResp
                 "/search/documents/" + resourceID,
                 mapper.readValue(JSONquery, JsonNode.class)
         );
-        if (response != null)
-            return mapper.convertValue(response, GetDocumentsResponse.class);
-
-        return null;
+        return mapper.convertValue(response, GetDocumentsResponse.class);
     }
 
     @Override

@@ -7,12 +7,17 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 import java.util.List;
 
+/**
+ * This class has been deprecated and will probably be removed in future versions.
+ * Please use class {@link PermissionSetter} to handle permissions.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "authorize",
         "manage",
         "created_document"
 })
+@Deprecated
 public class PermissionRuleCreatedDocument extends PermissionRule {
 
     public PermissionRuleCreatedDocument() {
@@ -70,3 +75,5 @@ public class PermissionRuleCreatedDocument extends PermissionRule {
         return s;
     }
 }
+
+

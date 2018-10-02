@@ -24,6 +24,9 @@ import java.util.List;
 
 public class ChinoBaseAPI {
 
+
+    public final static String SUCCESS_MSG = "success";
+
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
     private final ChinoAPI parent;
@@ -228,14 +231,18 @@ public class ChinoBaseAPI {
 
     /**
      * The function used by Blob class to make a PUT call to upload the chunks
+     *
      * @param path the path of the URL
      * @param resource the byte array of the chunk which needs to be uploaded
      * @param offset the offset value in the request
      * @param length the length value in the request
-     * @return JsonNode Object with the response of the server if there are no errors
+     *
+     * @return JsonNode Object with the response of the server (if there are no errors)
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
+    // TODO add all updatePartial methods to classes in io.chino.java
     public JsonNode putResource(String path, byte[] resource, int offset, int length) throws IOException, ChinoApiException {
         RequestBody requestBody = RequestBody.create(OCTET_STREAM, resource);
 
@@ -272,7 +279,7 @@ public class ChinoBaseAPI {
         Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
-            return "success";
+            return SUCCESS_MSG;
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }

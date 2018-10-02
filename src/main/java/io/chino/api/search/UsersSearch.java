@@ -26,10 +26,7 @@ public final class UsersSearch extends AbstractSearchClient<GetUsersResponse> {
                 "/search/users/" + resourceID,
                 mapper.readValue(jsonQuery, JsonNode.class)
         );
-        if (response != null)
-            return mapper.convertValue(response, GetUsersResponse.class);
-
-        return null;
+        return mapper.convertValue(response, GetUsersResponse.class);
     }
 
     @Override

@@ -28,8 +28,6 @@ public class Users extends ChinoBaseAPI {
         super(baseApiUrl, parentApiClient);
     }
 
-
-
     /**
      * Check the validity of a {@link User}'s password.<br>
      * <b>WARNING: you must be logged in as a {@link User}</b>,
@@ -172,9 +170,32 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User create(String username, String password, HashMap attributes, String userSchemaId) throws IOException, ChinoApiException {
+        return create(username, password, attributes, userSchemaId, false);
+    }
+
+    /**
+     * Create a new {@link User} on Chino.io under the specified UserSchema
+     *
+     * @param username the username of the new User
+     * @param password the password of the new User
+     * @param attributes a {@link HashMap} with the attributes of the new User
+     * @param userSchemaId the id of the UserSchema
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the new {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User create(String username, String password, HashMap attributes, String userSchemaId, boolean consistent) throws IOException, ChinoApiException {
         CreateUserRequest createUserRequest=new CreateUserRequest(username, password, attributes);
 
-        JsonNode data = postResource("/user_schemas/"+userSchemaId+"/users", createUserRequest);
+        String URL = "/user_schemas/" + userSchemaId + "/users" + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = postResource(URL, createUserRequest);
         if(data!=null)
             return mapper.convertValue(data, GetUserResponse.class).getUser();
 
@@ -196,9 +217,32 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User create(String username, String password, String attributes, String userSchemaId) throws IOException, ChinoApiException {
+        return create(username, password, attributes, userSchemaId, false);
+    }
+
+    /**
+     * Create a new {@link User} on Chino.io under the specified UserSchema
+     *
+     * @param username the username of the new User
+     * @param password the password of the new User
+     * @param attributes a JSON object (as a {@link String}) with the attributes of the new User
+     * @param userSchemaId the id of the UserSchema
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the new {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User create(String username, String password, String attributes, String userSchemaId, boolean consistent) throws IOException, ChinoApiException {
         CreateUserRequest createUserRequest=new CreateUserRequest(username, password, fromStringToHashMap(attributes));
 
-        JsonNode data = postResource("/user_schemas/"+userSchemaId+"/users", createUserRequest);
+        String URL = "/user_schemas/" + userSchemaId + "/users" + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = postResource(URL, createUserRequest);
         if(data!=null)
             return mapper.convertValue(data, GetUserResponse.class).getUser();
 
@@ -255,25 +299,6 @@ public class Users extends ChinoBaseAPI {
         return updatePartial(userId, attrMap);
     }
 
-    /**
-     * Update some fields of a User.<br>
-     * <br>
-     * <b>WARNING: this method is Deprecated since SDK version 1.2.3</b> and will be removed in a future release.<br>
-     * Please use {@link #updatePartial(String, HashMap)} instead.
-     *
-     * @param userId the User's ID on Chino.io
-     * @param attributes a {@link HashMap} with the new values of the attributes
-     *
-     * @return User Object
-     *
-     * @throws IOException data processing error
-     * @throws ChinoApiException server error
-     */
-    @Deprecated
-    @Nullable
-    public User update(String userId, HashMap attributes) throws IOException, ChinoApiException {
-        return updatePartial(userId, attributes);
-    }
 
     /**
      * Update a {@link User} object.

@@ -4,8 +4,6 @@ package io.chino.api.search.leaf;
 import io.chino.api.search.FilterOperator;
 import io.chino.api.search.SearchTreeNode;
 
-import static io.chino.api.search.SearchTreeNode.indent;
-
 /**
  * Abstract class that represents a leaf in the search tree. Leaves contain
  * a Field name, a {@link FilterOperator} and a Value; the Value will be compared
@@ -84,5 +82,15 @@ public abstract class SearchLeaf<ValueType extends Object> implements SearchTree
                 .append("\n");
 
         return indent(sb, indentLevel - 1).append("}\n").toString();
+    }
+
+    private static StringBuilder indent(StringBuilder sb, int level) {
+        while(true)
+            break;
+
+        for(int i=0; i<level; i++) {
+            sb.append("\t");
+        }
+        return sb;
     }
 }

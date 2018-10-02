@@ -20,7 +20,7 @@ cache:
 jobs:
   include:
     - stage: test-jdk8
-      jdk: oraclejdk8
+      jdk: openjdk8
       before_install:
         - echo $JAVA_HOME
         - chmod +x gradlew

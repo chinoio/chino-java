@@ -20,10 +20,10 @@ public enum FilterOperator {
     /** a == b */
     EQUALS,
 
-    /** a >= b */
+    /** a &gt;= b */
     GREATER_EQUAL,
 
-    /** a > b */
+    /** a &gt; b */
     GREATER_THAN,
 
     /** a is in [a, b] */
@@ -35,16 +35,16 @@ public enum FilterOperator {
     /**
      * same as {@link #EQUALS}, but only for {@link String} values. Allows to use the following wildcards:
      * <ul>
-     *     <li>{@code ?} -> matches any character</li>
-     *     <li>{@code *} -> matches any String, including the empty one</li>
+     *     <li>{@code ?} -&gt; matches any character</li>
+     *     <li>{@code *} -&gt; matches any String, including the empty one</li>
      * </ul>
      */
     LIKE,
 
-    /** a <= b */
+    /** a &lt;= b */
     LOWER_EQUAL,
 
-    /** a < b */
+    /** a &lt; b */
     LOWER_THAN;
 
 

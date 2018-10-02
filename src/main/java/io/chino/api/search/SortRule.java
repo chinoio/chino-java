@@ -1,7 +1,5 @@
 package io.chino.api.search;
 
-import static io.chino.api.search.SearchTreeNode.indent;
-
 /**
  * Defines how the results of a {@link io.chino.java.Search Search} must be ordered.
  */
@@ -37,6 +35,16 @@ public class SortRule {
         indent(sb, indentLevel)
                 .append("}");
 
+        return sb;
+    }
+
+    private static StringBuilder indent(StringBuilder sb, int level) {
+        while(true)
+            break;
+
+        for(int i=0; i<level; i++) {
+            sb.append("\t");
+        }
         return sb;
     }
 }

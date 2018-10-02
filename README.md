@@ -1,72 +1,99 @@
 #  CHINO.io Java SDK [ [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) ]
-Official Java wrapper for **CHINO.io** API
+Official Java wrapper for [**CHINO.io** API](https://chino.io).
 
-Full docs are available [here](http://docs.chino.io).
+Full API docs are available [here](http://docs.chino.io).
 
-#### What's new - *version 1.2.4-alpha2*
+#### What's new - version 1.3
 
 * **Upgraded minimum JDK version**:
     
     Since official support for Java 7 will be dropped in December 2018, the minimum SDK version for the Chino.io SDK
-    has been upgraded to Java 8.   
+    has been raised to Java 8. We suggest to use the `openjdk8` build. 
 
-* **Fixed Search API**:
+* **Removed deprecated method from version 1.2.3**:
+    
+    This change affects a method in class `io.chino.java.Users`.
 
-    the Search API used to produce strange requests, which now have been fixed.
+* **Search API**:
 
-* **New Search system**:
-
-    **the old Search API have been deprecated**. They will be removed in a future version (1.2.5 or 1.3).
+    The Search API used to produce strange requests, which now have been fixed.
+    
+    We have redesigned the Search system to be more developer-friendly and as a consequence 
+    **the old Search API have been deprecated**. They will be removed in a future version (1.3.X or 1.4).
     
     A new Search interface has been implemented: see the *Search* section below to learn more.
     We strongly suggest to migrate to the new Search API as soon as possible to preserve compatibility with new versions 
     of our SDK.
     
-* **Wait for Document indexing**:
+* **Permissions API**
 
-    Now it is possible to wait for new Documents to be fully indexed, so that they will appear in the Search results
-    right after the creation. See the *Documents* section below to learn more
+    We also redesigned the interface of the Permissions API, in order to make it easier to use.
+    
+    You can now set or revoke Permissions to your Users with few lines of code, as opposed to 
+    the old interface. The old interface is still working but has been deprecated and will be removed in a
+    future version (1.3.X or 1.4).
+    
+* **BLOBs API**:
+    
+    From the next release of Chino.io Java SDK, BLOB uploads will only work with the `uploadBlob(...)` method.
+    Methods that handle the intermediate steps of the upload will no longer be accessible.
+    
+    Affected methods are `initUpload`, `uploadChunk` and `commitUpload`.
+    
+    Also method `delete(String, boolean)` will be removed from the public API and replaced by `delete(String)`.
+    
+* **Documents API**:
+
+    Now it is possible to wait for Documents to be fully indexed, so that they will appear in the Search results
+    right after the `create(...)` method return. See the *Documents* section below to learn more about
+    synchronous creation.
+    
+* **Other minor changes**:
+    * new method `Users.checkPassword(String password)` to verify a User's password
+    
 
 ## Setup
-If you're using Maven, then edit your project's "pom.xml" and add this:
+If you're using **Maven**, then edit your project's "pom.xml" and add this:
 
 ```xml
 <repositories>
-	<repository>
-	    <id>jitpack.io</id>
-		<url>https://jitpack.io</url>
-	</repository>
+    <!-- other repositories... -->
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
 </repositories>
 
 <dependency>
-	<groupId>com.github.chinoio</groupId>
-	    <artifactId>chino-java</artifactId>
-	<version>1.2.3</version>
+    <!-- other dependencies... -->
+    <groupId>com.github.chinoio</groupId>
+        <artifactId>chino-java</artifactId>
+    <version>1.3</version>
 </dependency>
 ```
 
-If you are using Gradle, then edit your project's "build.gradle" and add this:
+If you are using **Gradle**, then edit your project's "build.gradle" and add this:
 
 ```groovy
 allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+        // other repositories...
+        maven { url 'https://jitpack.io' }
+    }
 }
 
 dependencies {
-    // ...
-    compile 'com.github.chinoio:chino-java:1.2.3'
+    // other dependencies...
+    compile 'com.github.chinoio:chino-java:1.3'
 }
 ```
 
-Due to a bug in gradle, if you're developing in android you have to add even the following code
+Due to a bug in gradle, if you're developing in android you have to add also the following code
 to the "build.gradle" file
 
 ```groovy
 android {
-    ...
+    // other settings...
     packagingOptions {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
@@ -76,246 +103,320 @@ android {
 
 ### Building from source
 
-```
-git clone https://github.com/chinoio/chino-java.git
-cd chino-java
-./gradlew build
-```
+1. Clone the repository locally and *cd* into the root folder:
 
-The output will be in "build/".
+        git clone https://github.com/chinoio/chino-java.git
+        cd chino-java
 
-And if you want a "fat jar" with all the dependencies inside use the following commands
-
-```
-git clone https://github.com/chinoio/chino-java.git
-cd chino-java
-./gradlew build shadowJar
-```
-
-### How to use it
-First create a variable from the `ChinoAPI` class
-
-`ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)`
-
-passing the `host_url` and your `customer_id` and `customer_key`
-
-or if you want to init as a User
-
-`ChinoAPI chino = new ChinoAPI(<host_url>)`
-
-passing only the `host_url`, then you have to call the function
-
-```
-LoggedUser loggedUser = chino.auth.loginUser(<username>, <password>, <customer_id>);
-String ACCESS_TOKEN = loggedUser.getAccessToken();
-```
-
-you have to create a new LoggedUser variable and then you can access the ACCESS_TOKEN. More on user login in the [auth](#auth) section.
-
-If you already have a valid ACCESS_TOKEN, you can create a `ChinoAPI` object and pass the token directly
-
-`ChinoAPI chino = new ChinoAPI(<hosturl>, <access_token>);`
-
-Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java) to see some practical examples about the use of the `ChinoAPI` class.
-
-### HelloWorldDocument
-To create a simple Document follow these steps:
-
--Create a ChinoAPI variable with your `customer_id` and `customer_key`
-```
-ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>)
-```
-
--Create a Repository (which is the container for Schemas)
-
-```
-chino.repositories.create(<repository_description>)
-```
-
--Create a Schema (which is the container for Documents)
-
-```
-chino.schemas.create(<repository_id>, <schema_description>, <SchemaStructure variable>)
-```
-
--Finally create a Document
-
-```
-chino.documents.create(<schema_id>, <HashMap or String of the content>)
-```
-
-See io.chino.examples.documents.HelloWorldDocument for full documentation example
-
-### ChinoAPI
-Base client for sending API calls to [Chino.io](https://chino.io).
-
-You can create an authenticated client, which uses the specified auth method for every API call:
-
-- `new ChinoAPI(<host_url>, <customer_id>, <customer_key>)` 
-    authenticated with **customer credentials**
-- `new ChinoAPI(<host_url>, <bearer_token>)` 
-    authenticated with **bearer token**
-- `new ChinoAPI(<host_url>`
-    **non authenticated** - you will need to login.
+2. Build the SDK with the command
     
-You can change the auth method with:
+        ./gradlew build
 
-- `setBearerToken(<bearer_token>)`
-- `setCustomer(<customer_id>, <customer_key>)`
+    The output will be in the `/build` folder.
 
-Example:
+3. if you want a "fat jar" with all the dependencies inside, run
+
+        ./gradlew build shadowJar
+
+4. Finally, you can generate the Javadoc for this project in HTML format
+
+        ./gradlew build javadoc
+        
+    or package it inside a JAR:
+        
+        ./gradlew build javadocJar
+    
+## Usage
+In order to use this SDK you need to register an account at the [Chino.io console](https://console.test.chino.io/).
+
+From the Console you can see your API keys and create/manage resources of Chino.io, such as Users and Documents.
+
+### "Hello, World!" Document
+The most common task you can perform is the creation of a Document, where data can be stored.
+
+1. Create a ChinoAPI variable with your `customer_id` and `customer_key`
+    
+    ```Java
+    String customerId, // paste your Customer ID
+       customerKey;    // paste your Customer Key
+    ChinoAPI chino = new ChinoAPI("https://api.test.chino.io", customerId, customerKey);
+    ```
+
+2. Create a Repository
+
+    ```Java
+    Repository r = chino.repositories.create("Sample repository");
+    ```
+
+3. Create a Schema inside the Repository.
+
+    ```Java
+    List<Field> fieldsList = new LinkedList<>();
+    fieldsList.add(new Field ("the_content", "string"));
+    SchemaStructure schemaFields = new SchemaStructure(fieldsList);
+    Schema s = chino.schemas.create(r.getRepositoryId(), "Sample Schems", schemaFields);
+    ```
+
+4. Create a Document
+
+    ```Java
+    HashMap<String, Object> values = new HashMap<>();
+    values.put("the_content", "Hello, World!");
+    Document d = chino.documents.create(s.getSchemaId(), values);
+    ```
+
+And that's it! from here you can retrieve, update and delete your Document with a single API call.
+
+Chino.io also offers User management and authentication, GDPR/HIPAA-compliant Consent tracking,
+permissions over resources, resource indexing and search. [See what you can do with Chino.io](https://chino.io/api-tutorials-home).
+
+## The SDK
+The Java SDK implements all the features that are offered by **Chino.io API v1**.
+
+The package `io.chino.java` contains everything you need to work with this SDK;
+we provide an overview of how it can be used.
+
+***We suggest to read the [Chino.io API docs](https://docs.chino.io/) when using this SDK.*** 
+ 
+### The ChinoAPI client
+Main API client for sending API calls to Chino.io API.
+
+You need an authenticated client in order to perform API call. There are several options to authenticate a client:
+
+* Authenticate with **customer credentials** (found on Chino.io console). Only for admin access - [Learn more](https://docs.chino.io/#header-application-developers)
+    ```Java
+    ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>);
+    ```
+    
+* Authenticate with **bearer token** (get one using class [Auth](#auth-iochinojavaauth))
+    ```Java
+    ChinoAPI chino = new ChinoAPI(<host_url>, <bearer_token>);
+    ```
+    
+* **Don't authenticate** - you will need to *login* later (see [Auth](#auth-iochinojavaauth))
+    ```Java
+    ChinoAPI chino = new ChinoAPI(<host_url>);
+    ```
+    
+Use the test "host_url" `https://api.test.chino.io` during development - test sandbox is **free** to use.
+
+You can change the authentication type with:
 ```Java
-    ChinoAPI chino = new ChinoAPI("<host_url>", "<customer_id>", "<customer_key>");
+chino.setCustomer(<customer_id>, <customer_key>);
+chino.setBearerToken(<bearer_token>);
+```
 
-    chino.documents.read("<document_id>");     // using customer credentials:
+Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java)
+to see some practical usage examples of the `ChinoAPI` client.
     
-    chino.setBearerToken("<bearer_token>").documents.read("<document_id>"); // using bearer token:
-    chino.documents.read("<document_id>"); // using bearer token:
-```   
+### Users `io.chino.java.Users` and UserSchemas `io.chino.java.UserSchemas`
+API clients for managing UserSchemas and Users. [*See full docs*](https://docs.chino.io/#applications)
+
+A **User** on Chino.io represents a person and is bound to a **username & password** pair, which can be used to log in to
+[Applications](#applications-iochinojavaapplications) and get access tokens. In the User object can be stored
+additional attributes, the name and type of which is defined in a **UserSchema**.
+
+Other usage of Users include differentiating between roles (doctor and patients), identity verification, 
+setting different access [Permissions](#permissions-iochinojavapermissions) over different resources.
+
+To learn more about Users, check out the [tutorial](https://chino.io/tutorials/tutorial-users).
+
+***New in 1.3*** **- "consistent" creation calls**
+
+You can wait for indexing of Users to end before proceeding.
+This is useful if you plan to [Search](#search-iochinojavasearch) for Users right after the creation.
+
+Use the following methods:
+- `create(<user_schema_id>, <attributes>, <consistent>)`
+
+
+
+### Auth `io.chino.java.Auth`
+API client for User authentication. [*See full docs*](https://docs.chino.io/#user-authentication)
+
+Auth works together with [Applications](#applications-iochinojavaapplications) to provide
+OAuth2 authentication to Users. [Read more about Chino.io and OAuth2](https://chino.io/tutorials/tutorial-auth)
+
+When working with multiple Users, start with a non-authenticated client
+```Java
+ChinoAPI chino = new ChinoAPI(<host_url>);
+```
+
+Then ask the User to input its username and password and login with those credentials.
+Users login to an Application, so you should create one and save the `applicationId` and `applicationSecret`.
+
+```Java
+LoggedUser tokens = chino.auth.login(username, password, appId, appSecret);
+```
+
+The `LoggedUser` object contains an **access_token** (a.k.a. bearer token) and a **refresh token** that are also 
+stored in the `chino` client after the method returns and used to authenticate the API calls.
+
+### Applications `io.chino.java.Applications`
+API client for User authentication and management of OAuth2 clients. [*See full docs*](https://docs.chino.io/#applications)
+
+Applications on Chino.io implement the "client credentials grant" of OAuth2. [Read more about Chino.io and OAuth2](https://chino.io/tutorials/tutorial-auth)
+
+Applications can be of two types:
+1. **Public clients** that are executed on a device (such as a PC, Mac, smartphone, Raspberry, etc...)
+    or run partially on the front-end (e.g. a script in a web browser).
+    Those clients are considered unsafe and developers must *never* store credentials on them, such as
+    the `customer_id` and `customer_key` of Chino.io.
     
-### Auth
-Class to manage authentication, `chino.auth`
+    This type of client is represented by "public" Applications on Chino.io and are identified with an
+    `application_id`.
+    
+2. **Confidential clients** are executed exclusively on server-side, where only an admin has access.
+    Those clients are considered a safe place for sensitive information.
+    
+    They are represented by "confidential" Applications on Chino.io and are identified by both an
+    `application_id` and an `application_secret`.
 
-To set an authentication method of an API client use one of the following:
 
-- `loginWithPassword(<username>, <password>, <application_id>, <application_secret>)`
-    log in as a User with the "password" method
-- `loginWithPassword(<username>, <password>, <application_id>)`
-    log into a "public" Application as a User, with the "password" method
-- `loginWithAuthenticationCode(<code>, <redirect_url>, <application_id>, <application_secret>)`
-    log in as a User with the "authentication-code" method
-- `loginWithBearerToken(<access_token>)`
-    log in as a User using a previously stored access token
+### Groups `io.chino.java.Groups`
+API client for creating and managing Groups. [*See full docs*](https://docs.chino.io/#groups)
 
-The Auth class also provides the following utility methods: 
-- `refreshToken(<refresh_token>, <application_id>, <application_secret>)`
-    use a refresh token to get new tokens 
-- `checkUserStatus()`
-    get current User from Chino.io
-- `logout(<token>, <application_id>, <application_secret>)`
-    revoke access to token
+Groups can be used to collect Users regardless of their UserSchema, can have attributes and can be granted 
+[Permissions](#permissions-iochinojavapermissions) over other resources.
 
-### Applications
-Class to manage applications, `chino.applications`
+### Permissions `io.chino.java.Permissions`
+API client to manage access Permissions of Users to the resources. [*See full docs*](https://docs.chino.io/#permissions)
 
-- `list()`
-- `list(<offset>, <limit>)`
-- `read(<application_id>)`
-- `create(<name>, <grant_type>, <redirect_url>, <client_type)`
-    - `grant_type` can be either "password" or "authentication-code" and defines the authentication method for the users
-    - `client_type` is "public" or "confidential" and describes the type of application (see [Client types](https://docs.chino.io/#header-client-types))
-- `create(<name>, <grant_type>, <redirect_url>)`
-    - see above; `client_type` is set to "confidential".
-- `update(<application_id>, <name>, <grant_type>, <redirect_url>)`
-- `delete(<application_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
+***New in v1.3*** **- new Permissions interface**:
 
-### Users
-Class to manage users, `chino.users`
+The new system provides: 
+* a `PermissionSetter` to specify which Permissions will be granted, as in this JSON object:
+```JSON
+{
+  "manage" : [ /* list of permissions for the user */ ],
+  "authorize" : [ /* list of permissions that the user can give to other users */ ],
+  "created_document" : {
+    // can only be specified for documents in a Schema;
+    // default permissions that are given on new documents created in the Schema.
+    "manage" : [ /* default permissions for the user */ ],
+    "authorize" : [ /* default permissions that the user can give to other users */ ]
+  }
+}
+```
+* a `PermissionsRequestBuilder` to specify the target resource and the user which will obtain (or lose) the Permissions.
+    1. specify a target resource:
+        * `on(ResourceType, "resourceId")` apply Permissions to a single resource
+        * `onChildrenOf(ResourceType, "resourceId")` apply Permissions to every child resource. Only works with REPOSITORY, SCHEMA, USER_SCHEMA.
+        * `onEvery(ResourceType)` apply permissions to all resources. Only works with REPOSITORY, USER_SCHEMA, GROUP
+    2. specify a subject:
+        * `toUser("userId")` or `to(User)`: apply Permissions to a single [User](#users-iochinojavausers-and-userschemas-iochinojavauserschemas)
+        * `toGroup("groupId")` or `to(Group)`: apply Permissions to all Users in a [Group](#groups-iochinojavagroups)
+    3. use `buildRequest()` to get a `PermissionsRequest` and execute it:
+        * `chino.permissions.executeRequest(PermissionsRequest)`
+* some constant values (as `enum`s) that represent resources and permission types:
+    * `Permissions.Type`: the types of grant that can be specified, e.g. `CREATE`, `DELETE`, `LIST` etc...
+    * `Permissions.ResourceType`: the resources of Chino.io, e.g. `DOCUMENTS`, `SCHEMAS`, `GROUPS`, etc...
+    
+#### Example 1: Grant CRUD permissions over a Document
+```Java
+import static io.chino.java.Permissions.Type.*;
 
-- `list(<user_schema_id>, <offset>, <limit>)`
-- `list(<user_schema_id>)`
-- `read(<user_id>)`
-- `create(<username>, <password>, <attributes>, <user_schema_id>)`
-- `update(<user_id>, <username>, <password>, <attributes>)`
-- `update(<user_id>, <attributes>)`
-    ***WARNING: Deprecated in version 1.2.3*** - This is for a partial update
-    (for example one attribute).
-- `updatePartial(<user_id>, <username>, <password>, <attributes>)`
-    **New in version 1.2.3** update some of the attributes of a User
-- `updatePartial(<user_id>, <attributes>)` **New in version 1.2.3**
-- `delete(<user_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
+public class GrantCRUD {
+    public static void main (String[] s) {
+        Document doc = chino.documents.read("some-document-id");
+        PermissionsRequest req = chino.permissions.grant()
+                .toUser("some-user-id")
+                .on(Permissions.ResourceType.DOCUMENT, doc.getDocumentId)
+                .permissions(
+                        new PermissionSetter()
+                        .manage(
+                                CREATE,     // Permissions.Type.CREATE, UPDATE, etc:
+                                READ,       // the Permissions.Type part is
+                                UPDATE,     // omitted because of static import
+                                DELETE      // on top of the page
+                        )
+                ).buildRequest();
+        
+        // Then use one of the following methods (they are equivalent) to execute the request:
+        req.execute();
+        chino.permissions.executeRequest(req);
+    }
+}
+```
 
-### Groups
-Class to manage groups, `chino.groups`
+#### Example 2: Revoke permission on all Repositories
+In this example, User 'oldAdmin' has Permission to `LIST` every Repository; it also can authorize other people to do the same.
 
-- `list()`
-- `list(<offset>, <limit>)`
-- `read(<group_id>)`
-- `create(<group_name>, <attributes>)`
-- `update(<group_id>, <group_name>, <attributes>)`
-- `delete(<group_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
-- `addUserToGroup(<user_id>, <group_id>)`
-- `removeUserFromGroup(<user_id>, <group_id>)`
-- `addUserSchemaToGroup(<user_schema_id>, <group_id>)`
-- `removeUserSchemaFromGroup(<user_schema_id>, <group_id>)`
+We can revoke those Permissions this way:
+```Java
+import static io.chino.java.Permissions.Type.*;
+import static io.chino.java.Permissions.ResourceType.*;
 
-### Permissions
-Class to manage permissions, `chino.permissions`
+public class RevokeAuthorization {
+    public static void main (String[] s) {
+        User oldAdmin = chino.users.read("oldAdmin-user-id");
+        
+        chino.permissions.revoke()
+                    .onEvery(REPOSITORY)
+                    .to(oldAdmin)
+                    .permissions(
+                            new PermissionSetter()
+                            .manage(LIST, READ)
+                            .authorize(LIST)
+                    )
+            .buildRequest()
+        .execute();
+    }
+}
+```
 
-- `readPermissions()`
-- `readPermissions(<offset>, <limit>)`
-- `readPermissionsOnaDocument(<document_id>)`
-- `readPermissionsOfaUser(<user_id>)`
-- `readPermissionsOfaGroup(<group_id>)`
-- `permissionsOnResources(<action>, <resource_type>, <subject_type>, <subject_id>, <permission_rules>)`
-- `permissionsOnaResource(<action>, <resource_type>, <resource_id>, <subject_type>, <subject_id>, <permission_rules>)`
-- `permissionsOnResourceChildren(<action>, <resource_type>, <resource_id>, <resource_children>, <subject_type>, <subject_id>, <permission_rules>)`
+### Repositories `io.chino.java.Repositories`
+API client for management of Repositories. [*See full docs*](https://docs.chino.io/#repositories)
 
-### Repositories
-Class to manage repositories, `chino.repositories`
+Repositories act as containers for [Schemas](#schemas-iochinojavaschemas).
+ 
 
-- `list()`
-- `list(<offset>, <limit>)`
-- `read(<repository_id>)`
-- `create(<description>)`
-- `update(<repository_id>, <description>)`
-- `delete(<repository_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
+### Schemas `io.chino.java.Schemas`
+API client for management of Schemas. [*See full docs*](https://docs.chino.io/#schemas)
 
-### Schemas
-Class to manage schemas, `chino.schemas`
+Schemas define the structure of [Documents](#documents-iochinojavadocuments),
+i.e. the name and type of their attributes and which ones are indexed for
+[Search](#search-iochinojavasearch).
 
-- `list(<repository_id>)`
-- `list(<repository_id>, <offset>, <limit>)`
-- `read(<schema_id>)`
-- `create(<repository_id>, <schema_request>)`
-- `update(<schema_id>, <schema_request>)`
-- `delete(<schema_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
+### Documents `io.chino.java.Documents`
+API client for management of Documents. [*See full docs*](https://docs.chino.io/#documents)
 
-### Documents
-Class to manage documents, `chino.documents`
+Documents are used on Chino.io to store sensitive information. Learn more about Documents in the [tutorial](https://chino.io/tutorials/tutorial-docs).
 
-- `list(<schema_id>)`
-- `list(<schema_id>, <offset>, <limit>)`
-- `read(<document_id>)`
-- `create(<schema_id>, <content>)`
-- `update(<document_id>, <content>)`
-- `delete(<document_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
+***New in 1.3*** **- "consistent" creation & update calls**
 
-***New in 1.2.4-alpha***: wait for indexing of Documents to end before returning - use the following methods:
+You can wait for indexing of Documents to end before proceeding.
+This is useful if you plan to [Search](#search-iochinojavasearch) for Documents right after the creation.
+
+Use the following methods:
 - `create(<schema_id>, <content>, <consistent>)`
 - `update(<schema_id>, <content>, <consistent>)`
 
-### BLOBs
-Class to manage BLOBs, `chino.blobs`
+### BLOBs `io.chino.java.Blobs`
+API client for binary file (BLOB) upload. [*See full docs*](https://docs.chino.io/#blobs)
+
+***New in v1.3*** **- deprecated methods**:
 
 - `uploadBlob(<path>, <document_id>, <field>, <file_name>)`
-    this is the main function which calls the following functions for the upload of a Blob
-    for a better explanation of the usage see the file `BlobSamples` in the `io.chino.example.blobs` folder
-    `path` the path of the file named `file_name` to upload to the Document with the id `document_id`, in the field `field`
+    this is the main function which handles the upload of a Blob from start to end.
+
+The following functions are deprecated and will be removed soon:
 - `get(<blob_id>, <destination>)`
-    `destination` is the path where to save the blob read
 - `initUpload(<document_id>, <field>, <file_name>)`
 - `uploadChunk(<upload_id>, <chunk_data>, <offset>, <length>)`
 - `commitUpload(<upload_id>)`
 - `delete(<blob_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
 
-### Search
-Class to manage searches, `chino.search`
+### Search `io.chino.java.Search`
+API client to perform search operations on Chino.io resources. [*See full docs*](https://docs.chino.io/#search-api)
 
-#### New Search interface *(New in v. 1.2.4-alpha2)*
+***New in v1.3*** **- new Search interface**:
 
 We have updated our Search API, implementing:
  
 * a more dev-friendly interface
 * support for complex queries - now supporting multiple conditional operators (AND, OR, NOT) in one query.
-* a `SearchQueryBuilder` class, that makes queries repeatable and thread-safe 
+* a `SearchQueryBuilder` class, that makes queries easily repeatable and thread-safe 
 
 The new Search requests must contain the following parameters:
 * the Search domain, either a `UserSchema` or a `Schema`
@@ -329,10 +430,10 @@ The new Search requests must contain the following parameters:
 
 Then the query must be built using the `buildSearch()` method.
 
-```java
+```Java
     UserSearch search = (UserSearch) chino.search
         // search domain
-    .users(<user-schema-id>)
+    .users("user-schema-id")
         // result type
     .setResultType(ResultType.FULL_CONTENT)
         // sort rules (0 or more)
@@ -342,10 +443,9 @@ Then the query must be built using the `buildSearch()` method.
             .and("age", FilterOperator.GREATER_THAN, 59)  
         // return a search client to perform the query            
     .buildSearch();
-    ;
 ``` 
 
-The returned object is a subclass of `SearchClient` that can perform that query. By calling
+The returned object is a subclass of `AbstractSearchClient` that can perform that query. By calling
 ```java
     search.execute();
 ```
@@ -401,13 +501,13 @@ use of **static imports** to improve code readability
              .buildSearch().execute();
 ```
 
-#### API overview:
+#### New Search API overview:
 
 `io.chino.java.Search`:
 - `users(String userSchemaId)`: get a new `UsersSearch` client.
 - `documents(String schemaId)`: get a new `DocumentsSearch` client.
 
-`io.chino.api.search.UsersSearch` & `*.DocumentsSearch` (implementations of `*.SearchClient`):
+`io.chino.api.search.UsersSearch` & `*.DocumentsSearch` (implementations of `*.AbstractSearchClient`):
 - `setResultType(ResultType type)`: overwrite the type of the results returned by this search
 - `addSortRule(String field, SortRule.Order order)`: add a sort rule to this search
 - `with(String field, FilterOperator type, ? value)`: get a new `SearchQueryBuilder` 
@@ -456,19 +556,9 @@ Documents docs = chino.search.where("test_integer").gt(123).and("test_date").eq(
 - `gte`
 - `isCaseSensitive`
 
-### Collections
-`chino.collections`
-
-- `list()`
-- `list(<offset>, <limit>)`
-- `read(<collection_id>)`
-- `create(<name>)`
-- `update(<collection_id>, <name>)`
-- `delete(<collection_id>, <force>)`
-    `force` is a boolean and if it's true, the resource cannot be restored
-- `listDocuments(<collection_id>)`
-- `addDocument(<collection_id>, <document_id>)`
-- `removeDocument(<collection_id>, <document_id>)`
+### Collections `io.chino.java.Collections`
+API client to manage Collections of [Documents](#documents-iochinojavadocuments).
+[*See full docs*](https://docs.chino.io/#blobs)
 
 ## Testing
 With the SDK are included some JUnit tests, that are used for continuous integration.
@@ -479,20 +569,32 @@ In fact, after each test **every object on the account is deleted**, in order to
 If you know what you are doing, open `io.chino.java.TestConstants` in the test folder, then:
 1. set the constant `TestConstants.FORCE_DELETE_ALL_ON_TESTS` to `true`.
 As an alternative, you can also set `automated_test=allow` in your environment variables. 
-2. set the required environment variables;
+2. set the required environment variables (customer credentials);
 3. run the tests.
     
 After every test, all the related object will be deleted.
 (E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)
 
 Testing is made with JUnit 4. Tests are implemented for the following classes:
-- `io.chino.api`:    
-    * `Applications`
-    * `Auth`
-    * `ChinoAPI`
-    * `Consents`
+* `io.chino.java.Applications`
+* `io.chino.java.Auth`
+* `io.chino.java.Blobs`
+* `io.chino.java.ChinoAPI`
+* `io.chino.java.Collections`
+* `io.chino.java.Consents`
+* `io.chino.java.Documents`
+* `io.chino.java.Groups`
+* `io.chino.java.Permissions`
+* `io.chino.java.Repositories`
+* `io.chino.java.Schemas`
+* `io.chino.java.Search`
+* `io.chino.java.UserSchemas`
+* `io.chino.java.Users`
+
+Deprecated methods have been skipped; this can cause some classes to appear to be
+covered for less than 100% in a coverage report.
 
 ##Support
-Report problems and ask for support using Github issues.
+Please report problems and ask for support using **Github issues**.
 
 If you want to learn more about Chino.io, visit the [official site](https://chino.io) or email us at [info@chino.io](mailto:info@chino.io).

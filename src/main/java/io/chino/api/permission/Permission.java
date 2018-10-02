@@ -4,9 +4,12 @@ package io.chino.api.permission;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.java.Permissions;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Contains information about permissions that are active on a Chino.io resource.
@@ -19,7 +22,7 @@ import java.util.HashMap;
         "resource_type",
         "permission"
 })
-public class Permission {
+public class Permission implements PermissionsContainer {
     @JsonProperty("access")
     private String access;
     @JsonProperty("parent_id")
@@ -112,6 +115,74 @@ public class Permission {
      */
     public HashMap getPermission() {
         return permission;
+    }
+
+    @Override
+    public List<Permissions.Type> getManagePermissions() {
+        LinkedList<Permissions.Type> perms = new LinkedList<>();
+        List<String> stringPerms;
+        if (permission.containsKey("Manage")) {
+            stringPerms = (List<String>) permission.get("Manage");
+            for (String s : stringPerms) {
+                perms.add(
+                        Permissions.Type.fromString(s)
+                );
+            }
+        }
+        return perms;
+    }
+
+    @Override
+    public List<Permissions.Type> getAuthorizePermissions() {
+        LinkedList<Permissions.Type> perms = new LinkedList<>();
+        List<String> stringPerms;
+        if (permission.containsKey("Authorize")) {
+            stringPerms = (List<String>) permission.get("Authorize");
+            for (String s : stringPerms) {
+                perms.add(
+                        Permissions.Type.fromString(s)
+                );
+            }
+        }
+        return perms;
+    }
+
+    @Override
+    public List<Permissions.Type> getManagePermissionsOnCreatedDocuments() {
+        LinkedList<Permissions.Type> perms = new LinkedList<>();
+        HashMap ocd;
+        LinkedList<String> stringPerms;
+        if (permission.containsKey("created_document")) {
+            ocd = (HashMap) permission.get("created_document");
+            if (ocd.containsKey("Manage")) {
+                stringPerms = (LinkedList<String>) ocd.get("Manage");
+                for (String s : stringPerms) {
+                    perms.add(
+                            Permissions.Type.fromString(s)
+                    );
+                }
+            }
+        }
+        return perms;
+    }
+
+    @Override
+    public List<Permissions.Type> getAuthorizePermissionsOnCreatedDocuments() {
+        LinkedList<Permissions.Type> perms = new LinkedList<>();
+        HashMap ocd;
+        LinkedList<String> stringPerms;
+        if (permission.containsKey("created_document")) {
+            ocd = (HashMap) permission.get("created_document");
+            if (ocd.containsKey("Authorize")) {
+                stringPerms = (LinkedList<String>) ocd.get("Authorize");
+                for (String s : stringPerms) {
+                    perms.add(
+                            Permissions.Type.fromString(s)
+                    );
+                }
+            }
+        }
+        return perms;
     }
 
     public void setPermission(HashMap permission) {

@@ -1,13 +1,9 @@
 package io.chino.api.search.leaf;
 
 import io.chino.api.search.FilterOperator;
-import io.chino.api.search.SearchTreeNode;
 
-import java.lang.reflect.Type;
 import java.util.Iterator;
 import java.util.List;
-
-import static io.chino.api.search.SearchTreeNode.indent;
 
 /**
  * {@link SearchLeaf} used to search for values in Arrays.
@@ -39,7 +35,6 @@ public class ArraySearchLeaf<T extends Object> extends SearchLeaf<List<T>> {
         return valuesString.append("]").toString();
     }
 
-    // TODO check that no more value types must be mapped
     private String getValueStringEncoding(T element) {
         if (element == null)
             return "null";

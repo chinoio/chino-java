@@ -171,7 +171,7 @@ public class Collections extends ChinoBaseAPI {
         checkNotNull(collectionId, "collection_id");
         checkNotNull(documentId, "document_id");
         postResource("/collections/"+collectionId+"/documents/"+documentId, null);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
@@ -189,7 +189,7 @@ public class Collections extends ChinoBaseAPI {
         checkNotNull(collectionId, "collection_id");
         checkNotNull(documentId, "document_id");
         deleteResource("/collections/"+collectionId+"/documents/"+documentId, false);
-        return "success";
+        return SUCCESS_MSG;
     }
 
     /**
