@@ -2,9 +2,9 @@ apply plugin: 'java'
 apply plugin: 'maven'
 
 group = 'io.chino.library'
-version = '1.2.4-alpha2'
+version = '1.2.3'
 
-description = """chino-java-library"""
+description = "Java SDK for Chino.io API"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
