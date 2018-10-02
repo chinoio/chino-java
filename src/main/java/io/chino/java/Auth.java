@@ -238,9 +238,6 @@ public class Auth extends ChinoBaseAPI {
                 .post(formBody)
                 .build();
         Response response = parent.getHttpClient().newCall(request).execute();
-        if (response != null){
-            // TODO remove all
-        }
         return parseTokensAndUpdateAuth(response);
     }
 

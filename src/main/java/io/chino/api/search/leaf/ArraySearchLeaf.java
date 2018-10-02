@@ -35,7 +35,6 @@ public class ArraySearchLeaf<T extends Object> extends SearchLeaf<List<T>> {
         return valuesString.append("]").toString();
     }
 
-    // TODO check that no more value types must be mapped
     private String getValueStringEncoding(T element) {
         if (element == null)
             return "null";
