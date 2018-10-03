@@ -53,7 +53,9 @@ Full API docs are available [here](http://docs.chino.io).
     
 
 ## Setup
-If you're using **Maven**, then edit your project's "pom.xml" and add this:
+
+### Build with Maven 
+Edit your project's "pom.xml" and add this:
 
 ```xml
 <repositories>
@@ -72,7 +74,8 @@ If you're using **Maven**, then edit your project's "pom.xml" and add this:
 </dependency>
 ```
 
-If you are using **Gradle**, then edit your project's "build.gradle" and add this:
+### Build with Gradle
+Edit your project's "build.gradle" and add this:
 
 ```groovy
 allprojects {
@@ -101,7 +104,7 @@ android {
 }
 ```
 
-### Building from source
+### Build from source
 
 1. Clone the repository locally and *cd* into the root folder:
 
@@ -118,13 +121,22 @@ android {
 
         ./gradlew build shadowJar
 
-4. Finally, you can generate the Javadoc for this project in HTML format
+4. Finally, you can generate the Javadoc for this project (see below)
+
+        
+## Javadoc
+The Javadoc for this version of the SDK can be obtained:
+
+* from the *Attachments* section of the latest [GitHub Release](https://github.com/chinoio/chino-java/releases), as a JAR archive
+* by executing the Gradle task `javadoc` locally, that will create the HTML files in `build/docs/javadoc`:
 
         ./gradlew build javadoc
         
-    or package it inside a JAR:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-1.3-javadoc.jar`:
         
         ./gradlew build javadocJar
+
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3/javadoc/)
     
 ## Usage
 In order to use this SDK you need to register an account at the [Chino.io console](https://console.test.chino.io/).
