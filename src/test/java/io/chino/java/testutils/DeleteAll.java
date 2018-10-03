@@ -1,6 +1,5 @@
 package io.chino.java.testutils;
 
-import io.chino.java.*;
 import io.chino.api.application.Application;
 import io.chino.api.collection.Collection;
 import io.chino.api.common.ChinoApiException;
@@ -12,6 +11,7 @@ import io.chino.api.repository.Repository;
 import io.chino.api.schema.Schema;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
+import io.chino.java.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -49,25 +49,29 @@ public class DeleteAll {
             for (Consent consent:items) {
                 consentsClient.delete(consent.getConsentId());
             }
-        } else if(apiClient instanceof UserSchemas || apiClient instanceof Users) {
+        } else if(apiClient instanceof UserSchemas || apiClient instanceof Users || apiClient instanceof Permissions) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             UserSchemas userSchemaClient = chino.userSchemas;
             Users userClient = chino.users;
             List<UserSchema> schemasList = userSchemaClient.list().getUserSchemas();
             for (UserSchema userSchema:schemasList) {
                 List<User> usersList = userClient.list(userSchema.getUserSchemaId()).getUsers();
-                for (User user:usersList) {
-                    userClient.delete(user.getUserId(), true);
+                if (apiClient instanceof Users) { // only delete users
+                    for (User user:usersList) {
+                        userClient.delete(user.getUserId(), true);
+                    }
+                } else { // delete users & u. schema
+                    userSchemaClient.delete(userSchema.getUserSchemaId(), true);
                 }
             }
         } else if(apiClient instanceof Repositories || apiClient instanceof Schemas || apiClient instanceof Documents) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             List<Repository> repositories = chino.repositories.list().getRepositories();
-            for(Repository r : repositories){
+            for (Repository r : repositories) {
                 List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
-                for(Schema s : schemas){
+                for (Schema s : schemas) {
                     List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
-                    for(Document d : documents){
+                    for (Document d : documents) {
                         chino.documents.delete(d.getDocumentId(), true);
                     }
                     if (!(apiClient instanceof Documents)) {
@@ -78,7 +82,45 @@ public class DeleteAll {
                     chino.repositories.delete(r.getRepositoryId(), true);
                 }
             }
-        } else if(apiClient instanceof Auth) {
+        } else if(apiClient instanceof Search) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            deleteAll(chino.repositories);
+            deleteAll(chino.userSchemas);
+        } else if(apiClient instanceof Blobs) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            for (Repository r : chino.repositories.list().getRepositories()) {
+                if (r.getDescription().contains("BlobsTest")) {
+                    List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
+                    for (Schema s : schemas) {
+                        List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
+                        for (Document d : documents) {
+                            chino.documents.delete(d.getDocumentId(), true);
+                        }
+                        chino.schemas.delete(s.getSchemaId(), true);
+                    }
+                }
+                chino.repositories.delete(r.getRepositoryId(), true);
+            }
+        } else if (apiClient instanceof Collections) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            deleteAll(chino.repositories);
+            List<Collection> collections = chino.collections.list().getCollections();
+            while (! collections.isEmpty()) {
+                for (Collection c : collections) {
+                    chino.collections.delete(c.getCollectionId(), true);
+                }
+                collections = chino.collections.list().getCollections();
+            }
+        } else if (apiClient instanceof Groups) {
+            ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            List<Group> groups = chino.groups.list().getGroups();
+            while (! groups.isEmpty()) {
+                for (Group g : groups) {
+                    chino.groups.delete(g.getGroupId(), true);
+                }
+                groups = chino.groups.list().getGroups();
+            }
+        } else if (apiClient instanceof Auth) {
             // do nothing
         } else {
             throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() + ") is not supported.");

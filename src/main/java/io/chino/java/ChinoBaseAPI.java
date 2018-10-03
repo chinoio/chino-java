@@ -1,12 +1,18 @@
 package io.chino.java;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import io.chino.api.common.*;
-import okhttp3.*;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.ErrorResponse;
+import io.chino.api.common.Field;
+import io.chino.api.common.indexed;
+import io.chino.api.common.Pair;
 import okhttp3.MediaType;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
-import com.fasterxml.jackson.databind.*;
+
 import java.io.File;
 import java.io.IOException;
 import java.sql.Time;
@@ -17,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ChinoBaseAPI {
+
+
+    public final static String SUCCESS_MSG = "success";
 
     public static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     public static final MediaType OCTET_STREAM = MediaType.parse("application/octet-stream");
@@ -43,8 +52,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param resource the Object that would be mapped in a JSON format for the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode postResource(String path, Object resource) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -69,8 +78,8 @@ public class ChinoBaseAPI {
      * @param offset the offset value in the request
      * @param limit the limit value in the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode postResource(String path, Object resource, int offset, int limit) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -95,8 +104,8 @@ public class ChinoBaseAPI {
      * @param offset the offset value in the request
      * @param limit the limit value in the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode getResource(String path, int offset, int limit) throws IOException, ChinoApiException {
         Request request = new Request.Builder()
@@ -120,8 +129,8 @@ public class ChinoBaseAPI {
      * @param urlParameters a <code>&lt;</code><code>key, value</code><code>&gt;</code>
      * {@link HashMap} containing the URL parameters.
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode getResource(String path, HashMap<String, String> urlParameters) throws IOException, ChinoApiException {
         // parse parameters
@@ -155,8 +164,8 @@ public class ChinoBaseAPI {
      * It makes a GET call to the server saved in hostUrl
      * @param path the path of the URL
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode getResource(String path) throws IOException, ChinoApiException {
         Request request = new Request.Builder()
@@ -177,8 +186,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param resource the Object that would be mapped in a JSON format for the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode putResource(String path, Object resource) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -201,8 +210,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param resource the Object that would be mapped in a JSON format for the request
      * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public JsonNode patchResource(String path, Object resource) throws IOException, ChinoApiException {
         String json = mapper.writeValueAsString(resource);
@@ -222,14 +231,18 @@ public class ChinoBaseAPI {
 
     /**
      * The function used by Blob class to make a PUT call to upload the chunks
+     *
      * @param path the path of the URL
      * @param resource the byte array of the chunk which needs to be uploaded
      * @param offset the offset value in the request
      * @param length the length value in the request
-     * @return JsonNode Object with the response of the server if there are no errors
-     * @throws IOException
-     * @throws ChinoApiException
+     *
+     * @return JsonNode Object with the response of the server (if there are no errors)
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
+    // TODO add all updatePartial methods to classes in io.chino.java
     public JsonNode putResource(String path, byte[] resource, int offset, int length) throws IOException, ChinoApiException {
         RequestBody requestBody = RequestBody.create(OCTET_STREAM, resource);
 
@@ -254,8 +267,8 @@ public class ChinoBaseAPI {
      * @param path the path of the URL
      * @param force the force parameter in the request
      * @return String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String deleteResource(String path, boolean force) throws IOException, ChinoApiException {
         Request request;
@@ -266,7 +279,7 @@ public class ChinoBaseAPI {
         Response response = parent.getHttpClient().newCall(request).execute();
         String body = response.body().string();
         if (response.code() == 200) {
-            return "success";
+            return SUCCESS_MSG;
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }
@@ -334,9 +347,35 @@ public class ChinoBaseAPI {
         return map;
     }
 
+    /**
+     * Verify that the {@link Object} is not a {@code null} reference; otherwise
+     * interrupts execution with an exception, specifying the name of the {@code null} Object.
+     *
+     * @param object an {@link Object}
+     * @param name a name that identifies the Object for the dev
+     *
+     * @throws NullPointerException the object (whose name is reported in the Exception) is {@code null}.
+     */
     protected void checkNotNull(Object object, String name){
         if(object == null){
             throw new NullPointerException(name);
+        }
+    }
+
+    /**
+     * Verify that every {@link Pair} in the varargs contains a non-{@code null} {@link Object} reference; otherwise
+     * interrupts execution with an exception, specifying the name of the {@code null} Object.
+     *
+     * @param elements a list of {@link Pair} where the first element is an {@link Object}
+     *                 and the second is a {@link String}.
+     *
+     * @see #checkNotNull(Object, String)
+     *
+     * @throws NullPointerException one of the objects (whose name is reported in the Exception) is {@code null}.
+     */
+    protected void checkNotNull(Pair<Object, String>... elements){
+        for (Pair<Object, String> element : elements) {
+            checkNotNull(element.getKey(), element.getValue());
         }
     }
 }

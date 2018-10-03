@@ -74,7 +74,7 @@ public class ConsentsTest extends ChinoBaseTest {
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        test = (Consents) ChinoBaseTest.init(chino_admin.consents);
+        test = ChinoBaseTest.init(chino_admin.consents);
         ChinoBaseTest.checkResourceIsEmpty(test.list().getConsents().isEmpty(), test);
 
         createdObjects = new ArrayList<>();

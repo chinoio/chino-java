@@ -5,6 +5,7 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509TrustManager;
 
+@Deprecated
 public class InsecureTrustManager implements X509TrustManager {
     /**
      * {@inheritDoc}

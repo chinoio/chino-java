@@ -5,6 +5,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.chino.api.common.Field;
 
+/**
+ * Contains all the parameters required for creation and update of {@link Schema Schemas}:
+ * a text description and the definition of the Schema's fields.
+ *
+ * @see io.chino.java.Schemas#create(String, SchemaRequest)
+ * @see io.chino.java.Schemas#update(String, SchemaRequest)
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "description", "structure" })
 public class SchemaRequest {
@@ -14,9 +21,7 @@ public class SchemaRequest {
 	@JsonProperty("structure")
 	private SchemaStructure structure = new SchemaStructure();
 
-    public SchemaRequest(){
-
-    }
+    public SchemaRequest(){}
 
     public SchemaRequest(String description, SchemaStructure structure){
         setDescription(description);

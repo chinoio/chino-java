@@ -4,12 +4,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Wraps a {@link Document} returned as a response to an API call
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder(
-	{ 
-		"document"
-	}
-)
+@JsonPropertyOrder({
+	"document"
+})
 public class GetDocumentResponse {
 
 	@JsonProperty("document")

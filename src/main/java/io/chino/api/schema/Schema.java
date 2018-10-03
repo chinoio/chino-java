@@ -1,13 +1,17 @@
 
 package io.chino.api.schema;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.chino.java.ChinoBaseAPI;
 
+import java.util.Date;
+import java.util.Objects;
+
+/**
+ * A Schema of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "repository_id",
@@ -192,4 +196,22 @@ public class Schema {
     	return s;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Schema schema = (Schema) o;
+        return Objects.equals(repositoryId, schema.repositoryId) &&
+                Objects.equals(schemaId, schema.schemaId) &&
+                Objects.equals(description, schema.description) &&
+                Objects.equals(isActive, schema.isActive) &&
+                Objects.equals(lastUpdate, schema.lastUpdate) &&
+                Objects.equals(structure, schema.structure) &&
+                Objects.equals(insertDate, schema.insertDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(repositoryId, schemaId, description, isActive, lastUpdate, structure, insertDate);
+    }
 }

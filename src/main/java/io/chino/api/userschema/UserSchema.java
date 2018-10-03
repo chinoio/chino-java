@@ -5,12 +5,16 @@ package io.chino.api.userschema;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.chino.java.ChinoBaseAPI;
 
+/**
+ * A UserSchema of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "user_schema_id",
@@ -171,4 +175,20 @@ public class UserSchema {
     	return s;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserSchema that = (UserSchema) o;
+        return Objects.equals(userSchemaId, that.userSchemaId) &&
+                Objects.equals(isActive, that.isActive) &&
+                Objects.equals(lastUpdate, that.lastUpdate) &&
+                Objects.equals(structure, that.structure) &&
+                Objects.equals(insertDate, that.insertDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userSchemaId, isActive, lastUpdate, structure, insertDate);
+    }
 }

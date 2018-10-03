@@ -1,15 +1,18 @@
 
 package io.chino.api.group;
 
-import java.util.Date;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import io.chino.java.ChinoBaseAPI;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.chino.java.ChinoBaseAPI;
 
+import java.util.Date;
+import java.util.Objects;
+
+/**
+ * A Group of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "insert_date",
@@ -174,4 +177,21 @@ public class Group {
     	return s;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Group group = (Group) o;
+        return Objects.equals(insertDate, group.insertDate) &&
+                Objects.equals(isActive, group.isActive) &&
+                Objects.equals(lastUpdate, group.lastUpdate) &&
+                Objects.equals(groupName, group.groupName) &&
+                Objects.equals(attributes, group.attributes) &&
+                Objects.equals(groupId, group.groupId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(insertDate, isActive, lastUpdate, groupName, attributes, groupId);
+    }
 }

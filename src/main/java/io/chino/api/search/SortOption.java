@@ -5,11 +5,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.Objects;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "field",
     "order"
 })
+@Deprecated
 public class SortOption {
 
     @JsonProperty("field")
@@ -70,5 +73,20 @@ public class SortOption {
             throw new NullPointerException("order");
         }
         this.order = order;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof SortOption) {
+            return false;
+        }
+        SortOption other = (SortOption) obj;
+        return other.field.equals(this.field)
+                && other.order.equals(this.order);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(field, order);
     }
 }

@@ -1,17 +1,20 @@
 
 package io.chino.api.document;
 
-import java.util.Date;
-import java.util.HashMap;
-
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.java.ChinoBaseAPI;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Objects;
 
+/**
+ * A Document of Chino.io
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
     "content",
@@ -38,26 +41,6 @@ public class Document {
     private Date lastUpdate;
     @JsonProperty("content")
     private JsonNode content;
-
-    /**
-     * 
-     * @return
-     *     The content
-     */
-    @JsonProperty("content")
-    public JsonNode getContent() {
-        return content;
-    }
-
-    /**
-     * 
-     * @param content
-     *     The content
-     */
-    @JsonProperty("content")
-    public void setContent(JsonNode content) {
-        this.content = content;
-    }
 
     /**
      * 
@@ -179,26 +162,112 @@ public class Document {
         this.lastUpdate = lastUpdate;
     }
 
-    public HashMap<String, Object> getContentAsHashMap(){
-        ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, Object> result = mapper.convertValue(content, HashMap.class);
-        return result;
+    /**
+     * Get the content of this {@link Document}. Before using this method, the Document's content must be fetched using
+     * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
+     *
+     * @return The content of this {@link Document}
+     *
+     * @throws IllegalStateException the method is invoked on a {@link Document} before its content has been fetched.
+     */
+    public JsonNode getContent() {
+        if (content != null) {
+            return content;
+        } else {
+            throw new IllegalStateException("Content not present. Use documents.read() to fetch the content of this Document.");
+        }
     }
 
-    
+    /**
+     * Get this Document's content as an instance of {@link HashMap}.
+     * Before using this method, the Document's content must be fetched using
+     * {@link io.chino.java.Documents#read(String)}, otherwise an exception will be thrown.
+     *
+     * @return an {@link HashMap HashMap&lt;String, Object&gt;} with the content of this Document.
+     *
+     * @throws IllegalStateException the method is invoked on a {@link Document} before its content has been fetched.
+     */
+    public HashMap<String, Object> getContentAsHashMap(){
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(this.getContent(), HashMap.class);
+    }
+
+    @JsonProperty("content")
+    private JsonNode getContentForSerialization() {
+        return content;
+    }
+
+    /**
+     * Check that this {@link Document}'s content has been fetched.
+     *
+     * @return {@code true} if this Document's content is a valid {@link JsonNode}.
+     */
+    public boolean hasContent() {
+        return content != null;
+    }
+
+    /**
+     *
+     * @param content
+     *     The content
+     */
+    @JsonProperty("content")
+    public void setContent(JsonNode content) {
+        this.content = content;
+    }
+
+    /**
+     *
+     * @param content
+     *     The content
+     */
+    public void setContent(HashMap<? extends String, ?> content) {
+        JsonNode jsonContent = new ObjectMapper().valueToTree(content);
+        setContent(jsonContent);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof Document))
+            return false;
+        Document other = (Document) obj;
+        return other.documentId.equals(documentId)
+                && (other.schemaId.equals(schemaId))
+                && (other.repositoryId.equals(repositoryId))
+                && (other.insertDate.equals(insertDate))
+                && (other.lastUpdate.equals(lastUpdate))
+                && (other.hasContent() == this.hasContent())
+                && (other.getContentAsHashMap().equals(getContentAsHashMap())
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(documentId)
+                + Objects.hashCode(schemaId)
+                + Objects.hashCode(repositoryId)
+                + Objects.hashCode(insertDate)
+                + Objects.hashCode(lastUpdate)
+                + Objects.hashCode(getContentAsHashMap());
+    }
+
     @Override
     public String toString(){
-    	String s="\n";
-		s+="document_id: "+documentId;
+    	String s="\ndocument_id: "+documentId;
 		s+=",\nrepository_id: "+repositoryId;
 		s+=",\nschema_id: "+schemaId;
-		s+=",\ninsert_date: "+insertDate.toString();
-		s+=",\nlast_update: "+lastUpdate.toString();
+		s+=",\ninsert_date: "+ insertDate.toString();
+		s+=",\nlast_update: "+ lastUpdate.toString();
 		s+=",\nis_active: "+isActive;
-    	
+
+        s+=",\ncontent: ";
     	try {
-			s+=",\ncontent: "+ ChinoBaseAPI.getMapper().writeValueAsString(content);
-		} catch (Exception e) {} 
+			s += ChinoBaseAPI.getMapper().writeValueAsString(content);
+		} catch(IllegalStateException ise) {
+    	    s += "null";
+        }catch (Exception e) {
+    	    s += "n.d. (error)";
+        }
         s+="\n";
     	return s;
     }

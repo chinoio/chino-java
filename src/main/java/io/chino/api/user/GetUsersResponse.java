@@ -7,9 +7,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+/**
+ * Wraps a {@link List} of {@link User Users} returned as a response to an API call
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({ "result", "count", "total_count", "limit",
-		"offset" })
+@JsonPropertyOrder({
+		"result",
+		"count",
+		"total_count",
+		"limit",
+		"offset"
+})
 public class GetUsersResponse {
 
 	@JsonProperty("exists")

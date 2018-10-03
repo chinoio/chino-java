@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
     "type",
     "value"
 })
+@Deprecated
 public class FilterOption {
 
 	@JsonProperty("field")

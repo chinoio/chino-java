@@ -13,7 +13,8 @@ import java.util.Objects;
 import java.util.Scanner;
 
 /**
- * Base test class for all tests
+ * Base test class for all tests.
+ *
  */
 public class ChinoBaseTest {
 
@@ -33,12 +34,12 @@ public class ChinoBaseTest {
      * @param testedAPIClient the {@link ChinoBaseAPI} that will be used to perform the tests.
      * @return the API client that has been set for this instance
      */
-    public static ChinoBaseAPI init(ChinoBaseAPI testedAPIClient) {
+    public static <APIClient extends ChinoBaseAPI> APIClient init(APIClient testedAPIClient) {
 
         errorMsg = "no errors";
         test = testedAPIClient;
 
-        return test;
+        return (APIClient) test;
     }
 
     @BeforeClass
@@ -97,6 +98,7 @@ public class ChinoBaseTest {
             System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
             System.err.println("To hide this message, set the constant TestConstants.FORCE_DELETE_ALL_ON_TESTS to 'true' and re-run the tests.");
             } else {
+                System.out.println();
                 System.out.println("TestConstants.FORCE_DELETE_ALL_ON_TESTS = true");
                 System.out.println("Every object will be deleted.");
                 new DeleteAll().deleteAll(resourceAPIClient);

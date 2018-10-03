@@ -5,13 +5,43 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.List;
+
+/**
+ * This class has been deprecated and will probably be removed in future versions.
+ * Please use class {@link PermissionSetter} to handle permissions.
+ */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "authorize",
         "manage",
         "created_document"
 })
-public class PermissionRuleCreatedDocument extends PermissionRule{
+@Deprecated
+public class PermissionRuleCreatedDocument extends PermissionRule {
+
+    public PermissionRuleCreatedDocument() {
+        super();
+    }
+
+    public PermissionRuleCreatedDocument(List<String> manage, List<String> authorize) {
+        super(manage, authorize);
+    }
+
+    public PermissionRuleCreatedDocument(String[] manage, String[] authorize) {
+        super(manage, authorize);
+    }
+
+    public PermissionRuleCreatedDocument(List<String> manage, List<String> authorize, PermissionRule createdDocument) {
+        this(manage, authorize);
+        setCreatedDocument(createdDocument);
+    }
+
+    public PermissionRuleCreatedDocument(String[] manage, String[] authorize, PermissionRule createdDocument) {
+        this(manage, authorize);
+        setCreatedDocument(createdDocument);
+    }
+
 
     @JsonProperty("created_document")
     private PermissionRule createdDocument = null;
@@ -21,9 +51,13 @@ public class PermissionRuleCreatedDocument extends PermissionRule{
     }
 
     public void setCreatedDocument(PermissionRule createdDocument) {
-        if(createdDocument == null){
-            throw new NullPointerException("created_document");
-        }
+        if (createdDocument == null)
+            this.createdDocument = null;
+        else if (createdDocument.getClass().equals(this.getClass()))
+            throw new IllegalArgumentException("attribute \"created_document\" can't be nested in another \"created_document\".");
+        else if (! createdDocument.getClass().equals(PermissionRule.class))
+            throw new IllegalArgumentException("atribute \"created_document\" must be of class PermissionRule.");
+
         this.createdDocument = createdDocument;
     }
 
@@ -41,3 +75,5 @@ public class PermissionRuleCreatedDocument extends PermissionRule{
         return s;
     }
 }
+
+

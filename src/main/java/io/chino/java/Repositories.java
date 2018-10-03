@@ -23,12 +23,15 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Repositories
-     * @param offset the offset from which it retrieves the Repositories
-     * @param limit number of results (max {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT})
-     * @return GetRepositoriesResponse Object which contains the list of Repositories
-     * @throws IOException
-     * @throws ChinoApiException
+     * List all the existing {@link Repository Repositories}
+     *
+     * @param offset page offset of the results.
+     * @param limit the max amount of results to be returned
+     *
+     * @return A {@link GetRepositoriesResponse} that wraps a list of {@link Repository Repositories}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetRepositoriesResponse list(int offset, int limit) throws IOException, ChinoApiException {
         JsonNode data = getResource("/repositories", offset, limit);
@@ -39,10 +42,12 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * Returns a list of Repositories
-     * @return GetRepositoriesResponse Object which contains the list of Repositories
-     * @throws IOException
-     * @throws ChinoApiException
+     * List all the existing {@link Repository Repositories}
+     *
+     * @return A {@link GetRepositoriesResponse} that wraps a list of {@link Repository Repositories}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetRepositoriesResponse list() throws IOException, ChinoApiException {
         JsonNode data = getResource("/repositories", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
@@ -53,13 +58,16 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * It retrieves a Repository
-     * @param repositoryId the id of the Repository
-     * @return Repository Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * Read information about a specific {@link Repository}
+     *
+     * @param repositoryId the id of the {@link Repository} on Chino.io
+     *
+     * @return the specified {@link Repository}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
-    public Repository read(String repositoryId) throws IOException, ChinoApiException{
+    public Repository read(String repositoryId) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
         JsonNode data = getResource("/repositories/"+repositoryId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
         if(data!=null)
@@ -69,11 +77,14 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * It creates a Repository
-     * @param description the description of the Repository
-     * @return Repository Object
-     * @throws IOException
-     * @throws ChinoApiException
+     * Create a new {@link Repository} on Chino.io
+     *
+     * @param description a brief description of the new Repository
+     *
+     * @return the new {@link Repository}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Repository create(String description) throws IOException, ChinoApiException {
         checkNotNull(description, "description");
@@ -87,12 +98,15 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * It updates a Repository
-     * @param repositoryId the id of the Repository
-     * @param description the description of the new Repository
-     * @return Repository Object updated
-     * @throws IOException
-     * @throws ChinoApiException
+     * Update an existing {@link Repository}
+     *
+     * @param repositoryId the id of the {@link Repository} on Chino.io
+     * @param description the new description of the Repository
+     *
+     * @return the updated {@link Repository}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public Repository update(String repositoryId, String description) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
@@ -107,12 +121,15 @@ public class Repositories extends ChinoBaseAPI {
     }
 
     /**
-     * It deletes a Repository
-     * @param repositoryId the id o the Repository
-     * @param force if true, the resource cannot be restored
+     * Delete a {@link Repository} from Chino.io
+     *
+     * @param repositoryId the id of the {@link Repository} on Chino.io
+     * @param force if true, the resource cannot be restored. Otherwise, it will only be deactivated.
+     *
      * @return a String with the result of the operation
-     * @throws IOException
-     * @throws ChinoApiException
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public String delete(String repositoryId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");

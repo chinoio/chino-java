@@ -1,4 +1,4 @@
-package io.chino.api.common;
+package io.chino.api.blob;
 
 import java.io.*;
 import java.security.MessageDigest;
