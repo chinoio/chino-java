@@ -11,12 +11,12 @@ public interface SearchTreeNode {
      *
      * @return a {@link StringBuilder} that contains a String representation of the subtree that starts from this {@link SearchTreeNode}
      */
-    public StringBuilder getString();
+    StringBuilder getString();
 
     /**
      * Get the JSON representation of this {@link SearchTreeNode} and its subtree
      *
      * @return the parsed subtree as a JSON {@link String}
      */
-    public String parseJSON(int indentLevel);
+    String parseJSON(int indentLevel);
 }

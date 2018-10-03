@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @param <ResponseType> the class of the response that will be returned by the search operation.
  */
-public abstract class AbstractSearchClient<ResponseType extends Object> {
+public abstract class AbstractSearchClient<ResponseType> {
 
     private ResultType resultType = ResultType.FULL_CONTENT;
     private SearchTreeNode query;
@@ -27,8 +27,8 @@ public abstract class AbstractSearchClient<ResponseType extends Object> {
 
     protected static final ObjectMapper mapper = new ObjectMapper();
 
-    protected AbstractSearchClient(ChinoBaseAPI APIclient, String resourceID) {
-        client = APIclient;
+    protected AbstractSearchClient(ChinoBaseAPI APIClient, String resourceID) {
+        client = APIClient;
         this.resourceID = resourceID;
     }
 
@@ -264,8 +264,8 @@ public abstract class AbstractSearchClient<ResponseType extends Object> {
      * {@link io.chino.api.user.GetUsersResponse GetUsersResponse} (depending on the implementation)
      * that contains the search results.
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public abstract ResponseType execute() throws IOException, ChinoApiException;
 }

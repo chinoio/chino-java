@@ -36,7 +36,7 @@ public class UserSchema {
     @JsonProperty("last_update")
     private Date lastUpdate;
     @JsonProperty("groups")
-    private List<String> groups = new ArrayList<String>();
+    private List<String> groups = new ArrayList<>();
     @JsonProperty("structure")
     private UserSchemaStructure structure;
     @JsonProperty("insert_date")

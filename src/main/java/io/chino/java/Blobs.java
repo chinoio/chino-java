@@ -104,7 +104,7 @@ public class Blobs extends ChinoBaseAPI {
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
-     * @throws NoSuchAlgorithmException can't find MD5 / SHA algorythm
+     * @throws NoSuchAlgorithmException can't find MD5 / SHA algorithm
      */
     public GetBlobResponse get(String blobId, String destination) throws IOException, ChinoApiException, NoSuchAlgorithmException {
         checkNotNull(blobId, "blob_id");

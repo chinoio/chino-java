@@ -53,7 +53,7 @@ public class TestConstants {
     public static boolean FORCE_DELETE_ALL_ON_TESTS = false;
     
     /**
-     * Initializes values in {@link TestConstants} with the customer informations,
+     * Initializes values in {@link TestConstants} with the customer information,
      * which are loaded from system environment variables. Then sets default
      * username and password values for the {@link User Users} which will be created
      * automatically during tests or examples. If you want to set custom values,
@@ -64,7 +64,7 @@ public class TestConstants {
     }
     
     /**
-     * Initializes values in {@link TestConstants} with the customer informations and
+     * Initializes values in {@link TestConstants} with the customer information and
      * username/password values for the {@link User Users} which will be created
      * automatically during tests and examples.
      *

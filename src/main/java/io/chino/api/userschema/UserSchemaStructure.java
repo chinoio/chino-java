@@ -22,7 +22,7 @@ import io.chino.api.common.Field;
 public class UserSchemaStructure {
 
     @JsonProperty("fields")
-    private List<Field> fields = new ArrayList<Field>();
+    private List<Field> fields = new ArrayList<>();
 
     public UserSchemaStructure(){
 

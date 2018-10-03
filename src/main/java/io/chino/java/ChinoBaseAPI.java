@@ -134,14 +134,14 @@ public class ChinoBaseAPI {
      */
     public JsonNode getResource(String path, HashMap<String, String> urlParameters) throws IOException, ChinoApiException {
         // parse parameters
-        String paramString = "";
+        StringBuilder paramString = new StringBuilder();
         if (!urlParameters.isEmpty()) {
-            paramString = "?";
+            paramString = new StringBuilder("?");
             int concatCounter = urlParameters.keySet().size() - 1;
             for (String paramName:urlParameters.keySet()) {
                 String param = urlParameters.get(paramName);
-                paramString += paramName + "=" + param;
-                paramString += (concatCounter > 0) ? "&" : "";
+                paramString.append(paramName).append("=").append(param);
+                paramString.append((concatCounter > 0) ? "&" : "");
                 concatCounter --;
             }
         }
@@ -323,7 +323,7 @@ public class ChinoBaseAPI {
     protected List<Field> returnFields(Class myClass) throws ChinoApiException{
         checkNotNull(myClass, "my_class");
         java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
-        List<Field> fieldsList= new ArrayList<Field>();
+        List<Field> fieldsList= new ArrayList<>();
         for(java.lang.reflect.Field field : fields){
             String temp = checkType(field.getType());
             if(temp!=null) {
@@ -340,11 +340,10 @@ public class ChinoBaseAPI {
     protected HashMap<String, Object> fromStringToHashMap(String value) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         //convert JSON string to Map
-        HashMap<String, Object> map = mapper.readValue(
+        return mapper.readValue(
                 value,
                 new TypeReference<HashMap<String, Object>>() {}
         );
-        return map;
     }
 
     /**
@@ -373,7 +372,8 @@ public class ChinoBaseAPI {
      *
      * @throws NullPointerException one of the objects (whose name is reported in the Exception) is {@code null}.
      */
-    protected void checkNotNull(Pair<Object, String>... elements){
+    @SafeVarargs
+    protected final void checkNotNull(Pair<Object, String>... elements){
         for (Pair<Object, String> element : elements) {
             checkNotNull(element.getKey(), element.getValue());
         }

@@ -10,7 +10,7 @@ public class ChinoApiException extends Exception {
 
 	private ErrorResponse errorResponse;
 
-	// Parameterless Constructor
+	// 0 args constructor
 	public ChinoApiException() {
 	}
 

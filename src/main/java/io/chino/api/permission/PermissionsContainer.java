@@ -29,14 +29,14 @@ public interface PermissionsContainer {
      *
      * @return a {@link List} of {@link io.chino.java.Permissions.Type}
      */
-    public List<Permissions.Type> getManagePermissions();
+    List<Permissions.Type> getManagePermissions();
 
     /**
      * Get the "authorize" list of Permissions
      *
      * @return a {@link List} of {@link io.chino.java.Permissions.Type}
      */
-    public List<Permissions.Type> getAuthorizePermissions();
+    List<Permissions.Type> getAuthorizePermissions();
 
     /**
      * Get the "created_document.manage" list of Permissions.
@@ -45,7 +45,7 @@ public interface PermissionsContainer {
      *
      * @return a {@link List} of {@link io.chino.java.Permissions.Type}
      */
-    public List<Permissions.Type> getManagePermissionsOnCreatedDocuments();
+    List<Permissions.Type> getManagePermissionsOnCreatedDocuments();
 
     /**
      * Get the "created_document.authorize" list of Permissions.
@@ -54,5 +54,5 @@ public interface PermissionsContainer {
      *
      * @return a {@link List} of {@link io.chino.java.Permissions.Type}
      */
-    public List<Permissions.Type> getAuthorizePermissionsOnCreatedDocuments();
+    List<Permissions.Type> getAuthorizePermissionsOnCreatedDocuments();
 }

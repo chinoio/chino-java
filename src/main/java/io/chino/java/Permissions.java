@@ -231,19 +231,19 @@ public class Permissions extends ChinoBaseAPI {
      *  The types of Permission that can be granted/revoked on a resource.
      */
     public enum Type {
-        /** Create resources - only applies to resource types (e.g. all documents) */
+        /** Create resources - only applies to resource types (e.g. all Documents in a Schema) */
         CREATE,
 
-        /** Read resources - applies to a specific resource or to a type (e.g. all documents) */
+        /** Read resources - applies to a specific resource or to a type (e.g. all Documents in a Schema) */
         READ,
 
-        /** Update resources - applies to a specific resource or to a type (e.g. all documents) */
+        /** Update resources - applies to a specific resource or to a type (e.g. all Documents in a Schema) */
         UPDATE,
 
-        /** Delete resources - applies to a specific resource or to a type (e.g. all documents) */
+        /** Delete resources - applies to a specific resource or to a type (e.g. all Documents in a Schema) */
         DELETE,
 
-        /** List resources - only applies to resource types (e.g. all documents) */
+        /** List resources - only applies to resource types (e.g. all Documents in a Schema) */
         LIST,
 
         /**
@@ -273,9 +273,8 @@ public class Permissions extends ChinoBaseAPI {
         }
 
         public static Type fromString(String type) {
-            String stringValue = type;
             for (Type value : values()) {
-                if (value.toString().equals(stringValue)) {
+                if (value.toString().equals(type)) {
                     return value;
                 }
             }

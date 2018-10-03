@@ -132,8 +132,7 @@ public class Auth extends ChinoBaseAPI {
     public User loginWithBearerToken(String token) throws IOException, ChinoApiException {
         checkNotNull(token, "token");
         parent.updateHttpAuth(new LoggingInterceptor(token));
-        User u = checkUserStatus();
-        return u;
+        return checkUserStatus();
     }
 
     /**
@@ -187,7 +186,7 @@ public class Auth extends ChinoBaseAPI {
      *
      * @param response the server's {@link Response}
      *
-     * @return
+     * @return a {@link LoggedUser} contining the User's access tokens
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error

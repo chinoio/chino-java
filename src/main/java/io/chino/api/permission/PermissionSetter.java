@@ -84,8 +84,8 @@ public class PermissionSetter implements PermissionsContainer {
      * @see PermissionsRequestBuilder#permissions(PermissionSetter)
      *
      * @param onResource a {@link PermissionRule} with the content of the "manage" and "authorize" sets
-     * @param onResource a {@link PermissionRule} with the content of the "created_document.manage"
-     *                   and "created_document.authorize" sets
+     * @param onCreatedDocuments a {@link PermissionRule} with the content of the "created_document.manage"
+     *                           and "created_document.authorize" sets
      */
     public PermissionSetter(@NotNull PermissionRule onResource, @NotNull PermissionRule onCreatedDocuments) {
         this();

@@ -152,7 +152,7 @@ public class Schemas extends ChinoBaseAPI {
      *
      * @param schemaId the ID of the Schema to update
      * @param description the new description of the Schema
-     * @param schemaStructure a {@link SchemaStructure} object that contins the new structure of the Schema
+     * @param schemaStructure a {@link SchemaStructure} object that contains the new structure of the Schema
      *
      * @return the updated {@link Schema}
      *

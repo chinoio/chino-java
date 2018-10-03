@@ -105,7 +105,7 @@ public class UnmodifiableList<T> implements List<T> {
 
     @Override
     public int hashCode() {
-        return hashCode();
+        return sourceList.hashCode();
     }
 
     @Override
@@ -131,12 +131,12 @@ public class UnmodifiableList<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        return indexOf(o);
+        return sourceList.indexOf(o);
     }
 
     @Override
     public int lastIndexOf(Object o) {
-        return lastIndexOf(o);
+        return sourceList.lastIndexOf(o);
     }
 
     @NotNull

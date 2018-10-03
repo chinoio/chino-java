@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @param <T> the type of data that are in the array. Supported types are int, float, boolean and {@link java.lang.String}
  */
-public class ArraySearchLeaf<T extends Object> extends SearchLeaf<List<T>> {
+public class ArraySearchLeaf<T> extends SearchLeaf<List<T>> {
 
     public ArraySearchLeaf(String field, FilterOperator type, List<T> value) {
         super(field, type, value);

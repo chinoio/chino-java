@@ -31,7 +31,7 @@ public class GetUsersResponse {
 	@JsonProperty("offset")
 	private Integer offset;
 	@JsonProperty("users")
-	private List<User> users = new ArrayList<User>();
+	private List<User> users = new ArrayList<>();
 
 	/**
 	 * 
