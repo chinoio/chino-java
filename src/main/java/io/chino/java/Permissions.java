@@ -7,7 +7,7 @@ import io.chino.api.document.Document;
 import io.chino.api.group.Group;
 import io.chino.api.permission.*;
 import io.chino.api.user.User;
-import javafx.util.Pair;
+import io.chino.api.common.Pair;
 
 import java.io.IOException;
 
