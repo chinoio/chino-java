@@ -25,7 +25,7 @@ import java.util.List;
 import static io.chino.api.search.FilterOperator.EQUALS;
 import static org.junit.Assert.*;
 
-public class DocumentsTest extends ChinoBaseTest {
+public class   DocumentsTest extends ChinoBaseTest {
 
     private static ChinoAPI chino_admin;
     private static Documents test;
@@ -245,7 +245,7 @@ public class DocumentsTest extends ChinoBaseTest {
         doc = test.update(doc.getDocumentId(), content, true);
         doc.setContent(content);
         GetDocumentsResponse result = search.execute();
-        assertTrue(
+        assertTrue( "Unexpected content:\n" + result.getDocuments().get(0).toString() + "\n\nExpected:\n" + doc.toString(),
                 result.getDocuments().contains(doc)
         );
 
