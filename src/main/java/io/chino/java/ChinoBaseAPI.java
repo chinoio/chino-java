@@ -7,7 +7,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.common.ErrorResponse;
 import io.chino.api.common.Field;
 import io.chino.api.common.indexed;
-import javafx.util.Pair;
+import io.chino.api.common.Pair;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;

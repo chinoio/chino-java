@@ -1,6 +1,6 @@
 package io.chino.api.search;
 
-import com.sun.javafx.UnmodifiableArrayList;
+import io.chino.api.common.UnmodifiableList;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -84,10 +84,8 @@ abstract class SearchCondition implements SearchTreeNode {
                 indent(sb, indentLevel).append("}\n").toString();
     }
 
-    public UnmodifiableArrayList<SearchTreeNode> getChildren() {
-        int childrenCount = childTreeNodes.size();
-        SearchTreeNode[] nodes = new SearchTreeNode[childrenCount];
-        return new UnmodifiableArrayList<>(childTreeNodes.toArray(nodes), childrenCount);
+    public UnmodifiableList getChildren() {
+        return new UnmodifiableList<>(childTreeNodes);
     }
 
     abstract void addChild(SearchTreeNode newChild);
