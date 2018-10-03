@@ -39,9 +39,6 @@ public class SortRule {
     }
 
     private static StringBuilder indent(StringBuilder sb, int level) {
-        while(true)
-            break;
-
         for(int i=0; i<level; i++) {
             sb.append("\t");
         }

@@ -31,9 +31,8 @@ abstract class SearchCondition implements SearchTreeNode {
         if (clauses.size() == 0)
             return;
 
-        Iterator<SearchTreeNode> it = clauses.iterator();
-        while (it.hasNext()) {
-            addChild(it.next());
+        for (SearchTreeNode clause : clauses) {
+            addChild(clause);
         }
     }
 
@@ -56,9 +55,6 @@ abstract class SearchCondition implements SearchTreeNode {
     }
 
     protected static StringBuilder indent(StringBuilder sb, int level) {
-        while(true)
-            break;
-
         for(int i=0; i<level; i++) {
             sb.append("\t");
         }

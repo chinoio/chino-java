@@ -21,7 +21,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class GetRepositoriesResponse {
 
     @JsonProperty("repositories")
-    private List<Repository> repositories = new ArrayList<Repository>();
+    private List<Repository> repositories = new ArrayList<>();
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("total_count")
@@ -136,15 +136,15 @@ public class GetRepositoriesResponse {
 
     @Override
     public String toString(){
-        String s="";
-        s+="\ncount: "+count;
-        s+=",\ntotal_count: "+totalCount;
-        s+=",\noffset: "+offset;
-        s+=",\nlimit: "+limit;
+        StringBuilder s= new StringBuilder();
+        s.append("\ncount: ").append(count);
+        s.append(",\ntotal_count: ").append(totalCount);
+        s.append(",\noffset: ").append(offset);
+        s.append(",\nlimit: ").append(limit);
         for(Repository r : repositories){
-            s+="\nRepository: "+r;
+            s.append("\nRepository: ").append(r);
         }
-        return s;
+        return s.toString();
     }
 
 }

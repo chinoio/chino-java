@@ -12,7 +12,7 @@ import io.chino.api.search.SearchTreeNode;
  * @param <ValueType> the class of the Value. There is a subclass of {@link SearchLeaf} for all the Field types
  *                   accepted by Chino.io.
  */
-public abstract class SearchLeaf<ValueType extends Object> implements SearchTreeNode {
+public abstract class SearchLeaf<ValueType> implements SearchTreeNode {
 
     protected String field;
     protected FilterOperator type;
@@ -85,9 +85,6 @@ public abstract class SearchLeaf<ValueType extends Object> implements SearchTree
     }
 
     private static StringBuilder indent(StringBuilder sb, int level) {
-        while(true)
-            break;
-
         for(int i=0; i<level; i++) {
             sb.append("\t");
         }

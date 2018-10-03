@@ -35,7 +35,7 @@ public class CreateApplicationRequest {
     private String clientType;
 
     /**
-     * Empty constructor used by {@link ObjectMapper} to create/map
+     * Empty constructor used by {@link com.fasterxml.jackson.databind.ObjectMapper ObjectMapper} to create/map
      * JSON objects from/to this class.
      */
     private CreateApplicationRequest(){
@@ -57,7 +57,7 @@ public class CreateApplicationRequest {
      * @param name the new Application's name
      * @param grantType The new Application's grant_type - either "password" or "authentication_code".
      * @param redirectUrl The new Application's redirect_url.
-     * @param clientType 
+     * @param clientType the {@link ClientType} of the {@link Application}.
      */
     public CreateApplicationRequest(String name, String grantType, String redirectUrl, ClientType clientType) {
         setName(name);

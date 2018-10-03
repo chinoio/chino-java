@@ -22,7 +22,7 @@ import java.util.Objects;
 public class SchemaStructure {
 
     @JsonProperty("fields")
-    private List<Field> fields = new ArrayList<Field>();
+    private List<Field> fields = new ArrayList<>();
 
     public SchemaStructure(){}
 

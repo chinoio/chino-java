@@ -27,7 +27,7 @@ public class GetGroupsResponse {
     @JsonProperty("limit")
     private Integer limit;
     @JsonProperty("groups")
-    private List<Group> groups = new ArrayList<Group>();
+    private List<Group> groups = new ArrayList<>();
     @JsonProperty("offset")
     private Integer offset;
 

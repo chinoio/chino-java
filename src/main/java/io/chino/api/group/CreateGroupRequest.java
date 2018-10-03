@@ -3,7 +3,6 @@ package io.chino.api.group;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import io.chino.api.blob.CreateBlobUploadRequest;
 
 import java.util.HashMap;
 
@@ -27,7 +26,7 @@ public class CreateGroupRequest {
 
 	/**
 	 * 
-	 * @return The groupname
+	 * @return The group name
 	 */
 	@JsonProperty("group_name")
 	public String getGroupName() {
@@ -37,7 +36,7 @@ public class CreateGroupRequest {
 	/**
 	 * 
 	 * @param groupName
-	 *            The groupName
+	 *            The group name
 	 */
 	@JsonProperty("group_name")
 	public void setGroupName(String groupName) {

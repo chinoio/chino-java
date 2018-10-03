@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class GetDocumentsResponse {
 
     @JsonProperty("documents")
-    private List<Document> documents = new ArrayList<Document>();
+    private List<Document> documents = new ArrayList<>();
     @JsonProperty("count")
     private Integer count;
     @JsonProperty("total_count")
@@ -32,7 +32,7 @@ public class GetDocumentsResponse {
     @JsonProperty("offset")
     private Integer offset;
     @JsonProperty("IDs")
-    private List<String> ids = new ArrayList<String>();
+    private List<String> ids = new ArrayList<>();
     
     /**
     * 

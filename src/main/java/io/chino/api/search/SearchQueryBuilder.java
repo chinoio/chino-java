@@ -297,7 +297,7 @@ public class SearchQueryBuilder {
      * @see #not(String, FilterOperator, String)
      * @see #not(String, FilterOperator, List)
      *
-     * @return a {@link SearchQueryBuilder} containin the negation of the specified query
+     * @return a {@link SearchQueryBuilder} containing the negation of the specified query
      */
     public static SearchQueryBuilder not(SearchQueryBuilder query) {
         if (query.treeTop instanceof SearchCondition.Not) {
@@ -321,7 +321,7 @@ public class SearchQueryBuilder {
      * @param type the {@link FilterOperator} to be evaluated
      * @param value the expected value of the field
      *
-     * @return a {@link SearchQueryBuilder} containin the negation of the specified search criterion
+     * @return a {@link SearchQueryBuilder} containing the negation of the specified search criterion
      */
 
     public static SearchQueryBuilder not(String fieldName, FilterOperator type, int value) {
@@ -337,7 +337,7 @@ public class SearchQueryBuilder {
      * @param type the {@link FilterOperator} to be evaluated
      * @param value the expected value of the field
      *
-     * @return a {@link SearchQueryBuilder} containin the negation of the specified search criterion
+     * @return a {@link SearchQueryBuilder} containing the negation of the specified search criterion
      */
 
     public static SearchQueryBuilder not(String fieldName, FilterOperator type, float value) {
@@ -353,7 +353,7 @@ public class SearchQueryBuilder {
      * @param type the {@link FilterOperator} to be evaluated
      * @param value the expected value of the field
      *
-     * @return a {@link SearchQueryBuilder} containin the negation of the specified search criterion
+     * @return a {@link SearchQueryBuilder} containing the negation of the specified search criterion
      */
 
     public static SearchQueryBuilder not(String fieldName, FilterOperator type, boolean value) {
@@ -369,7 +369,7 @@ public class SearchQueryBuilder {
      * @param type the {@link FilterOperator} to be evaluated
      * @param value the expected value of the field
      *
-     * @return a {@link SearchQueryBuilder} containin the negation of the specified search criterion
+     * @return a {@link SearchQueryBuilder} containing the negation of the specified search criterion
      */
 
     public static SearchQueryBuilder not(String fieldName, FilterOperator type, String value) {
@@ -385,7 +385,7 @@ public class SearchQueryBuilder {
      * @param type the {@link FilterOperator} to be evaluated
      * @param value the expected value of the field
      *
-     * @return a {@link SearchQueryBuilder} containin the negation of the specified search criterion
+     * @return a {@link SearchQueryBuilder} containing the negation of the specified search criterion
      */
 
     public static SearchQueryBuilder not(String fieldName, FilterOperator type, List value) {

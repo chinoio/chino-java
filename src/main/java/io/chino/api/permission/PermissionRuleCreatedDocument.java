@@ -56,7 +56,7 @@ public class PermissionRuleCreatedDocument extends PermissionRule {
         else if (createdDocument.getClass().equals(this.getClass()))
             throw new IllegalArgumentException("attribute \"created_document\" can't be nested in another \"created_document\".");
         else if (! createdDocument.getClass().equals(PermissionRule.class))
-            throw new IllegalArgumentException("atribute \"created_document\" must be of class PermissionRule.");
+            throw new IllegalArgumentException("attribute \"created_document\" must be of class PermissionRule.");
 
         this.createdDocument = createdDocument;
     }

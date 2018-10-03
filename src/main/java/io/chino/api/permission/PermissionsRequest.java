@@ -144,7 +144,7 @@ public final class PermissionsRequest implements PermissionsContainer {
 
     @Override
     public String toString() {
-        String body = "";
+        String body;
         try {
             body = new ObjectMapper().writeValueAsString(getBody());
         } catch (JsonProcessingException e) {

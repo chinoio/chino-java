@@ -1,32 +1,8 @@
-/*
- * The MIT License
- *
- * Copyright (c) 2009-2015 Chino Srls, http://www.chino.io/
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- */
 package io.chino.api.consent;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.api.user.User;
 import io.chino.java.ChinoBaseAPI;
@@ -244,7 +220,7 @@ public class Consent {
     }
     
     /**
-     * Get informations about the subject who has been granted access
+     * Get information about the subject who has been granted access
      * to the user's data
      * @return a {@link DataController} object
      */
@@ -263,7 +239,7 @@ public class Consent {
     }
 
     /**
-     * Get informations about the purposes of the data collection.
+     * Get information about the purposes of the data collection.
      * @return a list of {@link Purpose} objects that describe
      * what the {@link #dataController data controller} is allowed to do with the user's data.
      */
@@ -323,7 +299,7 @@ public class Consent {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj != null && obj instanceof Consent) {
+        if (obj instanceof Consent) {
             Consent c = (Consent) obj;
             if (this.consentId != null && c.consentId != null)
                 return (c.consentId.equals(this.consentId) && c.insertedDate.equals(this.insertedDate));

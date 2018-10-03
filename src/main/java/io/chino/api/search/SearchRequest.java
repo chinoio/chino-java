@@ -23,9 +23,9 @@ public class SearchRequest {
     @JsonProperty("filter_type")
     private String filterType;
     @JsonProperty("sort")
-    private List<SortOption> sort = new ArrayList<SortOption>();
+    private List<SortOption> sort = new ArrayList<>();
     @JsonProperty("filter")
-    private List<FilterOption> filter = new ArrayList<FilterOption>();
+    private List<FilterOption> filter = new ArrayList<>();
 
     public SearchRequest(){
 

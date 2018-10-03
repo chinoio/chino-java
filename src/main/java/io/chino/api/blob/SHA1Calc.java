@@ -25,19 +25,19 @@ public class SHA1Calc {
 	// a byte array to a HEX string
 	public static String getSHA1Checksum(String filename) throws Exception {
 		byte[] b = createChecksum(filename);
-		String result = "";
-		for (int i = 0; i < b.length; i++) {
-			result += Integer.toString((b[i] & 0xff) + 0x100, 16).substring(1);
+		StringBuilder result = new StringBuilder();
+		for (byte aB : b) {
+			result.append(Integer.toString((aB & 0xff) + 0x100, 16).substring(1));
 		}
-		return result;
+		return result.toString();
 	}
 
 	public static String getSHA1Checksum(byte[] digest){
-		String result = "";
-		for (int i = 0; i < digest.length; i++) {
-			result += Integer.toString((digest[i] & 0xff) + 0x100, 16).substring(1);
+		StringBuilder result = new StringBuilder();
+		for (byte aDigest : digest) {
+			result.append(Integer.toString((aDigest & 0xff) + 0x100, 16).substring(1));
 		}
-		return result;
+		return result.toString();
 	}
 	
 	

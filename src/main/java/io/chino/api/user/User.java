@@ -37,7 +37,7 @@ public class User {
     @JsonProperty("insert_date")
     private Date insertDate;
     @JsonProperty("groups")
-    private List<String> groups = new ArrayList<String>();
+    private List<String> groups = new ArrayList<>();
     @JsonProperty("attributes")
     private JsonNode attributes;
     @JsonProperty("is_active")
@@ -197,30 +197,29 @@ public class User {
 
     public HashMap<String, Object> getAttributesAsHashMap(){
         ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, Object> result = mapper.convertValue(attributes, HashMap.class);
-        return result;
+        return mapper.convertValue(attributes, HashMap.class);
     }
     
     @Override
     public String toString(){
-    	String s="\n";
-    	s+="username: "+username;
-    	s+=",\nuser_id: "+userId;
-    	s+=",\ninsert_date: "+insertDate;
+    	StringBuilder s= new StringBuilder("\n");
+    	s.append("username: ").append(username);
+    	s.append(",\nuser_id: ").append(userId);
+    	s.append(",\ninsert_date: ").append(insertDate);
     	try {
-			s+=",\nattributes: "+ ChinoBaseAPI.getMapper().writeValueAsString(attributes);
+			s.append(",\nattributes: ").append(ChinoBaseAPI.getMapper().writeValueAsString(attributes));
 		} catch (Exception e) {} 
-    	s+=",\nis_active: "+isActive;
-    	s+=",\nlast_update: "+lastUpdate;
+    	s.append(",\nis_active: ").append(isActive);
+    	s.append(",\nlast_update: ").append(lastUpdate);
        	 
-    	s+=",\ngroups: {";
+    	s.append(",\ngroups: {");
     	for (String group : groups) {
-    		s+=group+",\n";
+    		s.append(group).append(",\n");
 		}
-    	s+=" }\n";
+    	s.append(" }\n");
 
 
-    	return s;
+    	return s.toString();
     }
 
     /**

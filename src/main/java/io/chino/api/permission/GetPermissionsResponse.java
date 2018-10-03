@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class GetPermissionsResponse {
 
     @JsonProperty("permissions")
-    private List<Permission> permissions = new ArrayList<Permission>();
+    private List<Permission> permissions = new ArrayList<>();
 
     /**
      *

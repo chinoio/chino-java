@@ -37,8 +37,8 @@ public class Documents extends ChinoBaseAPI {
      * @see #read(String)
      * @see GetDocumentsResponse#getDocuments()
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetDocumentsResponse list(String schemaId, int offset, int limit) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
@@ -59,8 +59,8 @@ public class Documents extends ChinoBaseAPI {
      * @see #read(String)
      * @see GetDocumentsResponse#getDocuments()
      *
-     * @throws IOException
-     * @throws ChinoApiException
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
      */
     public GetDocumentsResponse list(String schemaId) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
