@@ -27,11 +27,11 @@ Full API docs are available [here](http://docs.chino.io).
     
 * **Permissions API**
 
-    We also redesigned the interface of the Permissions API, in order to make it easier to use.
+    We also redesigned the interface of the **Permissions API** and made it easier to use.
+    You can now set or revoke Permissions to your Users with fewer lines of code and in a better readable fashion.
     
-    You can now set or revoke Permissions to your Users with few lines of code, as opposed to 
-    the old interface. The old interface is still working but has been deprecated and will be removed in a
-    future version (1.3.X or 1.4).
+    The old interface is still working but has been deprecated and **will be removed in a
+    future version** (1.3.X or 1.4).
     
 * **BLOBs API**:
     
@@ -42,14 +42,14 @@ Full API docs are available [here](http://docs.chino.io).
     
     Also method `delete(String, boolean)` will be removed from the public API and replaced by `delete(String)`.
     
-* **Documents API**:
+* **Documents API** and **Users API**:
 
-    Now it is possible to wait for Documents to be fully indexed, so that they will appear in the Search results
-    right after the `create(...)` method return. See the *Documents* section below to learn more about
-    synchronous creation.
+    Now it is possible to wait for Documents and Users to be fully indexed, so that they will appear in the Search results
+    right after the `create(...)` and `update(...)` methods return. See the [*Documents*](#documents-iochinojavadocuments) and [*Users*](#users-iochinojavausers-and-userschemas-iochinojavauserschemas) section below to learn more about synchronous creation and update.
     
 * **Other minor changes**:
-    * new method `Users.checkPassword(String password)` to verify a User's password
+    * Added Javadoc for most of the classes of the SDK; existing documentation has been fixed and updated.
+    * New method `Users.checkPassword(String password)` to verify a User's password
     
 
 ## Setup
@@ -240,6 +240,7 @@ This is useful if you plan to [Search](#search-iochinojavasearch) for Users righ
 
 Use the following methods:
 - `create(<user_schema_id>, <attributes>, <consistent>)`
+- `update(<user_id>, <attributes>, <consistent>)`
 
 
 
@@ -402,7 +403,7 @@ This is useful if you plan to [Search](#search-iochinojavasearch) for Documents 
 
 Use the following methods:
 - `create(<schema_id>, <content>, <consistent>)`
-- `update(<schema_id>, <content>, <consistent>)`
+- `update(<document_id>, <content>, <consistent>)`
 
 ### BLOBs `io.chino.java.Blobs`
 API client for binary file (BLOB) upload. [*See full docs*](https://docs.chino.io/#blobs)
@@ -606,7 +607,7 @@ Testing is made with JUnit 4. Tests are implemented for the following classes:
 Deprecated methods have been skipped; this can cause some classes to appear to be
 covered for less than 100% in a coverage report.
 
-##Support
+## Support
 Please report problems and ask for support using **Github issues**.
 
 If you want to learn more about Chino.io, visit the [official site](https://chino.io) or email us at [info@chino.io](mailto:info@chino.io).
