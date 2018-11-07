@@ -25,7 +25,7 @@ public class ChinoAPI {
      * Construct an API client which authenticates calls with a {@code (customerID, customerKey)} pair.
      * To be used <b>only in secure clients</b>.
      *
-     * @param hostUrl the base URL for the API calls
+     * @param hostUrl the base URL for the API calls. (will be forced to use 'https://')
      * @param customerId the customer id provided by Chino.io
      * @param customerKey the customer key provided by Chino.io
      */
@@ -36,7 +36,7 @@ public class ChinoAPI {
         client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
                 .build();
-        initObjects(hostUrl);
+        initObjects(hostUrl.replace("http://", "https://"));
     }
 
     /**
