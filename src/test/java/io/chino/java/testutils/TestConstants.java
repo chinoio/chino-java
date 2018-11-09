@@ -17,7 +17,7 @@ public class TestConstants {
     /**
      * The base URL of the Chino.io test API
      */
-    public final static String HOST = "https://api.test.chino.io/v1";
+    public static String HOST = "https://api.test.chino.io/v1";
 
     /**
      * Your customer ID - DO NOT WRITE IT HERE IN THE CODE.

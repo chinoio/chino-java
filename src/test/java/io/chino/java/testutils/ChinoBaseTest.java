@@ -47,6 +47,10 @@ public class ChinoBaseTest {
         TestConstants.init(USERNAME, PASSWORD);
         if (Objects.equals(System.getenv("automated_test"), "allow")) // null-safe 'equals()'
             TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
+        if (System.getenv("host") != null) {
+            TestConstants.HOST = System.getenv("host");
+        }
+        System.out.println("USING CHINO.IO HOST: " + TestConstants.HOST);
     }
 
     @Before
