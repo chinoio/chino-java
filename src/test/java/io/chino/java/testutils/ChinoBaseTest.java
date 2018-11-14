@@ -49,14 +49,14 @@ public class ChinoBaseTest {
         if (TestConstants.testProperties != null) {
             automatedTests = TestConstants.testProperties.getProperty("chino.test.automated", null);
         }
-        if (automatedTests == null) {
+        if (automatedTests == null || automatedTests.isEmpty()) {
             automatedTests = System.getenv("automated_test");
         }
         if (Objects.equals(automatedTests, "allow")) // null-safe 'equals()'
             TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
         // if specified, update host
         String host = TestConstants.testProperties.getProperty("chino.test.host", null);
-        if (host == null) {
+        if (host == null || host.isEmpty()) {
             host = System.getenv("host");
         }
         if (host != null) {
@@ -114,11 +114,10 @@ public class ChinoBaseTest {
         if (! resourceIsEmpty) {
             if (! TestConstants.FORCE_DELETE_ALL_ON_TESTS) {
                 System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
-            System.err.println("To hide this message, set the constant TestConstants.FORCE_DELETE_ALL_ON_TESTS to 'true' and re-run the tests.");
+            System.err.println("To hide this message, set 'chino.test.automated=allow' in src/test/res/test.properties and re-run the tests.");
             } else {
                 System.out.println();
-                System.out.println("TestConstants.FORCE_DELETE_ALL_ON_TESTS = true");
-                System.out.println("Every object will be deleted.");
+                System.out.println("chino.test.automated=allow: every object will be deleted.");
                 new DeleteAll().deleteAll(resourceAPIClient);
                 continueTests = true;
                 return;

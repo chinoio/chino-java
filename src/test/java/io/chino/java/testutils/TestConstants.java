@@ -100,10 +100,10 @@ public class TestConstants {
         CUSTOMER_ID = testProperties.getProperty("chino.test.customer_id", null);
         CUSTOMER_KEY = testProperties.getProperty("chino.test.customer_key", null);
         // load missing values from env variables
-        if (CUSTOMER_ID == null) {
+        if (CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
             CUSTOMER_ID = System.getenv("customer_id");
         }
-        if (CUSTOMER_KEY == null) {
+        if (CUSTOMER_KEY == null || CUSTOMER_KEY.isEmpty()) {
             CUSTOMER_KEY = System.getenv("customer_key");
         }
         // error - no variables set
