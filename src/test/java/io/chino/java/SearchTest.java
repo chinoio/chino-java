@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static io.chino.api.search.FilterOperator.EQUALS;
+import static io.chino.api.search.FilterOperator.GREATER_THAN;
+import static io.chino.api.search.SearchQueryBuilder.with;
 import static org.junit.Assert.*;
 
 public class SearchTest extends ChinoBaseTest {
@@ -81,7 +83,7 @@ public class SearchTest extends ChinoBaseTest {
             content.put("value", outputString.charAt(i));
             content.put("order", i + 1);
 
-            chino_admin.users.create("SearchUser" + i, "asdfgh_" + i, content, USER_SCHEMA_ID);
+            chino_admin.users.create("SearchUser" + i, "asdfgh_" + i, content, USER_SCHEMA_ID, true);
         }
     }
 
@@ -173,7 +175,7 @@ public class SearchTest extends ChinoBaseTest {
         searchUsers.setResultType(ResultType.COUNT);
         GetUsersResponse response_COUNT = searchUsers.execute();
         assertEquals(
-                "COUNT is different from previous search result number",
+                "wrong value for COUNT.",
                 response_FULL.getTotalCount(),
                 response_COUNT.getCount()
         );
@@ -189,10 +191,10 @@ public class SearchTest extends ChinoBaseTest {
 //    @Test
 //    public void testNewSearchUsers_EXISTS() throws IOException, ChinoApiException {
 //        UsersSearch search = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.EXISTS).addSortRule("order", SortRule.Order.ASC)
-//                .with("order", FilterOperator.GREATER_THAN, 5)
+//                .with("order", GREATER_THAN, 5)
 //                .and(
-//                        with("username", FilterOperator.EQUALS, "asdfgh_6")
-//                        .or("username", FilterOperator.EQUALS, "asdfgh_7")
+//                        with("username", EQUALS, "asdfgh_6")
+//                        .or("username", EQUALS, "asdfgh_7")
 //                )
 //        .buildSearch();
 //
@@ -204,10 +206,10 @@ public class SearchTest extends ChinoBaseTest {
 //    @Test
 //    public void testNewSearchUsers_USERNAMEEXISTS() throws IOException, ChinoApiException {
 //        UsersSearch search = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.USERNAME_EXISTS).addSortRule("order", SortRule.Order.ASC)
-//                .with("order", FilterOperator.GREATER_THAN, 5)
+//                .with("order", GREATER_THAN, 5)
 //                .and(
-//                        with("username", FilterOperator.EQUALS, "asdfgh_6")
-//                        .or("username", FilterOperator.EQUALS, "asdfgh_7")
+//                        with("username", EQUALS, "asdfgh_6")
+//                        .or("username", EQUALS, "asdfgh_7")
 //                )
 //        .buildSearch();
 //

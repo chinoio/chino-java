@@ -576,13 +576,17 @@ API client to manage Collections of [Documents](#documents-iochinojavadocuments)
 With the SDK are included some JUnit tests, that are used for continuous integration.
 If you want (for some reason) to run these tests by yourself, the best thing to do is to run them in
 an account *ad hoc*.
-In fact, after each test **every object on the account is deleted**, in order to preserve the correctness of tests.
+In fact, after each test **every pre-existing object on the account is deleted**, in order to preserve the correctness of tests.
 
-If you know what you are doing, open `io.chino.java.TestConstants` in the test folder, then:
-1. set the constant `TestConstants.FORCE_DELETE_ALL_ON_TESTS` to `true`.
-As an alternative, you can also set `automated_test=allow` in your environment variables. 
-2. set the required environment variables (customer credentials);
-3. run the tests.
+If you know what you are doing, you can launch tests with Gradle:
+
+1. `cd` into the repository's root
+2. Launch the `test` task with:
+        
+        gradle test -i -Pchino.test.customer_id=<your ID> -Pchino.test.customer_key=<your KEY> -Pchino.test.automated=<allow>
+
+3. You can also add ` -Pchino.test.host=<path.to.host>` in order to run tests against a custom host.
+Default test host is `https://api.test.chino.io/v1`. **Remember to append `/v1` to the host argument.**
     
 After every test, all the related object will be deleted.
 (E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)

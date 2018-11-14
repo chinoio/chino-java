@@ -45,12 +45,26 @@ public class ChinoBaseTest {
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
         TestConstants.init(USERNAME, PASSWORD);
-        if (Objects.equals(System.getenv("automated_test"), "allow")) // null-safe 'equals()'
-            TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
-        if (System.getenv("host") != null) {
-            TestConstants.HOST = System.getenv("host");
+        String automatedTests = null;
+        if (TestConstants.testProperties != null) {
+            automatedTests = TestConstants.testProperties.getProperty("chino.test.automated", null);
         }
-        System.out.println("USING CHINO.IO HOST: " + TestConstants.HOST);
+        if (automatedTests == null) {
+            automatedTests = System.getenv("automated_test");
+        }
+        if (Objects.equals(automatedTests, "allow")) // null-safe 'equals()'
+            TestConstants.FORCE_DELETE_ALL_ON_TESTS = true;
+        // if specified, update host
+        String host = TestConstants.testProperties.getProperty("chino.test.host", null);
+        if (host == null) {
+            host = System.getenv("host");
+        }
+        if (host != null) {
+            TestConstants.HOST = host;
+        }
+        System.out.println();
+        System.out.println("--- Test started");
+        System.out.println("Using Chino.io host: " + TestConstants.HOST);
     }
 
     @Before
@@ -73,6 +87,7 @@ public class ChinoBaseTest {
         errorMsg =  "init() method not called";
         continueTests = true;
         test = null;
+        System.out.println("--- Test ended.");
         System.gc();
     }
 
@@ -98,8 +113,7 @@ public class ChinoBaseTest {
 
         if (! resourceIsEmpty) {
             if (! TestConstants.FORCE_DELETE_ALL_ON_TESTS) {
-            Scanner scanner = new Scanner(System.in);
-            System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
+                System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
             System.err.println("To hide this message, set the constant TestConstants.FORCE_DELETE_ALL_ON_TESTS to 'true' and re-run the tests.");
             } else {
                 System.out.println();
