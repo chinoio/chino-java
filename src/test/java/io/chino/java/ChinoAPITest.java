@@ -61,6 +61,7 @@ public class ChinoAPITest {
     
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.beforeClass();
         TestConstants.init(TestConstants.USERNAME, TestConstants.PASSWORD); // instruction needed, because this is not subclass of ChinoBaseTest
         chino_customer = new ChinoAPI(ChinoBaseTest.URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
 
