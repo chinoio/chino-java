@@ -23,7 +23,7 @@ public enum ResultType {
     COUNT,
 
 //    TODO check why the following don't work
-//    EXISTS,
+    EXISTS,
 //    USERNAME_EXISTS
 
 }

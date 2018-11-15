@@ -22,6 +22,7 @@ public class ApplicationsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ChinoBaseTest.beforeClass();
         test = ChinoBaseTest.init(chino_customer.applications);
         ChinoBaseTest.checkResourceIsEmpty(test.list().getApplications().isEmpty(), test);
 

@@ -2,6 +2,10 @@ package io.chino.java.testutils;
 
 import io.chino.api.user.User;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 /**
  * Holds constants for testing with JUnit.
  *
@@ -51,7 +55,8 @@ public class TestConstants {
      * If you want to avoid this, you should use a separate account to perform tests.
      */
     public static boolean FORCE_DELETE_ALL_ON_TESTS = false;
-    
+    static Properties testProperties = null;
+
     /**
      * Initializes values in {@link TestConstants} with the customer information,
      * which are loaded from system environment variables. Then sets default
@@ -77,12 +82,38 @@ public class TestConstants {
      * If {@code null}, the value will be set to a default String.
      */
     public static void init(String defaultUserUsername, String defaultUserPassword) {
-        CUSTOMER_ID = System.getenv("customer_id");
-        CUSTOMER_KEY = System.getenv("customer_key");
+        try {
+            // attempt to load Properties file
+            if (testProperties == null) {
+                testProperties = new Properties();
+                testProperties.load(
+                        new FileReader("src/test/res/test.properties")
+                );
+            }
+        } catch (IOException e) {
+            System.err.println("Failed to load 'src/test/res/test.properties'. Reason:");
+            e.printStackTrace(System.err);
+            System.err.flush();
+            System.exit(1);
+        }
+        // attempt to load values from Properties
+        CUSTOMER_ID = testProperties.getProperty("chino.test.customer_id", null);
+        CUSTOMER_KEY = testProperties.getProperty("chino.test.customer_key", null);
+        // load missing values from env variables
+        if (CUSTOMER_ID == null || CUSTOMER_ID.isEmpty()) {
+            CUSTOMER_ID = System.getenv("customer_id");
+        }
+        if (CUSTOMER_KEY == null || CUSTOMER_KEY.isEmpty()) {
+            CUSTOMER_KEY = System.getenv("customer_key");
+        }
+        // error - no variables set
         if (CUSTOMER_ID == null || CUSTOMER_KEY == null) {
-            System.err.println("To use this class, you need to obtain your Chino.io customer id and customer key.\n"
-                    + "Once you have the required credentials, you need to create two system environment variables: 'customer_id' and 'customer_key'.\n"
-                    + "ChinoAPIExample will read the values from there and authenticate the API calls with your credentials.\n");
+            System.err.println("To test the SDK, you need to obtain your Chino.io customer id and customer key.\n"
+                    + "Once you have the required credentials, write them in 'src/test/res/test.properties' as CUSTOMER_ID/CUSTOMER_KEY\n"
+                    + "or create the system environment variables 'customer_id'/'customer_key'.\n"
+                    + "ChinoAPIExample will read the values from there (in this order) and authenticate the API calls with your credentials.\n");
+
+            System.exit(2);
         }
         
         // sample values; you can edit those two values at will (either here or in class 'TestConstants').
