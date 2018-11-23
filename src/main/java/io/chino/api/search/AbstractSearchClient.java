@@ -268,4 +268,5 @@ public abstract class AbstractSearchClient<ResponseType> {
      * @throws ChinoApiException server error
      */
     public abstract ResponseType execute() throws IOException, ChinoApiException;
+    public abstract ResponseType execute(int offset, int limit) throws IOException, ChinoApiException;
 }

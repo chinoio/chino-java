@@ -69,15 +69,15 @@ public class SearchTest extends ChinoBaseTest {
                 SampleUser.class
         ).getUserSchemaId();
 
-        for (int i=0; i<outputString.length(); i++) {
+        for (int i = 0; i < outputString.length(); i++) {
             HashMap<String, Object> content = new HashMap<>();
             content.put("test_method", "search documents test");
             content.put("value", outputString.charAt(i));
             content.put("order", i + 1);
 
-            chino_admin.documents.create(SCHEMA_ID, content,true);
+            chino_admin.documents.create(SCHEMA_ID, content, true);
         }
-        for (int i=0; i<outputString.length(); i++) {
+        for (int i = 0; i < outputString.length(); i++) {
             HashMap<String, Object> content = new HashMap<>();
             content.put("test_method", "search users test");
             content.put("value", outputString.charAt(i));
@@ -120,7 +120,7 @@ public class SearchTest extends ChinoBaseTest {
 
             assertTrue("Document search with FULL_CONTENT doesn't return Document's content", d.hasContent());
         }
-        
+
 
         searchDocs.setResultType(ResultType.ONLY_ID);
 
@@ -128,7 +128,7 @@ public class SearchTest extends ChinoBaseTest {
             assertFalse("Document fetched with ONLY_ID should not have content", shortDocument.hasContent());
             assertTrue("Document not found in docs list", ids.contains(shortDocument.getDocumentId()));
         }
-        
+
 
         searchDocs.setResultType(ResultType.COUNT);
         GetDocumentsResponse response_COUNT = searchDocs.execute();
@@ -138,7 +138,7 @@ public class SearchTest extends ChinoBaseTest {
                 (long) response_COUNT.getCount()
         );
         assertTrue(response_COUNT.getDocuments().isEmpty());
-        
+
 
         searchDocs.setResultType(ResultType.NO_CONTENT);
         List<Document> docMetadata = searchDocs.execute().getDocuments();
@@ -150,6 +150,18 @@ public class SearchTest extends ChinoBaseTest {
         for (Document d : docs) {
             System.out.print(d.getContentAsHashMap().get("value"));
         }
+    }
+
+    @Test
+    public void testUserOffsetSize() throws IOException, ChinoApiException {
+        UsersSearch searchUsers = (UsersSearch) chino_admin.search.users(USER_SCHEMA_ID).setResultType(ResultType.FULL_CONTENT).addSortRule("order", SortRule.Order.ASC)
+                .with("test_method", EQUALS, "search users test")
+                .buildSearch();
+
+        GetUsersResponse response_FULL = searchUsers.execute( 0, 1);
+        assertEquals((int) response_FULL.getCount(), 1);
+
+
     }
 
     @Test
@@ -170,7 +182,7 @@ public class SearchTest extends ChinoBaseTest {
                     u.getAttributesAsHashMap() == null || u.getAttributesAsHashMap().isEmpty()
             );
         }
-        
+
 
         searchUsers.setResultType(ResultType.COUNT);
         GetUsersResponse response_COUNT = searchUsers.execute();

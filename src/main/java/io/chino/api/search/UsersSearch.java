@@ -19,14 +19,20 @@ public final class UsersSearch extends AbstractSearchClient<GetUsersResponse> {
         super(APIClient, schemaId);
     }
 
+
     @Override
-    public GetUsersResponse execute() throws IOException, ChinoApiException {
+    public GetUsersResponse execute(int offset, int limit) throws IOException, ChinoApiException {
         String jsonQuery = super.parseSearchRequest();
         JsonNode response = client.postResource(
-                "/search/users/" + resourceID,
+                "/search/users/" + resourceID + "?offset=" + offset + "&limit=" + limit,
                 mapper.readValue(jsonQuery, JsonNode.class)
         );
         return mapper.convertValue(response, GetUsersResponse.class);
+    }
+
+    @Override
+    public GetUsersResponse execute() throws IOException, ChinoApiException {
+        return this.execute(0, 10);
     }
 
     @Override
