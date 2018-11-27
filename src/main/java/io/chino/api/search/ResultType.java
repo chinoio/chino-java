@@ -5,24 +5,26 @@ package io.chino.api.search;
  */
 public enum ResultType {
     /**
-     * Get the full content of each resource (e.g. {@link io.chino.api.document.Document Document})
-     * along with metadata
+     * Get the full content of each result along with the metadata
      */
     FULL_CONTENT,
     /**
-     * Omit the resource's content and get only the metadata.
+     * Omit the content of the results and get only the metadata.
      */
     NO_CONTENT,
     /**
-     * Get only the resource's ID
+     * Get only the IDs of the search results
      */
     ONLY_ID,
     /**
-     * Get only the amount of search results
+     * Get only the amount of search results that match the query
      */
     COUNT,
 
-//    TODO check why the following don't work
+    /**
+     * Return an empty response containing only the field 'exists'. The value is {@code true}
+     * if the search results for the given query contain at least one value, {@code false} otherwise.
+     */
     EXISTS,
 //    USERNAME_EXISTS
 

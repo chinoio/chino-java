@@ -54,6 +54,10 @@ Full API docs are available [here](http://docs.chino.io).
 
 ## Setup
 
+We deliver the SDK code using Jitpack. Refer to https://jitpack.io/#chinoio/chino-java if you need specific branches or 
+versions. Though, we suggest to stick with the latest build, which contains the latest API updates and can be
+downloaded with the following instructions.
+
 ### Build with Maven 
 Edit your project's "pom.xml" and add this:
 

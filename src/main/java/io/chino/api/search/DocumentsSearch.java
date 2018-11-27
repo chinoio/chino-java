@@ -24,15 +24,12 @@ public final class DocumentsSearch extends AbstractSearchClient<GetDocumentsResp
         String JSONQuery = super.parseSearchRequest();
 
         JsonNode response = client.postResource(
-                "/search/documents/" + resourceID +"?offset="+offset+"&limit="+limit,
-                mapper.readValue(JSONQuery, JsonNode.class)
+                "/search/documents/" + resourceID,
+                mapper.readValue(JSONQuery, JsonNode.class),
+                offset,
+                limit
         );
         return mapper.convertValue(response, GetDocumentsResponse.class);
-    }
-
-    @Override
-    public GetDocumentsResponse execute() throws IOException, ChinoApiException {
-        return this.execute(0,10);
     }
 
     @Override

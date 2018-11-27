@@ -4,8 +4,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.user.GetUsersResponse;
 import io.chino.java.ChinoBaseAPI;
+import io.chino.java.Search;
 
 import java.io.IOException;
+
+import static io.chino.api.search.FilterOperator.EQUALS;
+import static io.chino.api.search.ResultType.USERNAME_EXISTS;
 
 /**
  * Implementation of a {@link AbstractSearchClient} that executes search queries on
@@ -22,17 +26,16 @@ public final class UsersSearch extends AbstractSearchClient<GetUsersResponse> {
 
     @Override
     public GetUsersResponse execute(int offset, int limit) throws IOException, ChinoApiException {
+        // build JSON from query
         String jsonQuery = super.parseSearchRequest();
+        // search on chino
         JsonNode response = client.postResource(
-                "/search/users/" + resourceID + "?offset=" + offset + "&limit=" + limit,
-                mapper.readValue(jsonQuery, JsonNode.class)
+                "/search/users/" + resourceID,
+                mapper.readValue(jsonQuery, JsonNode.class),
+                offset,
+                limit
         );
         return mapper.convertValue(response, GetUsersResponse.class);
-    }
-
-    @Override
-    public GetUsersResponse execute() throws IOException, ChinoApiException {
-        return this.execute(0, 10);
     }
 
     @Override

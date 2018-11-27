@@ -14,15 +14,43 @@ import java.util.List;
 
 public class Search extends ChinoBaseAPI {
 
+    /**
+     * The default constructor used by all {@link ChinoBaseAPI} subclasses
+     *
+     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
+     *                        {@code https://api.test.chino.io/v1/}
+     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
+     */
+    public Search(String baseApiUrl, ChinoAPI parentApiClient) {
+        super(baseApiUrl, parentApiClient);
+    }
+
+
+    /**
+     * Start a new Search among the Documents of a given Schema
+     *
+     * @param schemaId the ID of the Schema where the Documents must be looked for.
+     *
+     * @return a {@link DocumentsSearch} client that can build and execute a search query over Documents.
+     */
     public DocumentsSearch documents(String schemaId) {
         return new DocumentsSearch(this, schemaId);
     }
 
+    /**
+     * Start a new Search among the Users of a given UserSchema
+     *
+     * @param userSchemaId the ID of the UserSchema where the Users must be looked for.
+     *
+     * @return a {@link UsersSearch} client that can build and execute a search query over Users.
+     */
     public UsersSearch users(String userSchemaId) {
         return new UsersSearch(this, userSchemaId);
     }
 
+
     /* OLD SEARCH  */
+
     @Override
     public String toString() {
         try {
@@ -40,18 +68,6 @@ public class Search extends ChinoBaseAPI {
     private List<FilterOption> filter = null;
     @Deprecated
     private FilterOption filterOption;
-
-    /**
-     * The default constructor used by all {@link ChinoBaseAPI} subclasses
-     *
-     * @param baseApiUrl      the base URL of the Chino.io API. For testing, use:<br>
-     *                        {@code https://api.test.chino.io/v1/}
-     * @param parentApiClient the instance of {@link ChinoAPI} that created this object
-     */
-    public Search(String baseApiUrl, ChinoAPI parentApiClient) {
-        super(baseApiUrl, parentApiClient);
-    }
-
     /**
      * It searches Documents
      * @param searchRequest the SearchRequest Object
@@ -223,7 +239,7 @@ public class Search extends ChinoBaseAPI {
      * Those functions below are used to make a search in a different way
      */
 
-    //This is called when you want to make a sort of a certain field in an ascending order
+    // This is called when you want to make a sort of a certain field in an ascending order
     @Deprecated
     public Search sortAscBy(String field)
     {
