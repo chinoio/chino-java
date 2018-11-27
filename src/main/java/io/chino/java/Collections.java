@@ -11,6 +11,9 @@ import io.chino.api.document.GetDocumentsResponse;
 
 import java.io.IOException;
 
+/**
+ * Manage {@link Collection Collections} of {@link io.chino.api.document.Document Documents} on Chino.io
+ */
 public class Collections extends ChinoBaseAPI {
 
     /**

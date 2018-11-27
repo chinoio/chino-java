@@ -12,7 +12,7 @@ import io.chino.api.common.Pair;
 import java.io.IOException;
 
 /**
- * This class is used to manage access Permissions over Chino.io resources.
+ * Manage access Permissions over Chino.io resources.
  * For instructions about how to use the Permissions system, visit the
  * <a href="https://docs.chino.io/#permissions">Permissions</a> page on
  * the Chino.io API docs.

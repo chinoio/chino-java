@@ -5,6 +5,9 @@ import okhttp3.OkHttpClient;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Main API client. Initializes and coordinates all the clients based on {@link ChinoBaseAPI}.
+ */
 public class ChinoAPI {
     OkHttpClient client;
     public Applications applications;

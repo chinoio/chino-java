@@ -12,6 +12,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Perform searches among your indexed data on Chino.io
+ *
+ * @see UsersSearch search Users
+ * @see DocumentsSearch search Documents
+ */
 public class Search extends ChinoBaseAPI {
 
     /**

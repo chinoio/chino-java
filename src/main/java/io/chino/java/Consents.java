@@ -11,8 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * Base API client for Consent Management.
- * @see Consent
+ * Manage Consent tracking using Chino.io {@link Consent} system.
+ *
  * @author Andrea Arighi [andrea@chino.io]
  */
 public class Consents extends ChinoBaseAPI {

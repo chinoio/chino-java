@@ -15,6 +15,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * Manage you {@link User Users} on Chino.io.
+ */
 public class Users extends ChinoBaseAPI {
 
     /**
