@@ -21,7 +21,12 @@ public class ChinoApiConstants {
 	/**
      * Query standard limit, default value is 100.
      */
-	public static final Integer QUERY_DEFAULT_LIMIT=100;
+	public static final Integer QUERY_DEFAULT_LIMIT = 100;
+
+    /**
+     * The default number of search results that are read from Chino.
+     */
+    public static final int SEARCH_RESULTS_LIMIT = 10;
 	
 	/** 
      * Server response 200
@@ -109,6 +114,4 @@ public class ChinoApiConstants {
 	public static final String SORT_OPTION_ASC="asc";
 	@Deprecated
 	public static final String SORT_OPTION_DESC="desc";
-	
-
 }

@@ -7,6 +7,10 @@ import io.chino.api.common.ChinoApiException;
 
 import java.io.IOException;
 
+/**
+ * Manage {@link Application Applications} on Chino.io. Applications are used for authenticating {@link io.chino.api.user.User Users}
+ * using {@link Auth}.
+ */
 public class Applications extends ChinoBaseAPI {
 
     /**

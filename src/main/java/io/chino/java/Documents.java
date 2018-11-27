@@ -11,6 +11,9 @@ import io.chino.api.document.GetDocumentsResponse;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * Manage Documents on Chino.io. {@link Document Documents} are the basic resource where sensitive data are stored.
+ */
 public class Documents extends ChinoBaseAPI {
 
     /**

@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.util.HashMap;
 
+/**
+ * Organize your {@link io.chino.api.user.User Users} into {@link Group Groups}.
+ */
 public class Groups extends ChinoBaseAPI {
 
     /**

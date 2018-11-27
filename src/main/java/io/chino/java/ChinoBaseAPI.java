@@ -22,8 +22,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * Provides utility methods to communicate with Chino API, such as HTTP GET and POST calls.
+ */
 public class ChinoBaseAPI {
-
 
     public final static String SUCCESS_MSG = "success";
 

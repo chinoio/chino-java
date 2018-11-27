@@ -1,6 +1,7 @@
 package io.chino.api.search;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.search.leaf.*;
 import io.chino.java.ChinoBaseAPI;
@@ -260,6 +261,10 @@ public abstract class AbstractSearchClient<ResponseType> {
      * Execute the current query that is contained in this {@link AbstractSearchClient}.
      * Calls Chino.io Search API in order to retrieve the objects that match the provided search criteria.
      *
+     * @param offset page offset of the results.
+     * @param limit the max amount of results to be returned. The default value is
+     * {@link ChinoApiConstants#SEARCH_RESULTS_LIMIT SEARCH_RESULTS_LIMIT}
+     *
      * @return either a {@link io.chino.api.document.GetDocumentsResponse GetDocumentsResponse} or a
      * {@link io.chino.api.user.GetUsersResponse GetUsersResponse} (depending on the implementation)
      * that contains the search results.
@@ -267,5 +272,24 @@ public abstract class AbstractSearchClient<ResponseType> {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public abstract ResponseType execute() throws IOException, ChinoApiException;
+    public abstract ResponseType execute(int offset, int limit) throws IOException, ChinoApiException;
+
+    /**
+     * Execute the current query that is contained in this {@link AbstractSearchClient}.
+     * Calls Chino.io Search API in order to retrieve the objects that match the provided search criteria.
+     * This method retrieves only the first {@link ChinoApiConstants#SEARCH_RESULTS_LIMIT SEARCH_RESULTS_LIMIT}
+     * results of the search.
+     *
+     * @return either a {@link io.chino.api.document.GetDocumentsResponse GetDocumentsResponse} or a
+     * {@link io.chino.api.user.GetUsersResponse GetUsersResponse} (depending on the implementation)
+     * that contains the search results.
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     *
+     * @see #execute(int, int)
+     */
+    public ResponseType execute() throws IOException, ChinoApiException {
+        return this.execute(0, ChinoApiConstants.SEARCH_RESULTS_LIMIT);
+    }
 }

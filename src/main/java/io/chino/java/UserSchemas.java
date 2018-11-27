@@ -9,6 +9,9 @@ import io.chino.api.userschema.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Manage the {@link UserSchema UserSchemas} that define attributes stored for your {@link io.chino.api.user.User Users}.
+ */
 public class UserSchemas extends ChinoBaseAPI {
 
     /**

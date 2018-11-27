@@ -9,6 +9,10 @@ import io.chino.api.repository.Repository;
 
 import java.io.IOException;
 
+/**
+ * Manage {@link Repository Repositories}, the top-level container for {@link io.chino.api.document.Document Documents}
+ * on Chino.io
+ */
 public class Repositories extends ChinoBaseAPI {
 
     /**

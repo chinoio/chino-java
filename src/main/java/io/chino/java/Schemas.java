@@ -9,6 +9,9 @@ import io.chino.api.schema.*;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Manage the {@link Schema Schemas} that describe the structure of the fields in your Documents.
+ */
 public class Schemas extends ChinoBaseAPI {
 
     /**

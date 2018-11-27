@@ -13,9 +13,13 @@ import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * Manage upload and download of binary files as {@link Blobs BLOBs}.
+ */
 public class Blobs extends ChinoBaseAPI {
 
-    static int chunkSize=1024*1024;
+    private static int chunkSize = 1024 * 1024;
+
     private final ChinoAPI parent;
     private final String hostUrl;
 
