@@ -23,6 +23,26 @@ public final class UsersSearch extends AbstractSearchClient<GetUsersResponse> {
         super(APIClient, schemaId);
     }
 
+    /**
+     * Check that the username exists in the {@link io.chino.api.userschema.UserSchema} specified in
+     * {@link Search#users(String) users()}.
+     *
+     * @param username a String containing the username to look for
+     * 
+     * @return {@code true} if a User exists with that name in the specified UserSchema.
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public boolean usernameExists(String username) throws IOException, ChinoApiException {
+        // invalidate any current query
+        this.setQuery(null);
+        // check if username exist and return result
+        GetUsersResponse response = (GetUsersResponse) this.setResultType(USERNAME_EXISTS)
+               .with("username", EQUALS, username)
+               .buildSearch().execute();
+        return response.getExists();
+    }
 
     @Override
     public GetUsersResponse execute(int offset, int limit) throws IOException, ChinoApiException {

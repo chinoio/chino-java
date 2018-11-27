@@ -26,6 +26,11 @@ public enum ResultType {
      * if the search results for the given query contain at least one value, {@code false} otherwise.
      */
     EXISTS,
-//    USERNAME_EXISTS
 
+    /**
+     * Check whether the provided username exists in a given UserSchema.
+     * It's best practice to use the method {@link UsersSearch#usernameExists(String)}
+     * in order to perform this type of search, instead of doing it manually.
+     */
+    USERNAME_EXISTS
 }
