@@ -3,7 +3,7 @@ Official Java wrapper for [**CHINO.io** API](https://chino.io).
 
 Full API docs are available [here](http://docs.chino.io).
 
-#### What's new - version 1.3
+#### What's new - version 1.3.1
 
 * **Upgraded minimum JDK version**:
     
@@ -25,13 +25,16 @@ Full API docs are available [here](http://docs.chino.io).
     We strongly suggest to migrate to the new Search API as soon as possible to preserve compatibility with new versions 
     of our SDK.
     
+    **NEW in v1.3.1**: added pagination of Search results and a new method `usernameExists` to check if a user is 
+    already registered. Learn more in the [Search](#search-iochinojavasearch) section.
+    
 * **Permissions API**
 
-    We also redesigned the interface of the Permissions API, in order to make it easier to use.
+    We also redesigned the interface of the **Permissions API** and made it easier to use.
+    You can now set or revoke Permissions to your Users with fewer lines of code and in a better readable fashion.
     
-    You can now set or revoke Permissions to your Users with few lines of code, as opposed to 
-    the old interface. The old interface is still working but has been deprecated and will be removed in a
-    future version (1.3.X or 1.4).
+    The old interface is still working but has been deprecated and **will be removed in a
+    future version** (1.3.X or 1.4).
     
 * **BLOBs API**:
     
@@ -42,14 +45,14 @@ Full API docs are available [here](http://docs.chino.io).
     
     Also method `delete(String, boolean)` will be removed from the public API and replaced by `delete(String)`.
     
-* **Documents API**:
+* **Documents API** and **Users API**:
 
-    Now it is possible to wait for Documents to be fully indexed, so that they will appear in the Search results
-    right after the `create(...)` method return. See the *Documents* section below to learn more about
-    synchronous creation.
+    Now it is possible to wait for Documents and Users to be fully indexed, so that they will appear in the Search results
+    right after the `create(...)` and `update(...)` methods return. See the [*Documents*](#documents-iochinojavadocuments) and [*Users*](#users-iochinojavausers-and-userschemas-iochinojavauserschemas) section below to learn more about synchronous creation and update.
     
 * **Other minor changes**:
-    * new method `Users.checkPassword(String password)` to verify a User's password
+    * Added Javadoc for most of the classes of the SDK; existing documentation has been fixed and updated.
+    * New method `Users.checkPassword(String password)` to verify a User's password
     
 
 ## Setup
@@ -74,7 +77,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>1.3</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 
@@ -91,7 +94,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:1.3'
+    compile 'com.github.chinoio:chino-java:1.3.1'
 }
 ```
 
@@ -136,11 +139,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-1.3-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-1.3.1-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3/javadoc/)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3.1/javadoc/io/chino/java/package-summary.html)
     
 ## Usage
 In order to use this SDK you need to register an account at the [Chino.io console](https://console.test.chino.io/).
@@ -244,6 +247,7 @@ This is useful if you plan to [Search](#search-iochinojavasearch) for Users righ
 
 Use the following methods:
 - `create(<user_schema_id>, <attributes>, <consistent>)`
+- `update(<user_id>, <attributes>, <consistent>)`
 
 
 
@@ -298,7 +302,7 @@ Groups can be used to collect Users regardless of their UserSchema, can have att
 ### Permissions `io.chino.java.Permissions`
 API client to manage access Permissions of Users to the resources. [*See full docs*](https://docs.chino.io/#permissions)
 
-***New in v1.3*** **- new Permissions interface**:
+**- new Permissions interface**:
 
 The new system provides: 
 * a `PermissionSetter` to specify which Permissions will be granted, as in this JSON object:
@@ -406,12 +410,12 @@ This is useful if you plan to [Search](#search-iochinojavasearch) for Documents 
 
 Use the following methods:
 - `create(<schema_id>, <content>, <consistent>)`
-- `update(<schema_id>, <content>, <consistent>)`
+- `update(<document_id>, <content>, <consistent>)`
 
 ### BLOBs `io.chino.java.Blobs`
 API client for binary file (BLOB) upload. [*See full docs*](https://docs.chino.io/#blobs)
 
-***New in v1.3*** **- deprecated methods**:
+**- deprecated methods**:
 
 - `uploadBlob(<path>, <document_id>, <field>, <file_name>)`
     this is the main function which handles the upload of a Blob from start to end.
@@ -426,13 +430,18 @@ The following functions are deprecated and will be removed soon:
 ### Search `io.chino.java.Search`
 API client to perform search operations on Chino.io resources. [*See full docs*](https://docs.chino.io/#search-api)
 
-***New in v1.3*** **- new Search interface**:
+**- new Search interface**:
 
 We have updated our Search API, implementing:
  
+* ***New in v1.3.1***: a new method `UsersSearch.usernameExists`, that allows to easily check if a name is already
+registered in a specified UserSchema. E.g.:
+```java
+    boolean exists = chino.search.users(<user_schema_id>).usernameExists(<username>);
+```
 * a more dev-friendly interface
 * support for complex queries - now supporting multiple conditional operators (AND, OR, NOT) in one query.
-* a `SearchQueryBuilder` class, that makes queries easily repeatable and thread-safe 
+* a `SearchQueryBuilder` class, that makes queries easily repeatable and thread-safe
 
 The new Search requests must contain the following parameters:
 * the Search domain, either a `UserSchema` or a `Schema`
@@ -463,7 +472,13 @@ Then the query must be built using the `buildSearch()` method.
 
 The returned object is a subclass of `AbstractSearchClient` that can perform that query. By calling
 ```java
+    // return first 10 results
     search.execute();
+
+    // return the first 50 results starting from the 5th
+    int offset = 5;
+    int limit = 50;
+    search.execute(offset, limit);
 ```
 you will send the API call, just like in the old search, and obtain a GetDocumentResponse.
 
@@ -614,7 +629,7 @@ Testing is made with JUnit 4. Tests are implemented for the following classes:
 Deprecated methods have been skipped; this can cause some classes to appear to be
 covered for less than 100% in a coverage report.
 
-##Support
+## Support
 Please report problems and ask for support using **Github issues**.
 
 If you want to learn more about Chino.io, visit the [official site](https://chino.io) or email us at [info@chino.io](mailto:info@chino.io).
