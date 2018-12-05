@@ -63,8 +63,10 @@ public class ChinoBaseTest {
             TestConstants.HOST = host;
         }
         System.out.println();
-        System.out.println("--- Test started");
-        System.out.println("Using Chino.io host: " + TestConstants.HOST);
+        System.out.print("--- Test started");
+        System.out.print(" ~ using Chino.io host: " + TestConstants.HOST);
+        System.out.print(" ---");
+        System.out.println();
     }
 
     @Before
@@ -87,7 +89,8 @@ public class ChinoBaseTest {
         errorMsg =  "init() method not called";
         continueTests = true;
         test = null;
-        System.out.println("--- Test ended.");
+        System.out.println("--- Test ended ---");
+        System.out.println();
         System.gc();
     }
 
