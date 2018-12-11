@@ -20,7 +20,7 @@ public class GetApplicationResponse {
 
     /**
      *
-     * @return The application
+     * @return The metadata of the {@link Application}
      */
     @JsonProperty("application")
     public Application getApplication() {
@@ -28,9 +28,9 @@ public class GetApplicationResponse {
     }
 
     /**
+     * init the content of this object with a new {@link Application}.
      *
      * @param application
-     * The application
      */
     @JsonProperty("application")
     public void setApplication(Application application) {

@@ -29,6 +29,7 @@ import java.util.Objects;
 
 import static io.chino.api.search.FilterOperator.EQUALS;
 import static io.chino.api.search.FilterOperator.GREATER_THAN;
+import static io.chino.api.search.SearchQueryBuilder.not;
 import static io.chino.api.search.SearchQueryBuilder.with;
 import static org.junit.Assert.*;
 
