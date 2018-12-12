@@ -18,7 +18,6 @@ import java.util.Scanner;
  */
 public class ChinoBaseTest {
 
-    public static final String URL = TestConstants.HOST;
     public static String USERNAME = "testusrname";
     public static String PASSWORD = "testpword32";
 

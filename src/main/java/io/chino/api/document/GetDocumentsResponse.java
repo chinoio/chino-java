@@ -33,7 +33,7 @@ public class GetDocumentsResponse {
     private Integer offset;
     @JsonProperty("IDs")
     private List<String> ids = new ArrayList<>();
-    
+
     /**
     * 
     * @return
@@ -131,7 +131,10 @@ public class GetDocumentsResponse {
      */
     @JsonProperty("documents")
     public void setDocuments(List<Document> documents) {
+        // invalidate and update list of IDs
         this.documents = documents;
+        ids = new ArrayList<>();
+        getIds();
     }
 
     @Override
@@ -147,6 +150,14 @@ public class GetDocumentsResponse {
     }
 
     public List<String> getIds() {
+        if (ids == null) {
+            ids = new ArrayList<>();
+        }
+        if (ids.isEmpty()) {
+            for (Document doc : documents) {
+                ids.add(doc.getDocumentId());
+            }
+        }
         return ids;
     }
 

@@ -110,6 +110,7 @@ public abstract class AbstractSearchClient<ResponseType> {
      * @return a {@link SearchQueryBuilder} that will build this client's query.
      */
     public SearchQueryBuilder with(SearchQueryBuilder query) {
+        query.setClient(this);
         return query;
     }
 

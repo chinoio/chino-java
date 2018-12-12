@@ -267,16 +267,16 @@ abstract class SearchCondition implements SearchTreeNode {
             return sb.append(")");
         }
 
-        @Override
-        public String parseJSON(int indentLevel) {
-            StringBuilder sb = new StringBuilder("{\n");
-            indent(sb, indentLevel).append("\"").append(operator).append("\" : ");
-            SearchTreeNode node = getChild();
-            if (node != null)
-                sb.append(
-                        node.parseJSON(indentLevel)
-                );
-            return indent(sb, indentLevel-1).append("}\n").toString();
-        }
+//        @Override
+//        public String parseJSON(int indentLevel) {
+//            StringBuilder sb = new StringBuilder("{\n");
+//            indent(sb, indentLevel).append("\"").append(operator).append("\" : ");
+//            SearchTreeNode node = getChild();
+//            if (node != null)
+//                sb.append(
+//                        node.parseJSON(indentLevel)
+//                );
+//            return indent(sb, indentLevel-1).append("}\n").toString();
+//        }
     }
 }
