@@ -15,7 +15,6 @@ import static org.junit.Assert.*;
 
 public class ApplicationsTest extends ChinoBaseTest {
 
-    private static ChinoAPI chino_customer = new ChinoAPI(URL, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
     private static Applications test;
 
     private static LinkedList<Application> localApps;
@@ -23,6 +22,7 @@ public class ApplicationsTest extends ChinoBaseTest {
     @BeforeClass
     public static void setUpClass() throws Exception {
         ChinoBaseTest.beforeClass();
+        ChinoAPI chino_customer = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_customer.applications);
         ChinoBaseTest.checkResourceIsEmpty(test.list().getApplications().isEmpty(), test);
 

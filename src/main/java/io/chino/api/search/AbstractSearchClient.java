@@ -53,7 +53,9 @@ public abstract class AbstractSearchClient<ResponseType> {
 
     /**
      * Add a new {@link SortRule} for sorting the results of this Search.
-     * The new rule will have lower priority compared to the existing ones.
+     * The new rule will have lower priority compared to the existing ones. E.g.: if a {@link SortRule} exists that
+     * sorts by date of birth and I add another with this method that sorts by first name,
+     * then <b>the former will be applied first.</b>
      *
      * @param fieldName the name of the field that will be used to sort the results. The field must be indexed.
      * @param order a value in {@link io.chino.api.search.SortRule.Order SortRule.Order}
@@ -72,8 +74,9 @@ public abstract class AbstractSearchClient<ResponseType> {
 
     /**
      * Add a new {@link SortRule} for sorting the results of this Search.
-     * The new rule will be evaluated based on the provided {@code index}, where a low index means a higher priority.
-     * E.g. in order to evaluate the new rule, set index to 0.
+     * The sort rules will be applied based on their {@code index}, where a low index means a higher priority.
+     * E.g.: if a {@link SortRule} exists that sorts by date of birth and I add another with {@code index = 0} that
+     * sorts by first name, then <b>the latter will be applied first.</b>
      *
      * @param fieldName the name of the field that will be used to sort the results. The field must be indexed.
      * @param order a value in {@link io.chino.api.search.SortRule.Order SortRule.Order}
@@ -107,6 +110,7 @@ public abstract class AbstractSearchClient<ResponseType> {
      * @return a {@link SearchQueryBuilder} that will build this client's query.
      */
     public SearchQueryBuilder with(SearchQueryBuilder query) {
+        query.setClient(this);
         return query;
     }
 

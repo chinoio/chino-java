@@ -29,6 +29,8 @@ import java.util.Objects;
 
 import static io.chino.api.search.FilterOperator.EQUALS;
 import static io.chino.api.search.FilterOperator.GREATER_THAN;
+import static io.chino.api.search.FilterOperator.LOWER_THAN;
+import static io.chino.api.search.SearchQueryBuilder.not;
 import static io.chino.api.search.SearchQueryBuilder.with;
 import static org.junit.Assert.*;
 
@@ -368,4 +370,60 @@ public class SearchTest extends ChinoBaseTest {
         );
     }
 
+    @Test
+    public void testNewSearch_Not() throws ChinoApiException, IOException {
+        int ERRORS = 0;
+        // Setup
+        String customRepoId = chino_admin.repositories.create("testSearchDocsWithDateTime").getRepositoryId();
+
+        SchemaStructure structure = new SchemaStructure();
+        List<Field> fields = new LinkedList<>();
+        fields.add(new Field( "time", "time", true));
+        fields.add(new Field( "date", "date", true));
+        fields.add(new Field( "groupId", "string", true));
+        structure.setFields(fields);
+        String customSchemaId = chino_admin.schemas.create(customRepoId, "testSearchDocsWithDateTime", structure).getSchemaId();
+
+        String content = "{\"time\": \"12:12:12\", \"date\": \"2018-12-01\", \"groupId\": \"77cf7318-851c-47df-844d-71898a370007\"}";
+        String[] docIds = {
+                chino_admin.documents.create(customSchemaId, content, true).getDocumentId(),
+                chino_admin.documents.create(customSchemaId, content, true).getDocumentId()
+        };
+
+        // Search
+        DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(customSchemaId)
+                .setResultType(ResultType.FULL_CONTENT)
+                .addSortRule("time", SortRule.Order.DESC)
+                .with(
+                        not("groupId", LOWER_THAN, "77cf7318-851c-47df-844d-71898a370007")
+                )
+                .and("date", EQUALS, "2018-12-01")
+                .buildSearch();
+        GetDocumentsResponse result = search.execute();
+
+        System.out.println(search.toString());
+        System.out.println("TOTAL COUNT: " + result.getTotalCount());
+        System.err.println();
+        System.out.flush();
+
+        try {
+            assertFalse("Search produced no results", result.getDocuments().isEmpty());
+            for (String id : docIds) {
+                assertTrue("Document <" + id + "> missing from search results", result.getIds().contains(id));
+            }
+        } catch (AssertionError e) {
+            System.err.println(e);
+            ERRORS ++;
+        }
+
+        // Tear down
+        for (String id : docIds) {
+            chino_admin.documents.delete(id, true);
+        }
+        chino_admin.schemas.delete(customSchemaId, true);
+        chino_admin.repositories.delete(customRepoId, true);
+
+        // Fail test on errors
+        assertEquals(ERRORS + " errors occurred. See more on System.err output", 0, ERRORS);
+    }
 }

@@ -21,7 +21,7 @@ public class TestConstants {
     /**
      * The base URL of the Chino.io test API
      */
-    public static String HOST = "https://api.test.chino.io/v1";
+    public static String HOST = null;
 
     /**
      * Your customer ID - DO NOT WRITE IT HERE IN THE CODE.
@@ -114,6 +114,14 @@ public class TestConstants {
                     + "ChinoAPIExample will read the values from there (in this order) and authenticate the API calls with your credentials.\n");
 
             System.exit(2);
+        }
+
+        HOST = testProperties.getProperty("chino.test.host", null);
+        if (HOST == null || HOST.isEmpty()) {
+            HOST = System.getenv("host");
+        }
+        if (HOST == null) {
+            HOST = "https://api.test.chino.io/v1";
         }
         
         // sample values; you can edit those two values at will (either here or in class 'TestConstants').

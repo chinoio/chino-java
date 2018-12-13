@@ -18,7 +18,6 @@ import java.util.Scanner;
  */
 public class ChinoBaseTest {
 
-    public static final String URL = TestConstants.HOST;
     public static String USERNAME = "testusrname";
     public static String PASSWORD = "testpword32";
 
@@ -63,8 +62,11 @@ public class ChinoBaseTest {
             TestConstants.HOST = host;
         }
         System.out.println();
-        System.out.println("--- Test started");
-        System.out.println("Using Chino.io host: " + TestConstants.HOST);
+        System.out.print("--- Test started");
+        System.out.print(" ~ using Chino.io host: " + TestConstants.HOST);
+        System.out.print(" ---");
+        System.out.println();
+        System.out.flush();
     }
 
     @Before
@@ -87,7 +89,8 @@ public class ChinoBaseTest {
         errorMsg =  "init() method not called";
         continueTests = true;
         test = null;
-        System.out.println("--- Test ended.");
+        System.out.println("--- Test ended ---");
+        System.out.println();
         System.gc();
     }
 
@@ -116,10 +119,10 @@ public class ChinoBaseTest {
                 System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
             System.err.println("To hide this message, set 'chino.test.automated=allow' in src/test/res/test.properties and re-run the tests.");
             } else {
-                System.out.println();
                 System.out.println("chino.test.automated=allow: every object will be deleted.");
                 new DeleteAll().deleteAll(resourceAPIClient);
                 continueTests = true;
+                System.out.flush();
                 return;
             }
         }
@@ -127,7 +130,9 @@ public class ChinoBaseTest {
         continueTests = resourceIsEmpty;
 
         if (!continueTests) {
-            errorMsg = "If you don't want to delete all your " + resourceName + ", consider using another account for testing.";
+            errorMsg = resourceName + " were found on your account. " +
+                    "If you don't want to delete all your " + resourceName + ", consider using another account for testing. " +
+                    "Otherwise, set 'automated_test=allow' in your environment and rerun the tests.";
         } else {
             errorMsg = "no errors";
         }
