@@ -37,7 +37,10 @@ jobs:
       script:
         - gradle cobertura -i
       after_script:
-        - ./cc-test-reporter after-build -t cobertura -p build/reports/cobertura/* --exit-code $TRAVIS_TEST_RESULT
+        - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
+        - ./cc-test-reporter upload-coverage
+#       # command below not working, can't find cobertura.ser/.xml
+#        - ./cc-test-reporter after-build -t cobertura -p build/coverage.ser --exit-code $TRAVIS_TEST_RESULT
 
 stages:
   - test-jdk8
