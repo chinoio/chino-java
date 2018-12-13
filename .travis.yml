@@ -28,14 +28,19 @@ jobs:
       jdk: openjdk8
       before_install:
         - echo $JAVA_HOME
+        # init Gradle wrapper
         - chmod +x gradlew
       before_script:
+        # Download CodeClimate test reporter
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
+        # Prepare for test reporting
         - ./cc-test-reporter before-build
       script:
+        # run tests with Cobertura for coverage
         - gradle cobertura -i
       after_script:
+        # prepare & upload coverage report to CodeClimate
         - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
         - ./cc-test-reporter upload-coverage
 
