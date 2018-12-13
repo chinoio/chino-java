@@ -14,29 +14,29 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 public class CreateApplicationRequest {
 
     /**
-     * The new Application's name.
+     * The Application's name.
      */
     @JsonProperty("name")
     private String name;
     /**
-     * The new Application's grant_type - either "password" or "authentication_code".
+     * The Application's grant_type - either "password" or "authentication_code".
      */
     @JsonProperty("grant_type")
     private String grantType;
     /**
-     * The new Application's redirect_url.
+     * The Application's redirect_url. This value is only used if {@link #grantType} is set to "authentication_code"
      */
     @JsonProperty("redirect_url")
     private String redirectUrl;
     /**
-     * The type of Application, either "public" or "confidential".
+     * The type of OAuth2client represented by this Application - either "public" or "confidential".
+     * @see ClientType#toString()
      */
     @JsonProperty("client_types")
     private String clientType;
 
     /**
-     * Empty constructor used by {@link com.fasterxml.jackson.databind.ObjectMapper ObjectMapper} to create/map
-     * JSON objects from/to this class.
+     * Empty constructor used in serialization
      */
     private CreateApplicationRequest(){
     }
@@ -44,6 +44,7 @@ public class CreateApplicationRequest {
     /**
      * Create a new {@link ClientType#CONFIDENTIAL "confidential"} Application,
      * which can hold securely an "app_secret".
+     *
      * @param name the new Application's name
      * @param grantType The new Application's grant_type - either "password" or "authentication_code".
      * @param redirectUrl The new Application's redirect_url.
@@ -68,7 +69,7 @@ public class CreateApplicationRequest {
 
     /**
      *
-     * @return The name
+     * @return The {@link #name}
      */
     @JsonProperty("name")
     public String getName() {
@@ -77,8 +78,7 @@ public class CreateApplicationRequest {
 
     /**
      *
-     * @param name
-     *            The name
+     * @param name set the {@link #name}
      */
     @JsonProperty("name")
     public final void setName(String name) {
@@ -90,7 +90,7 @@ public class CreateApplicationRequest {
 
     /**
      *
-     * @return The grantType
+     * @return The {@link #grantType}
      */
     @JsonProperty("grant_type")
     public String getGrantType() {
@@ -99,8 +99,7 @@ public class CreateApplicationRequest {
 
     /**
      *
-     * @param grantType
-     *            The grantType
+     * @param grantType set the {@link #grantType}
      */
     @JsonProperty("grant_type")
     public final void setGrantType(String grantType) {
@@ -115,7 +114,7 @@ public class CreateApplicationRequest {
 
     /**
      *
-     * @return The redirectUrl
+     * @return The {@link #redirectUrl}
      */
     @JsonProperty("redirect_url")
     public String getRedirectUrl() {
@@ -124,8 +123,7 @@ public class CreateApplicationRequest {
 
     /**
      *
-     * @param redirectUrl
-     *            The redirectUrl
+     * @param redirectUrl set the {@link #redirectUrl}
      */
     @JsonProperty("redirect_url")
     public final void setRedirectUrl(String redirectUrl) {

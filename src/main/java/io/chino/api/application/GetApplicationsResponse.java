@@ -19,6 +19,9 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class GetApplicationsResponse {
 
+    /**
+     * The actual {@link List} of {@link Application Applications}
+     */
     @JsonProperty("applications")
     private List<Application> applications;
     @JsonProperty("count")
@@ -34,7 +37,6 @@ public class GetApplicationsResponse {
     /**
      *
      * @return
-     * The count
      */
     @JsonProperty("count")
     public Integer getCount() {

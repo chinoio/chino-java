@@ -9,6 +9,11 @@ branches:
     - master
     - travis-ci-test
 
+env:
+  global:
+    - CC_TEST_REPORTER_ID=1a40cf4d7c373bae338a42587014cd23bd8a17ce866f03d127b1e065c4ccfacb
+    - automated_test=allow
+
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
   - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
@@ -23,8 +28,21 @@ jobs:
       jdk: openjdk8
       before_install:
         - echo $JAVA_HOME
+        # init Gradle wrapper
         - chmod +x gradlew
+      before_script:
+        # Download CodeClimate test reporter
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        # Prepare for test reporting
+        - ./cc-test-reporter before-build
       script:
-        - gradle test --info
+        # run tests with Cobertura for coverage
+        - gradle cobertura -i
+      after_script:
+        # prepare & upload coverage report to CodeClimate
+        - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
+        - ./cc-test-reporter upload-coverage
+
 stages:
   - test-jdk8

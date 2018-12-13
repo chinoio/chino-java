@@ -3,7 +3,7 @@ Official Java wrapper for [**CHINO.io** API](https://chino.io).
 
 Full API docs are available [here](http://docs.chino.io).
 
-#### What's new - version 1.3
+#### What's new - version 1.3.1
 
 * **Upgraded minimum JDK version**:
     
@@ -143,7 +143,8 @@ The Javadoc for this version of the SDK can be obtained:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3.1/javadoc/)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3.1/javadoc/io/chino/java/package-summary.html)
+
     
 ## Usage
 In order to use this SDK you need to register an account at the [Chino.io console](https://console.test.chino.io/).
