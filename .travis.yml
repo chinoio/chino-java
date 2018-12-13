@@ -35,9 +35,11 @@ jobs:
         - chmod +x ./cc-test-reporter
         - ./cc-test-reporter before-build
       script:
-        - gradle cobertura -i
+       # - gradle cobertura -i
+        # below task is used for testing, remove after the report is published correctly
+        - gradle cobertura -i --tests io.chino.java.ApplicationsTest
       after_script:
-        - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+        - ./cc-test-reporter after-build -t cobertura --exit-code $TRAVIS_TEST_RESULT
 
 stages:
   - test-jdk8
