@@ -265,6 +265,22 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User updatePartial(String userId, HashMap attributes) throws IOException, ChinoApiException {
+        return updatePartial(userId, attributes, false);
+    }
+
+    /**
+     * Update some fields of a User.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param attributes a {@link HashMap} with the new values of the User's attributes
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User updatePartial(String userId, HashMap attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
 
         CreateUserRequest createUserRequest= new CreateUserRequest();
@@ -276,7 +292,8 @@ public class Users extends ChinoBaseAPI {
         }
         createUserRequest.setAttributes(attributes);
 
-        JsonNode data = patchResource("/users/"+userId, createUserRequest);
+        String URL = "/users/" + userId + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = patchResource(URL, createUserRequest);
         if(data!=null)
             return mapper.convertValue(data, GetUserResponse.class).getUser();
 
@@ -296,10 +313,26 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User updatePartial(String userId, String attributes) throws IOException, ChinoApiException {
+        return updatePartial(userId, attributes, false);
+    }
+
+    /**
+     * Update some fields of a User.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User updatePartial(String userId, String attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
         HashMap attrMap =  fromStringToHashMap(attributes);
 
-        return updatePartial(userId, attrMap);
+        return updatePartial(userId, attrMap, consistent);
     }
 
 
@@ -319,10 +352,31 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User update(String userId, String username, String password, HashMap attributes) throws IOException, ChinoApiException {
+        return update(userId, username, password, attributes, false);
+    }
+
+
+    /**
+     * Update a {@link User} object.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes an HashMap with the new values of the User's attributes.
+     *                   You must provide <b><i> all </i></b> of the attributes that are defined for the User.
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User update(String userId, String username, String password, HashMap attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
         CreateUserRequest createUserRequest= new CreateUserRequest(username, password, attributes);
 
-        JsonNode data = putResource("/users/"+userId, createUserRequest);
+        String URL = "/users/"+userId + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = putResource(URL, createUserRequest);
         if(data!=null)
             return mapper.convertValue(data, GetUserResponse.class).getUser();
 
@@ -344,10 +398,29 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User update(String userId, String username, String password, String attributes) throws IOException, ChinoApiException {
+        return update(userId, username, password, attributes, false);
+    }
+
+    /**
+     * Update a {@link User} object.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User update(String userId, String username, String password, String attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
         CreateUserRequest createUserRequest= new CreateUserRequest(username, password, fromStringToHashMap(attributes));
 
-        JsonNode data = putResource("/users/"+userId, createUserRequest);
+        String URL = "/users/"+userId + ((consistent) ? "?consistent=true" : "");
+        JsonNode data = putResource(URL, createUserRequest);
         if(data!=null)
             return mapper.convertValue(data, GetUserResponse.class).getUser();
 
