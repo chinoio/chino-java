@@ -63,7 +63,7 @@ public class RepositoriesTest extends ChinoBaseTest {
     @Test
     public void test_list() throws IOException, ChinoApiException {
         Repository[] repos = new Repository[5];
-        synchronized (test) {
+        synchronized (this) {
             for (int i=0; i<5; i++) {
                 repos[i] = test.create("test_list_repo" + i);
                 try {
