@@ -62,13 +62,15 @@ public class RepositoriesTest extends ChinoBaseTest {
 
     @Test
     public void test_list() throws IOException, ChinoApiException {
-        Repository[] repos = {
-                test.create("test_list_repo1"),
-                test.create("test_list_repo2"),
-                test.create("test_list_repo3"),
-                test.create("test_list_repo4"),
-                test.create("test_list_repo5")
-        };
+        Repository[] repos = new Repository[5];
+        synchronized (test) {
+            for (int i=0; i<5; i++) {
+                repos[i] = test.create("test_list_repo" + i);
+                try {
+                    wait(3000);
+                } catch (InterruptedException ignored) {}
+            }
+        }
 
         /* LIST (no args) */
         List<Repository> list = test.list().getRepositories();

@@ -1,6 +1,5 @@
 package io.chino.java;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.chino.api.common.ChinoApiException;
@@ -27,9 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
-import static io.chino.api.search.FilterOperator.EQUALS;
-import static io.chino.api.search.FilterOperator.GREATER_THAN;
-import static io.chino.api.search.FilterOperator.LOWER_THAN;
+import static io.chino.api.search.FilterOperator.*;
 import static io.chino.api.search.SearchQueryBuilder.not;
 import static io.chino.api.search.SearchQueryBuilder.with;
 import static org.junit.Assert.*;
@@ -385,10 +382,16 @@ public class SearchTest extends ChinoBaseTest {
         String customSchemaId = chino_admin.schemas.create(customRepoId, "testSearchDocsWithDateTime", structure).getSchemaId();
 
         String content = "{\"time\": \"12:12:12\", \"date\": \"2018-12-01\", \"groupId\": \"77cf7318-851c-47df-844d-71898a370007\"}";
-        String[] docIds = {
-                chino_admin.documents.create(customSchemaId, content, true).getDocumentId(),
-                chino_admin.documents.create(customSchemaId, content, true).getDocumentId()
-        };
+
+        String[] docIds = new String[2];
+        synchronized (this) {
+            for (int i=0; i<2; i++) {
+                docIds[i] = chino_admin.documents.create(customSchemaId, content, true).getDocumentId();
+                try {
+                    wait(3000);
+                } catch (InterruptedException ignored) {}
+            }
+        }
 
         // Search
         DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(customSchemaId)

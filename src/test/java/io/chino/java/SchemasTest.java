@@ -5,8 +5,8 @@ import io.chino.api.common.Field;
 import io.chino.api.schema.Schema;
 import io.chino.api.schema.SchemaRequest;
 import io.chino.api.schema.SchemaStructure;
-import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.ChinoBaseTest;
+import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.TestConstants;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -102,13 +102,10 @@ public class SchemasTest extends ChinoBaseTest {
 
     @Test
     public void test_list() throws IOException, ChinoApiException {
-        Schema[] schemas = {
-                makeSchema("test_list", 1),
-                makeSchema("test_list", 2),
-                makeSchema("test_list", 3),
-                makeSchema("test_list", 4),
-                makeSchema("test_list", 5)
-        };
+        Schema[] schemas = new Schema[5];
+        for (int i=0; i<5; i++) {
+                schemas[i] = makeSchema("test_list", i);
+        }
 
         /* LIST (1 arg) */
         List<Schema> list = test.list(REPO_ID).getSchemas();
@@ -144,10 +141,14 @@ public class SchemasTest extends ChinoBaseTest {
         );
     }
 
-    private Schema makeSchema(String method, int instanceNumber) throws IOException, ChinoApiException {
+    private synchronized Schema makeSchema(String method, int instanceNumber) throws IOException, ChinoApiException {
         String desc = method + "_" + instanceNumber;
 
-        return test.create(REPO_ID, desc, TestClassStructure.class);
+        Schema res = test.create(REPO_ID, desc, TestClassStructure.class);
+        try {
+            wait(3000);
+        } catch (InterruptedException ignored) {}
+        return res;
     }
 
 }

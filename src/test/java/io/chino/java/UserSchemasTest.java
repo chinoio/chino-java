@@ -5,8 +5,8 @@ import io.chino.api.common.Field;
 import io.chino.api.userschema.UserSchema;
 import io.chino.api.userschema.UserSchemaRequest;
 import io.chino.api.userschema.UserSchemaStructure;
-import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.ChinoBaseTest;
+import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.TestConstants;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -126,13 +126,18 @@ public class UserSchemasTest extends ChinoBaseTest {
 
     @Test
     public void test_list() throws IOException, ChinoApiException {
-        UserSchema[] userSchemas = {
-                test.create("UserSchema_list_test_1", TestClassStructure.class),
-                test.create("UserSchema_list_test_2", TestClassStructure.class),
-                test.create("UserSchema_list_test_3", TestClassStructure.class),
-                test.create("UserSchema_list_test_4", TestClassStructure.class),
-                test.create("UserSchema_list_test_5", TestClassStructure.class)
-        };
+        UserSchema[] userSchemas = new UserSchema[5];
+
+        synchronized (this) {
+            for (int i=0; i<5; i++) {
+                userSchemas[i] = test.create("UserSchema_list_test_" + (i+1), TestClassStructure.class);
+                try {
+                    wait(3000);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
+
 
         /* LIST (0 args) */
 
