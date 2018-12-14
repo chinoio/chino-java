@@ -170,27 +170,36 @@ public class UsersTest extends ChinoBaseTest {
     }
 
     @Test
-    public void updatePartial_HashMap() throws IOException, ChinoApiException {
+    public void updatePartialSync_HashMap() throws IOException, ChinoApiException {
         User old = newUser("updatePartial_HashMap");
 
-        UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
-        UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
-        newAttrs.test_integer ++;
+        String newUsername = null,
+                newPassword = null;
 
-        String newUsername = "UPDATED_" + old.getUsername(),
-                newPassword = "updatedPW";
+        for (boolean consistent : new boolean[] {true, false}) {
+            UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
+            UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
+            newAttrs.test_integer ++;
 
-        HashMap<String, Object> updatedAttributes = new HashMap<>();
-        updatedAttributes.put("test_integer", newAttrs.test_integer);
+            newPassword = "updatedPW";
+            newUsername = (consistent) ? "SYNC" : "ASYNC" + old.getUsername();
 
-        updatedAttributes.put("username", newUsername);
-        updatedAttributes.put("password", newPassword);
+            HashMap<String, Object> updatedAttributes = new HashMap<>();
+            updatedAttributes.put("test_integer", newAttrs.test_integer);
 
-        User updated = test.updatePartial(old.getUserId(), updatedAttributes);
+            updatedAttributes.put("username", newUsername);
+            updatedAttributes.put("password", newPassword);
 
-        assertEquals(old.getUserId(), updated.getUserId());
-        assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
-        assertNotEquals("user not updated!", old.getUsername(), updated.getUsername());
+            User updated;
+            updated = consistent ? test.updatePartial(old.getUserId(), updatedAttributes, true)
+                    : test.updatePartial(old.getUserId(), updatedAttributes);
+
+            assertEquals(old.getUserId(), updated.getUserId());
+            assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            assertNotEquals("user not updated!", old.getUsername(), updated.getUsername());
+
+            old = updated;
+        }
 
         // verify that login is enabled with new credentials
         Application app = chino_admin.applications.create("test Application for UsersTest", "password", "", ClientType.PUBLIC);
@@ -207,52 +216,68 @@ public class UsersTest extends ChinoBaseTest {
     @Test
     public void updatePartial_String() throws IOException, ChinoApiException {
         User old = newUser("updatePartial_String");
-        UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
-        UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
-        newAttrs.test_integer ++;
 
-        String updatedAttributes = "{" +
-                "  \"test_integer\":" + newAttrs.test_integer +
-                "}";
-        User updated = test.updatePartial(old.getUserId(), updatedAttributes);
+        for (boolean consistent : new boolean[] {true, false}) {
+            UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
+            UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
+            newAttrs.test_integer ++;
 
-        assertNotNull("user not updated!", updated);
-        assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            String updatedAttributes = "{" +
+                    "  \"test_integer\":" + newAttrs.test_integer +
+                    "}";
+
+            User updated;
+            updated = consistent ? test.updatePartial(old.getUserId(), updatedAttributes, true)
+                        : test.updatePartial(old.getUserId(), updatedAttributes);
+
+            assertNotNull("user not updated!", updated);
+            assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            old = updated;
+        }
     }
 
     @Test
-    public void updateTest_HashMap() throws IOException, ChinoApiException {
+    public void updateTestSync_HashMap() throws IOException, ChinoApiException {
         User old = newUser("updateTest_HashMap");
-        UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
-        UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
 
-        HashMap<String, Object> updatedAttributes = new HashMap<>();
-        updatedAttributes.put("test_integer", ++ newAttrs.test_integer);
-        updatedAttributes.put("test_boolean", newAttrs.test_boolean);
-        updatedAttributes.put("test_date", dateFormat.format(newAttrs.test_date));
-        updatedAttributes.put("test_float", newAttrs.test_float);
-        updatedAttributes.put("test_string", "updateTest_HashMap_updated");
+        for (boolean consistent : new boolean[] {true, false}) {
+            UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
 
-        User updated = test.update(old.getUserId(), old.getUsername(), TestConstants.PASSWORD, updatedAttributes);
+            HashMap<String, Object> updatedAttributes = new HashMap<>();
+            updatedAttributes.put("test_integer", ++ oldAttrs.test_integer);
+            updatedAttributes.put("test_boolean", oldAttrs.test_boolean);
+            updatedAttributes.put("test_date", dateFormat.format(oldAttrs.test_date));
+            updatedAttributes.put("test_float", oldAttrs.test_float);
+            updatedAttributes.put("test_string", "updateTest_HashMap_updated");
 
-        assertNotNull("user not updated!", updated);
-        assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            User updated;
+            updated = consistent ? test.update(old.getUserId(), old.getUsername(), TestConstants.PASSWORD, updatedAttributes, true)
+                    : test.update(old.getUserId(), old.getUsername(), TestConstants.PASSWORD, updatedAttributes);
 
+            assertNotNull("user not updated!", updated);
+            assertEquals("user not updated!", oldAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            old = updated;
+        }
     }
 
     @Test
     public void updateTest_String() throws IOException, ChinoApiException {
         User old = newUser("updatePartial_String");
-        UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
-        UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
-        newAttrs.test_integer ++;
+        for (boolean consistent : new boolean[] {true, false}) {
+            UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(old.getUserId(), UserSchemaStructureSample.class);
+            UserSchemaStructureSample newAttrs = new UserSchemaStructureSample(oldAttrs);
+            newAttrs.test_integer++;
 
-        String updatedAttributes = new ObjectMapper().writeValueAsString(newAttrs);
+            String updatedAttributes = new ObjectMapper().writeValueAsString(newAttrs);
 
-        User updated = test.update(old.getUserId(), old.getUsername(), TestConstants.PASSWORD, updatedAttributes);
+            User updated;
+            updated = consistent ? test.update(old.getUserId(), old.getUsername(), TestConstants.PASSWORD, updatedAttributes, true)
+                    :test.update(old.getUserId(), old.getUsername(), TestConstants.PASSWORD, updatedAttributes);
 
-        assertNotNull("user not updated!", updated);
-        assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            assertNotNull("user not updated!", updated);
+            assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
+            old = updated;
+        }
     }
 
     @Test
