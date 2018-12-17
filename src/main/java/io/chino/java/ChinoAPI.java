@@ -32,14 +32,17 @@ public class ChinoAPI {
      * @param customerId the customer id provided by Chino.io
      * @param customerKey the customer key provided by Chino.io
      */
-    public ChinoAPI(String hostUrl, String customerId, String customerKey){
+    public ChinoAPI(String hostUrl, String customerId, String customerKey) {
         checkNotNull(hostUrl, "host_url");
         checkNotNull(customerId, "customer_id");
         checkNotNull(customerKey, "customer_key");
         client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
                 .build();
-        initObjects(hostUrl.replace("http://", "https://"));
+        if (hostUrl.startsWith("http://")) {
+            hostUrl = hostUrl.replace("http://", "https://");
+        }
+        initObjects(hostUrl);
     }
 
     /**
