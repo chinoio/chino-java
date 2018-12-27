@@ -11,13 +11,15 @@ import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import io.chino.java.testutils.UserSchemaStructureSample;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import org.junit.AfterClass;
-import org.junit.Test;
+
 import static org.junit.Assert.*;
-import org.junit.BeforeClass;
 
 /**
  * Test for class {@link ChinoAPI io.chino.java.ChinoAPI}:
@@ -207,7 +209,7 @@ public class ChinoAPITest {
         ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         assertClientWasCreated(apiClient);
         try {
-            // create a repository using costomer credentials
+            // create a repository using customer credentials
             step = "create repository";
             Repository rep = apiClient.repositories.create("test_repo for ChinoAPITest");
             assertNotNull(rep);
@@ -223,6 +225,40 @@ public class ChinoAPITest {
             tearDownClass();
             fail("Thrown IOException. Reason: " + ex.getMessage());
         }
+    }
+
+    @Test
+    public void testHostNormalization() throws IOException, ChinoApiException {
+        String[] hosts = {
+                "https://api.test.chino.io/v1", // fine
+                "http://api.test.chino.io/v1",  // no HTTPS
+                "http://api.test.chino.io/v1/" // trailing slash
+        };
+        for (String hostName : hosts) {
+            // test constructor 1 (customer auth)
+            ChinoAPI c = new ChinoAPI(hostName, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            assertUrlIsNormalized(c, hostName);
+            // test constructor 2 (no auth)
+            c = new ChinoAPI(hostName);
+            c.setCustomer(TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+            assertUrlIsNormalized(c, hostName);
+            // test constructor 3 (bearer auth)
+            LoggedUser user = c.auth.loginWithPassword(TestConstants.USERNAME, TestConstants.PASSWORD, APP_ID, APP_SECRET);
+            c = new ChinoAPI(hostName, user.getAccessToken());
+            assertUrlIsNormalized(c, hostName);
+        }
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testHostWithoutVersionCode_withSlash() {
+        String errorHost = "http://api.test.chino.io/";  // no version code (with slash)
+        ChinoAPI c = new ChinoAPI(errorHost, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testHostWithoutVersionCode_withoutSlash() {
+        String errorHost = "http://api.test.chino.io";  // no version code (without slash)
+        ChinoAPI c = new ChinoAPI(errorHost, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
     }
 
     @Test
@@ -291,7 +327,7 @@ public class ChinoAPITest {
             // use the new access token to delete the repository
             step = "delete repository";
             String repId = rep.getRepositoryId();
-            apiClient.setBearerToken(accessToken)                                 // set new token in API client
+            apiClient.setBearerToken(accessToken)  // set new token in API client
                     .repositories.delete(repId, true);
 
             assertRepositoryWasDeleted(apiClient, rep);
@@ -319,7 +355,15 @@ public class ChinoAPITest {
         }
     }
 
-    private void assertClientWasCreated(ChinoAPI c) {
+    public static void assertUrlIsNormalized(ChinoAPI c, String url) throws IOException, ChinoApiException {
+        assertClientWasCreated(c);
+        Repository r = c.repositories.create("testHostNormalization");
+        assertNotNull("Host normalization failed for '" + url + "'", r);
+        c.repositories.delete(r.getRepositoryId(), true);
+        assertRepositoryWasDeleted(c, r);
+    }
+
+    private static void assertClientWasCreated(ChinoAPI c) {
         assertNotNull(c);
         assertNotNull(c.applications);
         assertNotNull(c.auth);
