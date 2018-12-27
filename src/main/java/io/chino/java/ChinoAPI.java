@@ -46,7 +46,7 @@ public class ChinoAPI {
         client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
                 .build();
-        initObjects(normalizeApiUrl(hostUrl));
+        initObjects(hostUrl);
     }
 
     /**
@@ -79,6 +79,7 @@ public class ChinoAPI {
     }
     
     private void initObjects(String hostUrl){
+        hostUrl = normalizeApiUrl(hostUrl);
         applications = new Applications(hostUrl, this);
         userSchemas = new UserSchemas(hostUrl, this);
         documents = new Documents(hostUrl, this);
