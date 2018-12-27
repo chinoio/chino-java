@@ -3,12 +3,19 @@ package io.chino.java;
 import io.chino.api.common.LoggingInterceptor;
 import okhttp3.OkHttpClient;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
  * Main API client. Initializes and coordinates all the clients based on {@link ChinoBaseAPI}.
  */
 public class ChinoAPI {
+
+    /**
+     * the version code of Chino.io API used by this SDK
+     */
+    public final static String API_VERSION = "v1";
+
     OkHttpClient client;
     public Applications applications;
     public Auth auth;
@@ -39,10 +46,7 @@ public class ChinoAPI {
         client = getDefaultHttpClient()
                 .addNetworkInterceptor(new LoggingInterceptor(customerId, customerKey))
                 .build();
-        if (hostUrl.startsWith("http://")) {
-            hostUrl = hostUrl.replace("http://", "https://");
-        }
-        initObjects(hostUrl);
+        initObjects(normalizeApiUrl(hostUrl));
     }
 
     /**
@@ -93,6 +97,30 @@ public class ChinoAPI {
     private void checkNotNull(Object object, String name){
         if(object == null){
             throw new NullPointerException(name);
+        }
+    }
+
+    /**
+     * Check format of the API host url and append the {@link #API_VERSION} code
+     * if required.
+     *
+     * @param hostUrl the url to Chino.io API
+     * @return the polished URL with {@link #API_VERSION} code and without trailing '/'
+     */
+    private static String normalizeApiUrl(String hostUrl) {
+        // force https
+        if (hostUrl.startsWith("http://")) {
+            hostUrl = hostUrl.replace("http://", "https://");
+        }
+        if (hostUrl.contains(API_VERSION)) {
+            // remove trailing '/' (if any) and return URL
+            return hostUrl.replace(API_VERSION + "/", API_VERSION);
+        } else {
+            // append API version code and return URL
+            if (! hostUrl.endsWith("/")) {
+                hostUrl += "/";
+            }
+            return hostUrl + API_VERSION;
         }
     }
 
@@ -152,5 +180,15 @@ public class ChinoAPI {
         checkNotNull(customerKey, "customer key");
         updateHttpAuth(new LoggingInterceptor(customerId, customerKey));
         return this;
+    }
+
+    /**
+     * Get a {@link List} of all versions of Chino.io API supported by this SDK
+     * (now only "v1")
+     *
+     * @return a {@link List List<String>} with the supported version codes
+     */
+    public List<String> getAvailableVersions() {
+        return java.util.Collections.singletonList(API_VERSION);
     }
 }
