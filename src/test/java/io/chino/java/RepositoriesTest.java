@@ -68,7 +68,7 @@ public class RepositoriesTest extends ChinoBaseTest {
                 repos[i] = test.create("test_list_repo" + i);
                 try {
                     wait(3000);
-                } catch (InterruptedException ignored) {}
+                } catch (InterruptedException | IllegalMonitorStateException ignored) {}
             }
         }
 
