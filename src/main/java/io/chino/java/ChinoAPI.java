@@ -117,11 +117,15 @@ public class ChinoAPI {
             // remove trailing '/' (if any) and return URL
             return hostUrl.replace(API_VERSION + "/", API_VERSION);
         } else {
-            // append API version code and return URL
-            if (! hostUrl.endsWith("/")) {
-                hostUrl += "/";
+            String errString = "Chino API version not specified. Allowed values: %s";
+            StringBuilder versions = new StringBuilder("[");
+            for (String v : getAvailableVersions()) {
+                versions.append("\"").append(v).append("\"");
             }
-            return hostUrl + API_VERSION;
+            versions.append("]");
+            throw new IllegalArgumentException(
+                    String.format(errString, versions.toString())
+            );
         }
     }
 
@@ -189,7 +193,7 @@ public class ChinoAPI {
      *
      * @return a {@link List List<String>} with the supported version codes
      */
-    public List<String> getAvailableVersions() {
+    public static List<String> getAvailableVersions() {
         return java.util.Collections.singletonList(API_VERSION);
     }
 }
