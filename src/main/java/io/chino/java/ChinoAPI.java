@@ -111,10 +111,21 @@ public class ChinoAPI {
     private static String normalizeApiUrl(String hostUrl) {
         // force https
         if (hostUrl.startsWith("http://")) {
-            hostUrl = hostUrl.replace("http://", "https://");
+            if (hostUrl.contains(".chino.io")) {
+                hostUrl = hostUrl.replace("http://", "https://");
+            } else {
+                System.err.println(
+                        ">> WARNING:\n" +
+                        ">> You are using Chino API over HTTP.\n" +
+                        ">> The API will work as usual, but HTTPS is strongly recommended."
+                );
+                System.err.flush();
+            }
         }
+
+        // check version is specified
         if (hostUrl.contains(API_VERSION)) {
-            // remove trailing '/' (if any) and return URL
+            // remove trailing '/' (if any)
             return hostUrl.replace(API_VERSION + "/", API_VERSION);
         } else {
             String errString = "Chino API version not specified. Allowed values: %s";
