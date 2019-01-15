@@ -1,4 +1,4 @@
-#  CHINO.io Java SDK [ [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) ]
+#  CHINO.io Java SDK [ [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) [![Maintainability](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/maintainability)](https://codeclimate.com/github/chinoio/chino-java/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/test_coverage)](https://codeclimate.com/github/chinoio/chino-java/test_coverage) ]
 Official Java wrapper for [**CHINO.io** API](https://chino.io).
 
 Full API docs are available [here](http://docs.chino.io).
