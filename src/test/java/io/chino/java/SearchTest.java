@@ -8,10 +8,7 @@ import io.chino.api.common.indexed;
 import io.chino.api.document.Document;
 import io.chino.api.document.GetDocumentsResponse;
 import io.chino.api.schema.SchemaStructure;
-import io.chino.api.search.DocumentsSearch;
-import io.chino.api.search.ResultType;
-import io.chino.api.search.SortRule;
-import io.chino.api.search.UsersSearch;
+import io.chino.api.search.*;
 import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
 import io.chino.java.testutils.ChinoBaseTest;
@@ -21,10 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static io.chino.api.search.FilterOperator.*;
 import static io.chino.api.search.SearchQueryBuilder.not;
@@ -160,6 +154,42 @@ public class SearchTest extends ChinoBaseTest {
             System.out.print(d.getContentAsHashMap().get("print_value"));
         }
         System.out.println();
+    }
+
+    @Test
+    public void testNewSearchDocuments_InArray() throws IOException, ChinoApiException {
+        List<Integer> integers = Arrays.asList(1, 999998, 999999);
+        List<String> strings = Arrays.asList("search documents test", "", "a String");
+
+        // Search value in an Array of int
+        DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID)
+                .with("internal_id", FilterOperator.IN, integers)
+                .buildSearch();
+        GetDocumentsResponse result = search.execute();
+
+        assertNotNull(result);
+        assertEquals("Too many results!", 1, result.getTotalCount().intValue());
+
+        Integer internalId = (Integer) result.getDocuments().get(0).getContentAsHashMap().get("internal_id");
+        assertTrue(integers.contains(internalId));
+
+        // Search value in an Array of strings
+        search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID)
+                .with("test_method", FilterOperator.IN, strings)
+                .buildSearch();
+        result = search.execute();
+
+        assertNotNull(result);
+        assertEquals("Too many results!", outputString.length(), result.getTotalCount().intValue());
+
+        String testMethod = (String) result.getDocuments().get(0).getContentAsHashMap().get("test_method");
+        assertTrue(strings.contains(testMethod));
+
+        // Print values
+        for (Document d : result.getDocuments()) {
+            System.out.print(d.getContentAsHashMap().get("print_value"));
+            System.out.println();
+        }
     }
 
     @Test
