@@ -3,57 +3,25 @@ Official Java wrapper for [**CHINO.io** API](https://chino.io).
 
 Full API docs are available [here](http://docs.chino.io).
 
-#### What's new - version 1.3.1
+## What's new
 
-* **Upgraded minimum JDK version**:
-    
-    Since official support for Java 7 will be dropped in December 2018, the minimum SDK version for the Chino.io SDK
-    has been raised to Java 8. We suggest to use the `openjdk8` build. 
+#### New version: 3.0
 
-* **Removed deprecated method from version 1.2.3**:
-    
-    This change affects a method in class `io.chino.java.Users`.
+The new major version is backwards compatible. It is a starting point for future changes to our SDK,
+that will follow the semantic versioning.
 
-* **Search API**:
+#### Bug fixes
 
-    The Search API used to produce strange requests, which now have been fixed.
-    
-    We have redesigned the Search system to be more developer-friendly and as a consequence 
-    **the old Search API have been deprecated**. They will be removed in a future version (1.3.X or 1.4).
-    
-    A new Search interface has been implemented: see the *Search* section below to learn more.
-    We strongly suggest to migrate to the new Search API as soon as possible to preserve compatibility with new versions 
-    of our SDK.
-    
-    **NEW in v1.3.1**: added pagination of Search results and a new method `usernameExists` to check if a user is 
-    already registered. Learn more in the [Search](#search-iochinojavasearch) section.
-    
-* **Permissions API**
+Fixed bugs that affected the Search.
 
-    We also redesigned the interface of the **Permissions API** and made it easier to use.
-    You can now set or revoke Permissions to your Users with fewer lines of code and in a better readable fashion.
-    
-    The old interface is still working but has been deprecated and **will be removed in a
-    future version** (1.3.X or 1.4).
-    
-* **BLOBs API**:
-    
-    From the next release of Chino.io Java SDK, BLOB uploads will only work with the `uploadBlob(...)` method.
-    Methods that handle the intermediate steps of the upload will no longer be accessible.
-    
-    Affected methods are `initUpload`, `uploadChunk` and `commitUpload`.
-    
-    Also method `delete(String, boolean)` will be removed from the public API and replaced by `delete(String)`.
-    
-* **Documents API** and **Users API**:
+#### Force HTTPS on API host URL
 
-    Now it is possible to wait for Documents and Users to be fully indexed, so that they will appear in the Search results
-    right after the `create(...)` and `update(...)` methods return. See the [*Documents*](#documents-iochinojavadocuments) and [*Users*](#users-iochinojavausers-and-userschemas-iochinojavauserschemas) section below to learn more about synchronous creation and update.
+Every client initialized with `http://api.chino.io` and `http://api.test.chino.io` will be forced to use https instead.
+
+#### Test and coverage
     
-* **Other minor changes**:
-    * Added Javadoc for most of the classes of the SDK; existing documentation has been fixed and updated.
-    * New method `Users.checkPassword(String password)` to verify a User's password
-    
+Improved tests on the SDK. Now the code coverage and code quality reports are published to 
+[Code Climate](https://codeclimate.com/github/chinoio/chino-java).
 
 ## Setup
 
