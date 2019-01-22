@@ -45,7 +45,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>1.3.1</version>
+    <version>3.0</version>
 </dependency>
 ```
 
@@ -62,7 +62,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:1.3.1'
+    compile 'com.github.chinoio:chino-java:3.0'
 }
 ```
 
@@ -107,11 +107,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-1.3.1-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.0-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3.1/javadoc/io/chino/java/package-summary.html)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.0/javadoc/io/chino/java/package-summary.html)
 
     
 ## Usage
@@ -209,7 +209,7 @@ setting different access [Permissions](#permissions-iochinojavapermissions) over
 
 To learn more about Users, check out the [tutorial](https://chino.io/tutorials/tutorial-users).
 
-***New in 1.3*** **- "consistent" creation calls**
+**"consistent" creation calls**
 
 You can wait for indexing of Users to end before proceeding.
 This is useful if you plan to [Search](#search-iochinojavasearch) for Users right after the creation.
@@ -372,7 +372,7 @@ API client for management of Documents. [*See full docs*](https://docs.chino.io/
 
 Documents are used on Chino.io to store sensitive information. Learn more about Documents in the [tutorial](https://chino.io/tutorials/tutorial-docs).
 
-***New in 1.3*** **- "consistent" creation & update calls**
+**"consistent" creation & update calls**
 
 You can wait for indexing of Documents to end before proceeding.
 This is useful if you plan to [Search](#search-iochinojavasearch) for Documents right after the creation.
@@ -403,7 +403,7 @@ API client to perform search operations on Chino.io resources. [*See full docs*]
 
 We have updated our Search API, implementing:
  
-* ***New in v1.3.1***: a new method `UsersSearch.usernameExists`, that allows to easily check if a name is already
+* a new method `UsersSearch.usernameExists`, that allows to easily check if a name is already
 registered in a specified UserSchema. E.g.:
 ```java
     boolean exists = chino.search.users(<user_schema_id>).usernameExists(<username>);
