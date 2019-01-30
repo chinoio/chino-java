@@ -3,8 +3,6 @@ package io.chino.java;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.blob.*;
 import io.chino.api.common.ChinoApiException;
-import io.chino.api.blob.MD5Calc;
-import io.chino.api.blob.SHA1Calc;
 import io.chino.api.document.Document;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -53,7 +51,7 @@ public class Blobs extends ChinoBaseAPI {
      */
     public CommitBlobUploadResponse uploadBlob(String folderPath, String documentId, String fieldName, String fileName) throws IOException, ChinoApiException{
         checkNotNull(folderPath, "path");
-        CreateBlobUploadResponse blobResponse = _initUpload(documentId, fieldName, fileName);
+        CreateBlobUploadResponse blobResponse = initUpload(documentId, fieldName, fileName);
         String upload_id = blobResponse.getBlob().getUploadId();
 
         File file = new File(folderPath+File.separator+fileName);
@@ -71,13 +69,13 @@ public class Blobs extends ChinoBaseAPI {
                 bytes = new byte[distanceFromEnd];
 
             raf.read(bytes);
-            _uploadChunk(blobResponse.getBlob().getUploadId(), bytes, currentFilePosition, bytes.length);
+            uploadChunk(blobResponse.getBlob().getUploadId(), bytes, currentFilePosition, bytes.length);
             currentFilePosition=currentFilePosition+bytes.length;
             raf.seek(currentFilePosition);
         }
         raf.close();
 
-        return _commitUpload(upload_id);
+        return commitUpload(upload_id);
     }
 
     /**
@@ -182,28 +180,18 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    // WARNING - When removing deprecated method:
-    // rename '_initUpload' to 'initUpload' WITHOUT changing other calls, so that the public method is replaced by the private one.
-    @Deprecated
     public CreateBlobUploadResponse initUpload(String documentId, String field, String fileName) throws IOException, ChinoApiException {
-        return _initUpload(documentId, field, fileName);
-    }
-
-    // TODO remove deprecated method
-    // rename '_initUpload' to 'initUpload' WITHOUT changing other calls, so that the public method is replaced by the private one.
-    private CreateBlobUploadResponse _initUpload(String documentId, String field, String fileName) throws IOException, ChinoApiException {
         CreateBlobUploadRequest createBlobUploadRequest=new CreateBlobUploadRequest(documentId, field, fileName);
-
         JsonNode data = postResource("/blobs", createBlobUploadRequest);
         if(data!=null)
             return mapper.convertValue(data, CreateBlobUploadResponse.class);
-
         return null;
     }
 
     /**
-     * Upload a chunk of data to the server. This method is called automatically by {@link #uploadBlob(String, String, String, String) uploadBlob()},
-     * thus should be <b>never called directly</b>.
+     * Upload a chunk of data to the server. This method is called automatically by
+     * {@link #uploadBlob(String, String, String, String) uploadBlob()}.
+     * When calling this method directly, all the chunking operations must also be performed.
      *
      * @see #uploadBlob(String, String, String, String)
      *
@@ -215,51 +203,32 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    // WARNING - When removing deprecated method:
-    // rename '_uploadChunk' to 'uploadChunk' WITHOUT changing other calls, so that the public method is replaced by the private one.
-    @Deprecated
     public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset, int length) throws IOException, ChinoApiException {
-        return _uploadChunk(uploadId,chunkData,offset,length);
-    }
-
-    // TODO remove deprecated method
-    // rename '_uploadChunk' to 'uploadChunk' WITHOUT changing other calls, so that the public method is replaced by the private one.
-    private CreateBlobUploadResponse _uploadChunk(String uploadId, byte[] chunkData, int offset, int length) throws IOException, ChinoApiException {
         JsonNode data = putResource("/blobs/"+uploadId, chunkData, offset, length);
         if(data!=null)
             return mapper.convertValue(data, CreateBlobUploadResponse.class);
-
         return null;
     }
 
     /**
-     * Confirm and complete the upload on Chino.io.This method is called automatically by {@link #uploadBlob(String, String, String, String) uploadBlob()},
-     * thus should be <b>never called directly</b>.
+     * Confirm and finalize the upload on Chino.io.This method is called automatically by
+     * {@link #uploadBlob(String, String, String, String) uploadBlob()}.
+     * If calling this method directly, make sure that <b>every chunk</b> has been successfully uploaded with
+     * {@link #uploadChunk(String, byte[], int, int) uploadChunk()}.
      *
      * @see #uploadBlob(String, String, String, String)
      *
-     * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload()}
+     * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload}
      *
      * @return A {@link CommitBlobUploadResponse}, which contains the status of the operation
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    // WARNING - When removing deprecated method:
-    // rename '_commitUpload' to 'commitUpload' WITHOUT changing other calls, so that the public method is replaced by the private one.
-    @Deprecated
     public CommitBlobUploadResponse commitUpload(String uploadId) throws IOException, ChinoApiException {
-        return _commitUpload(uploadId);
-    }
-
-    // TODO remove deprecated method
-    // rename '_commitUpload' to 'commitUpload' WITHOUT changing other calls, so that the public method is replaced by the private one.
-    private CommitBlobUploadResponse _commitUpload(String uploadId) throws IOException, ChinoApiException {
         CommitBlobUploadRequest commitBlobUploadRequest = new CommitBlobUploadRequest(uploadId);
-
         JsonNode data = postResource("/blobs/commit", commitBlobUploadRequest);
         if(data!=null)
             return mapper.convertValue(data, CommitBlobUploadResponse.class);
-
         return null;
     }
 
@@ -274,7 +243,6 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    @Deprecated
     public String delete(String blobId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(blobId, "blob_id");
         return deleteResource("/blobs/"+blobId, force);
