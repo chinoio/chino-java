@@ -49,33 +49,40 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public CommitBlobUploadResponse uploadBlob(String folderPath, String documentId, String fieldName, String fileName) throws IOException, ChinoApiException{
+    public CommitBlobUploadResponse uploadBlob(String folderPath, String documentId, String fieldName, String fileName)
+            throws IOException, ChinoApiException
+    {
         checkNotNull(folderPath, "path");
-        CreateBlobUploadResponse blobResponse = initUpload(documentId, fieldName, fileName);
-        String upload_id = blobResponse.getBlob().getUploadId();
 
+        // get upload ID for uploading chunks
+        CreateBlobUploadResponse blobResponse = initUpload(documentId, fieldName, fileName);
+        String uploadId = blobResponse.getBlob().getUploadId();
+
+        // open file to upload
         File file = new File(folderPath+File.separator+fileName);
         RandomAccessFile raf = new RandomAccessFile(file, "r");
+        raf.seek(0);
 
-        byte[] bytes;
-        int currentFilePosition=0;
-        raf.seek(currentFilePosition);
+        // upload chunks
+        int bytesUploaded=0;
+        while (bytesUploaded < raf.length()){
+            // read chunk
+            byte[] currentChunk;
+            int bytesLeft = (int) (raf.length() - bytesUploaded);
+            currentChunk = (bytesLeft > chunkSize)
+                    ? new byte[chunkSize]
+                    : new byte[bytesLeft];
+            raf.read(currentChunk);
 
-        while (currentFilePosition<raf.length()){
-            int distanceFromEnd=(int)(raf.length()-currentFilePosition);
-            if(distanceFromEnd > chunkSize)
-                bytes = new byte[chunkSize];
-            else
-                bytes = new byte[distanceFromEnd];
+            uploadChunk(blobResponse.getBlob().getUploadId(), currentChunk, bytesUploaded, currentChunk.length);
 
-            raf.read(bytes);
-            uploadChunk(blobResponse.getBlob().getUploadId(), bytes, currentFilePosition, bytes.length);
-            currentFilePosition=currentFilePosition+bytes.length;
-            raf.seek(currentFilePosition);
+            // move marker
+            bytesUploaded += currentChunk.length;
+            raf.seek(bytesUploaded);
         }
         raf.close();
 
-        return commitUpload(upload_id);
+        return commitUpload(uploadId);
     }
 
     /**
@@ -92,7 +99,9 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public CommitBlobUploadResponse uploadBlob(String folderPath, Document document, String fieldName, String fileName) throws IOException, ChinoApiException {
+    public CommitBlobUploadResponse uploadBlob(String folderPath, Document document, String fieldName, String fileName)
+            throws IOException, ChinoApiException
+    {
         return uploadBlob(folderPath, document.getDocumentId(), fieldName, fileName);
     }
 
@@ -108,7 +117,9 @@ public class Blobs extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      * @throws NoSuchAlgorithmException can't find MD5 / SHA algorithm
      */
-    public GetBlobResponse get(String blobId, String destination) throws IOException, ChinoApiException, NoSuchAlgorithmException {
+    public GetBlobResponse get(String blobId, String destination)
+            throws IOException, ChinoApiException, NoSuchAlgorithmException
+    {
         checkNotNull(blobId, "blob_id");
         checkNotNull(destination, "destination");
         GetBlobResponse getBlobResponse=new  GetBlobResponse();
@@ -116,24 +127,25 @@ public class Blobs extends ChinoBaseAPI {
         Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
         Response response = parent.getHttpClient().newCall(request).execute();
 
+        // read location of file from HTTP header, e.g.:
+        // "attachment; filename=chino_logo.jpg"
         String contentDisposition = response.header("Content-Disposition");
         if (contentDisposition != null) {
-            getBlobResponse.setFilename(
-                    contentDisposition.substring(
-                            contentDisposition.indexOf("=") + 1
-                    )
-            );
+            String fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+            getBlobResponse.setFilename(fileName);
         }
 
         if (getBlobResponse.getFilename() != null) {
             getBlobResponse.setPath(destination + File.separator + getBlobResponse.getFilename());
 
+            // read bytes from response and write them to file
             InputStream returnStream = response.body().byteStream();
 
             File file = new File(getBlobResponse.getPath());
             file.getParentFile().mkdirs();
             FileOutputStream fileOutputStream = new FileOutputStream(file);
 
+            // Compute MD5 and SHA1 hashes while writing file to disk
             int read;
             byte[] bytes = new byte[8*1024];
 
@@ -142,20 +154,17 @@ public class Blobs extends ChinoBaseAPI {
 
             while ((read = returnStream.read(bytes)) != -1) {
                 fileOutputStream.write(bytes, 0, read);
-
                 MD5Digest.update(bytes, 0, read);
                 SHA1Digest.update(bytes, 0, read);
             }
-
             fileOutputStream.close();
             returnStream.close();
 
-            getBlobResponse.setSize(file.length());
-
             String SHA1 = SHA1Calc.getSHA1Checksum(SHA1Digest.digest());
-            getBlobResponse.setSha1(SHA1);
-
             String MD5 = MD5Calc.getMD5Checksum(MD5Digest.digest());
+
+            getBlobResponse.setSize(file.length());
+            getBlobResponse.setSha1(SHA1);
             getBlobResponse.setMd5(MD5);
         } else {
             throw new ChinoApiException("404, Blob doesn't exist");
@@ -166,8 +175,9 @@ public class Blobs extends ChinoBaseAPI {
 
 
     /**
-     * Create a BLOB object on Chino.io. This method is called by {@link #uploadBlob(String, String, String, String) uploadBlod()}
-     * and should be <b>never called directly</b>. Its purpose is to initialize the metadata of the file that will be uploaded.
+     * Create a BLOB object on Chino.io. This method is called by
+     * {@link #uploadBlob(String, String, String, String) uploadBlod()}.
+     * Its purpose is to initialize the metadata of the file that will be uploaded.
      *
      * @see #uploadBlob(String, String, String, String)
      *
@@ -180,7 +190,9 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public CreateBlobUploadResponse initUpload(String documentId, String field, String fileName) throws IOException, ChinoApiException {
+    public CreateBlobUploadResponse initUpload(String documentId, String field, String fileName)
+            throws IOException, ChinoApiException
+    {
         CreateBlobUploadRequest createBlobUploadRequest=new CreateBlobUploadRequest(documentId, field, fileName);
         JsonNode data = postResource("/blobs", createBlobUploadRequest);
         if(data!=null)
@@ -203,7 +215,9 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset, int length) throws IOException, ChinoApiException {
+    public CreateBlobUploadResponse uploadChunk(String uploadId, byte[] chunkData, int offset, int length)
+            throws IOException, ChinoApiException
+    {
         JsonNode data = putResource("/blobs/"+uploadId, chunkData, offset, length);
         if(data!=null)
             return mapper.convertValue(data, CreateBlobUploadResponse.class);
@@ -236,7 +250,8 @@ public class Blobs extends ChinoBaseAPI {
      * Delete a BLOB from Chino.io. This operation can not be undone.
      *
      * @param blobId the id of the BLOB to delete
-     * @param force if true, the resource cannot be restored. Otherwise, it will only become inactive. THIS FLAG IS IGNORED.
+     * @param force if true, the resource cannot be restored. Otherwise, it will only become inactive.
+     *              THIS FLAG IS IGNORED.
      *
      * @return a String with the result of the operation
      *
