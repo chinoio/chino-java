@@ -130,47 +130,51 @@ public class Blobs extends ChinoBaseAPI {
         Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
         Response response = parent.getHttpClient().newCall(request).execute();
 
-        // read location of file from HTTP header, e.g.:
-        // "attachment; filename=chino_logo.jpg"
-        String contentDisposition = response.header("Content-Disposition");
-        if (contentDisposition != null) {
-            String fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
-            getBlobResponse.setFilename(fileName);
-        }
-
-        if (getBlobResponse.getFilename() != null) {
-            getBlobResponse.setPath(destination + File.separator + getBlobResponse.getFilename());
-
-            // read bytes from response and write them to file
-            InputStream returnStream = response.body().byteStream();
-
-            File file = new File(getBlobResponse.getPath());
-            file.getParentFile().mkdirs();
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
-
-            // Compute MD5 and SHA1 hashes while writing file to disk
-            int read;
-            byte[] bytes = new byte[8*1024];
-
-            MessageDigest MD5Digest = MessageDigest.getInstance("MD5");
-            MessageDigest SHA1Digest = MessageDigest.getInstance("SHA1");
-
-            while ((read = returnStream.read(bytes)) != -1) {
-                fileOutputStream.write(bytes, 0, read);
-                MD5Digest.update(bytes, 0, read);
-                SHA1Digest.update(bytes, 0, read);
+        try {
+            // read location of file from HTTP header, e.g.:
+            // "attachment; filename=chino_logo.jpg"
+            String contentDisposition = response.header("Content-Disposition");
+            if (contentDisposition != null) {
+                String fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+                getBlobResponse.setFilename(fileName);
             }
-            fileOutputStream.close();
-            returnStream.close();
 
-            String SHA1 = SHA1Calc.getSHA1Checksum(SHA1Digest.digest());
-            String MD5 = MD5Calc.getMD5Checksum(MD5Digest.digest());
+            if (getBlobResponse.getFilename() != null) {
+                getBlobResponse.setPath(destination + File.separator + getBlobResponse.getFilename());
 
-            getBlobResponse.setSize(file.length());
-            getBlobResponse.setSha1(SHA1);
-            getBlobResponse.setMd5(MD5);
-        } else {
-            throw new ChinoApiException("404, Blob doesn't exist");
+                // read bytes from response and write them to file
+                InputStream returnStream = response.body().byteStream();
+
+                File file = new File(getBlobResponse.getPath());
+                file.getParentFile().mkdirs();
+                FileOutputStream fileOutputStream = new FileOutputStream(file);
+
+                // Compute MD5 and SHA1 hashes while writing file to disk
+                int read;
+                byte[] bytes = new byte[8*1024];
+
+                MessageDigest MD5Digest = MessageDigest.getInstance("MD5");
+                MessageDigest SHA1Digest = MessageDigest.getInstance("SHA1");
+
+                while ((read = returnStream.read(bytes)) != -1) {
+                    fileOutputStream.write(bytes, 0, read);
+                    MD5Digest.update(bytes, 0, read);
+                    SHA1Digest.update(bytes, 0, read);
+                }
+                fileOutputStream.close();
+                returnStream.close();
+
+                String SHA1 = SHA1Calc.getSHA1Checksum(SHA1Digest.digest());
+                String MD5 = MD5Calc.getMD5Checksum(MD5Digest.digest());
+
+                getBlobResponse.setSize(file.length());
+                getBlobResponse.setSha1(SHA1);
+                getBlobResponse.setMd5(MD5);
+            } else {
+                throw new ChinoApiException("404, Blob doesn't exist");
+            }
+        } finally { // close response body to prevent warnings from OkHttp3
+            response.body().close();
         }
 
         return getBlobResponse;
