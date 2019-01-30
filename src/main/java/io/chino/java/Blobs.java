@@ -16,7 +16,10 @@ import java.security.NoSuchAlgorithmException;
  */
 public class Blobs extends ChinoBaseAPI {
 
-    private static int chunkSize = 1024 * 1024;
+    /**
+     * the default chunk size used by {@link #uploadBlob(String, String, String, String)}
+     */
+    private static final int CHUNK_SIZE = 1024 * 1024;
 
     private final ChinoAPI parent;
     private final String hostUrl;
@@ -69,14 +72,14 @@ public class Blobs extends ChinoBaseAPI {
             // read chunk
             byte[] currentChunk;
             int bytesLeft = (int) (raf.length() - bytesUploaded);
-            currentChunk = (bytesLeft > chunkSize)
-                    ? new byte[chunkSize]
+            currentChunk = (bytesLeft > CHUNK_SIZE)
+                    ? new byte[CHUNK_SIZE]
                     : new byte[bytesLeft];
             raf.read(currentChunk);
 
             uploadChunk(blobResponse.getBlob().getUploadId(), currentChunk, bytesUploaded, currentChunk.length);
 
-            // move marker
+            // move marker in file
             bytesUploaded += currentChunk.length;
             raf.seek(bytesUploaded);
         }

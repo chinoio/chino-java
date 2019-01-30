@@ -2,6 +2,7 @@ package io.chino.java.testutils;
 
 import io.chino.api.common.ChinoApiException;
 import io.chino.java.ChinoBaseAPI;
+import okhttp3.OkHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -10,7 +11,8 @@ import org.junit.BeforeClass;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
-import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Base test class for all tests.
@@ -18,13 +20,13 @@ import java.util.Scanner;
  */
 public class ChinoBaseTest {
 
-    public static String USERNAME = "testusrname";
-    public static String PASSWORD = "testpword32";
+    private static String USERNAME = "testusrname";
+    private static String PASSWORD = "testpword32";
 
     private static ChinoBaseAPI test = null;
 
-    protected static boolean continueTests = true;
-    static String errorMsg = "init() method not called";
+    private static boolean continueTests = true;
+    private static String errorMsg = "init() method not called";
 
 
     /**
@@ -113,6 +115,8 @@ public class ChinoBaseTest {
      */
     protected static void checkResourceIsEmpty(boolean resourceIsEmpty, ChinoBaseAPI resourceAPIClient) throws IOException, ChinoApiException {
         String resourceName = resourceAPIClient.getClass().getSimpleName();
+
+        Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
 
         if (! resourceIsEmpty) {
             if (! TestConstants.FORCE_DELETE_ALL_ON_TESTS) {
