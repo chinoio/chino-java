@@ -195,15 +195,15 @@ public class Blobs extends ChinoBaseAPI {
 
 
     /**
-     * Create a BLOB object on Chino.io. This method is called by
-     * {@link #uploadBlob(String, String, String, String) uploadBlod()}.
-     * Its purpose is to initialize the metadata of the file that will be uploaded.
+     * Create a BLOB object on Chino.io and initialize the metadata of the file that will be uploaded.
+     * This method must always be invoked <b>before</b> {@link #uploadChunk(String, byte[], int, int)}.
      *
      * @see #uploadBlob(String, String, String, String)
      *
-     * @param documentId the Chino.io ID of the Document the new BLOB belongs to.
-     * @param field the name of the field (with type "blob") in the Document.
-     * @param fileName the name of the file to upload
+     * @param documentId the Chino.io ID of the {@link Document} the new BLOB belongs to. Must contain a field of type
+     *                   "blob"
+     * @param field the name of the "blob" field in the Document
+     * @param fileName the name that will be given to the uploaded file
      *
      * @return a {@link CreateBlobUploadResponse}, which contains the upload_id that is needed for upload the file.
      *
@@ -221,17 +221,17 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Upload a chunk of data to the server. This method is called automatically by
-     * {@link #uploadBlob(String, String, String, String) uploadBlob()}.
-     * When calling this method directly, all the chunking operations must also be performed.
+     * Upload a chunk of data to the server
      *
      * @see #uploadBlob(String, String, String, String)
      *
-     * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload()}
+     * @param uploadId the upload ID returned by {@link #initUpload(String, String, String) initUpload()}
      * @param chunkData a chunk of data in the form of a byte array
      * @param offset the offset of the chunk relative to the beginning of the file
      * @param length the length of the chunk
+     *
      * @return A {@link CreateBlobUploadResponse}, which contains the status of the operation
+     *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
@@ -245,14 +245,13 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Confirm and finalize the upload on Chino.io.This method is called automatically by
-     * {@link #uploadBlob(String, String, String, String) uploadBlob()}.
-     * If calling this method directly, make sure that <b>every chunk</b> has been successfully uploaded with
-     * {@link #uploadChunk(String, byte[], int, int) uploadChunk()}.
+     * Confirm and finalize the upload on Chino.io.
+     * Make sure that <b>every chunk</b> has been successfully uploaded with
+     * {@link #uploadChunk(String, byte[], int, int) uploadChunk()} before calling this method.
      *
      * @see #uploadBlob(String, String, String, String)
      *
-     * @param uploadId the upload_id returned by {@link #initUpload(String, String, String) initUpload}
+     * @param uploadId the upload ID returned by {@link #initUpload(String, String, String) initUpload}
      *
      * @return A {@link CommitBlobUploadResponse}, which contains the status of the operation
      * @throws IOException data processing error
