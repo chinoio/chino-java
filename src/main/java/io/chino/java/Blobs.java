@@ -131,11 +131,24 @@ public class Blobs extends ChinoBaseAPI {
         Response response = parent.getHttpClient().newCall(request).execute();
 
         try {
-            // read location of file from HTTP header, e.g.:
-            // "attachment; filename=chino_logo.jpg"
+            // read location of file from HTTP header, e.g.: "attachment; filename=chino_logo.jpg"
             String contentDisposition = response.header("Content-Disposition");
             if (contentDisposition != null) {
-                String fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+//                String fileName = contentDisposition.substring(contentDisposition.indexOf("=") + 1);
+
+                /* Content-Disposition header can contain either 'filename*' or 'filename'.
+                 * The former has precedence if both are present, so we try to read them in order.
+                 * Learn more at https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#Syntax
+                 */
+                String fileName = contentDisposition.contains("filename*")
+                        ? contentDisposition.split("filename\\*=")[1] // discard everything before "filename*="
+                        : null;
+
+                if (fileName == null) {
+                    fileName = contentDisposition.contains("filename")
+                            ? contentDisposition.split("filename=")[1] // discard everything before "filename="
+                            : null;
+                }
                 getBlobResponse.setFilename(fileName);
             }
 
