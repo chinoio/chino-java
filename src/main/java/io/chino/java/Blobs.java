@@ -77,7 +77,7 @@ public class Blobs extends ChinoBaseAPI {
                     : new byte[bytesLeft];
             raf.read(currentChunk);
 
-            uploadChunk(blobResponse.getBlob().getUploadId(), currentChunk, bytesUploaded, currentChunk.length);
+            uploadChunk(uploadId, currentChunk, bytesUploaded, currentChunk.length);
 
             // move marker in file
             bytesUploaded += currentChunk.length;
@@ -106,6 +106,82 @@ public class Blobs extends ChinoBaseAPI {
             throws IOException, ChinoApiException
     {
         return uploadBlob(folderPath, document.getDocumentId(), fieldName, fileName);
+    }
+
+    /**
+     * Upload a local file to Chino.io as a BLOB, read from an {@link InputStream}. This method fully handles the
+     * upload of a BLOB but does NOT close the stream.
+     *
+     * @param fileData an {@link InputStream} where the binary data to upload can be read from.
+     *                 <b>WARNING:</b> the Stream must be {@link InputStream#close() closed} in order for the SDK to
+     *                 complete the upload.
+     * @param documentId the ID of the Chino.io {@link Document} which contains this BLOB
+     * @param fieldName the name of the field (of type "blob") that refers to this BLOB in the Document
+     * @param fileName the name of the file after the upload
+     *
+     * @return A {@link CommitBlobUploadResponse} that wraps a {@link CommitBlobUploadResponseContent},
+     * with information on the blob itself.
+     *
+     * @throws IOException data processing error, e.g.: the {@link InputStream} was closed before the file was read
+     * @throws ChinoApiException server error
+     */
+    public CommitBlobUploadResponse uploadBlob(InputStream fileData, String documentId, String fieldName, String fileName)
+            throws IOException, ChinoApiException
+    {
+        checkNotNull(fileData, "file data stream");
+
+        // get upload ID for uploading chunks
+        CreateBlobUploadResponse blobResponse = initUpload(documentId, fieldName, fileName);
+        String uploadId = blobResponse.getBlob().getUploadId();
+
+        // upload chunks
+        byte[] currentChunk = new byte[CHUNK_SIZE];
+        int bytesUploaded=0;
+        // read next chunk, max size: CHUNK_SIZE
+        int bytesRead = fileData.read(currentChunk);
+        while (bytesRead >= 0) {
+            switch (bytesRead) {
+                case CHUNK_SIZE:
+                    // upload a full chunk
+                    uploadChunk(uploadId, currentChunk, bytesUploaded, CHUNK_SIZE);
+                    break;
+                case 0: // no data in the current chunk, but the stream has not ended yet
+                    break;
+                default:
+                    // upload a smaller chunk
+                    byte[] smallChunk = new byte[bytesRead];
+                    System.arraycopy(currentChunk, 0, smallChunk, 0, bytesRead);
+                    uploadChunk(uploadId, smallChunk, bytesUploaded, bytesRead);
+                    break;
+            }
+            // update offset0
+            bytesUploaded += bytesRead;
+            // read next chunk
+            bytesRead = fileData.read(currentChunk);
+        }
+
+        return commitUpload(uploadId);
+    }
+
+    /**
+     * Upload a local file to Chino.io as a BLOB, read from an {@link InputStream}. This method fully handles the
+     * upload of a BLOB but does NOT close the stream.
+     *
+     * @param fileData an {@link InputStream} where the binary data to upload can be read from
+     * @param document the Chino.io {@link Document} which contains this BLOB
+     * @param fieldName the name of the field (of type "blob") that refers to this BLOB in the Document
+     * @param fileName the name of the file after the upload
+     *
+     * @return A {@link CommitBlobUploadResponse} that wraps a {@link CommitBlobUploadResponseContent},
+     * with information on the blob itself.
+     *
+     * @throws IOException data processing error, e.g.: the {@link InputStream} was closed before the file was read
+     * @throws ChinoApiException server error
+     */
+    public CommitBlobUploadResponse uploadBlob(InputStream fileData, Document document, String fieldName, String fileName)
+            throws IOException, ChinoApiException
+    {
+        return uploadBlob(fileData, document.getDocumentId(), fieldName, fileName);
     }
 
     /**

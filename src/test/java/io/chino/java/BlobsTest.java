@@ -1,5 +1,6 @@
 package io.chino.java;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import io.chino.api.blob.CommitBlobUploadResponse;
 import io.chino.api.blob.GetBlobResponse;
 import io.chino.api.common.ChinoApiException;
@@ -13,7 +14,11 @@ import io.chino.java.testutils.TestConstants;
 import org.junit.*;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -27,7 +32,7 @@ public class BlobsTest extends ChinoBaseTest {
 
     private static String REPO_ID, SCHEMA_ID;
     private static String blobFieldName = "the_blob";
-    private static String blobFile = "chino_logo.jpg",
+    private static String blobFileName = "chino_logo.jpg",
             resFolder = "src/test/res/".replace("/",  File.separator);
     private static String outputFilePath = resFolder + "control";
     private static String blobId;
@@ -71,9 +76,44 @@ public class BlobsTest extends ChinoBaseTest {
     }
 
     @Test
-    public void testUploadBlob_get_delete() throws IOException, ChinoApiException, NoSuchAlgorithmException {
+    public void testByFilepath_upload_get_delete() throws NoSuchAlgorithmException, ChinoApiException, IOException {
+        String sourceFolder = resFolder;
+        String filename = blobFileName;
+        System.out.println("- Using File path:");
+        runTestUploadGetDelete(sourceFolder, filename);
+    }
+
+    @Test
+    public void testByFileInputStream_upload_get_delete() throws NoSuchAlgorithmException, ChinoApiException, IOException {
+        FileInputStream sourceStream = new FileInputStream(resFolder + blobFileName);
+        String filename = blobFileName.replace(".jpg", "_fileIS.jpg");
+        System.out.println("- Using FileInputStream:");
+        runTestUploadGetDelete(sourceStream, filename);
+    }
+
+    @Test
+    public void testByByteInputStream_upload_get_delete() throws NoSuchAlgorithmException, ChinoApiException, IOException {
+        byte[] bytes = Files.readAllBytes(Paths.get(resFolder + blobFileName)); // keep the test file size SMALL!
+        ByteInputStream sourceStream = new ByteInputStream(bytes, bytes.length);
+        String filename = blobFileName.replace(".jpg", "_byteIS.jpg");
+        System.out.println("- Using ByteInputStream:");
+        runTestUploadGetDelete(sourceStream, filename);
+    }
+
+    private void runTestUploadGetDelete(Object source, String filename) throws IOException, ChinoApiException, NoSuchAlgorithmException {
         /* UPLOAD */
-        CommitBlobUploadResponse res_upload = chino_admin.blobs.uploadBlob(resFolder, blobDocument, blobFieldName, blobFile);
+        CommitBlobUploadResponse res_upload;
+
+        if (source instanceof String) {
+            res_upload = chino_admin.blobs.uploadBlob((String) source, blobDocument, blobFieldName, filename);
+        } else if (source instanceof InputStream) {
+            res_upload = chino_admin.blobs.uploadBlob((InputStream) source, blobDocument, blobFieldName, filename);
+        } else {
+            String msg = "Unrecognized BLOB source: %s.\n" +
+                    "You can only upload from an InputStream or specifying the path of the source file in a String.";
+            fail(String.format(msg, source.getClass().getCanonicalName()));
+            return; // it's here to prevent compilation errors
+        }
         long expectedSize = res_upload.getBlob().getBytes();
 
         blobId = res_upload.getBlob().getBlobId();
@@ -128,7 +168,7 @@ public class BlobsTest extends ChinoBaseTest {
                 System.err.println("Blob not deleted: " + blobId);
             }
 
-        File outputFile = new File(outputFilePath + File.separator + blobFile);
+        File outputFile = new File(outputFilePath + File.separator + blobFileName);
         if (outputFile.exists())
             outputFile.delete();
 
