@@ -1,11 +1,14 @@
 package io.chino.java;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.api.blob.*;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.ErrorResponse;
 import io.chino.api.document.Document;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 import java.io.*;
 import java.security.MessageDigest;
@@ -185,7 +188,7 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Returns the BLOB with the specified {@code blobId}
+     * Get the BLOB with the specified {@code blobId} and store it on file system.
      *
      * @param blobId the id of the blob to retrieve
      * @param destination the path to a file where the BLOB will be saved
@@ -205,6 +208,11 @@ public class Blobs extends ChinoBaseAPI {
 
         Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
         Response response = parent.getHttpClient().newCall(request).execute();
+
+        if (response.code() != 200) {
+            ErrorResponse error = new ObjectMapper().readValue(response.body().byteStream(), ErrorResponse.class);
+            throw new ChinoApiException(error);
+        }
 
         try {
             // read location of file from HTTP header, e.g.: "attachment; filename=chino_logo.jpg"
@@ -269,6 +277,32 @@ public class Blobs extends ChinoBaseAPI {
         return getBlobResponse;
     }
 
+    /**
+     * Get an {@link InputStream} that can be used to read the BLOB with the specified {@code blobId} as a byte stream.
+     * Remember to close the stream to prevent errors from OkHttp3!
+     *
+     * @param blobId the id of the blob to retrieve
+     *
+     * @return an {@link InputStream}, as returned by {@link ResponseBody#byteStream()}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public InputStream getByteStream(String blobId) throws IOException, ChinoApiException {
+        checkNotNull(blobId, "blob_id");
+
+        // read blob as InputStream
+        Request request = new Request.Builder().url(hostUrl+"/blobs/"+blobId).get().build();
+        Response response = parent.getHttpClient().newCall(request).execute();
+        InputStream responseStream = response.body().byteStream();
+
+        // check response is successful
+        if (response.code() != 200) {
+            ErrorResponse error = new ObjectMapper().readValue(responseStream, ErrorResponse.class);
+            throw new ChinoApiException(error);
+        }
+        return responseStream;
+    }
 
     /**
      * Create a BLOB object on Chino.io and initialize the metadata of the file that will be uploaded.

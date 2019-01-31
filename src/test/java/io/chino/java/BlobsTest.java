@@ -1,5 +1,6 @@
 package io.chino.java;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import io.chino.api.blob.CommitBlobUploadResponse;
 import io.chino.api.blob.GetBlobResponse;
@@ -121,19 +122,33 @@ public class BlobsTest extends ChinoBaseTest {
         blobId = res_upload.getBlob().getBlobId();
 
         System.out.println("BLOB uploaded successfully! ID: " + blobId);
-        System.out.println();
 
         /* GET */
-        GetBlobResponse res_get = chino_admin.blobs.get(blobId, outputFilePath);
-        outputFiles.add(outputFilePath + File.separator + filename);
-        long size = res_get.getSize();
+        long size;
+        String readFileName;
 
-        assertEquals(expectedSize, size);
+        if (source instanceof String) {
+            GetBlobResponse blob = chino_admin.blobs.get(blobId, outputFilePath);
+            size = blob.getSize();
+            readFileName = blob.getFilename();
+        } else /* if (source instanceof InputStream) */ {
+            readFileName = filename;
+            InputStream blob = chino_admin.blobs.getByteStream(blobId);
+            File outputFile = new File(outputFilePath + File.separator + filename);
+            if (outputFile.delete()) {
+                System.out.println("Deleted: " + outputFile.getPath());
+            }
+            Files.copy(blob, outputFile.toPath());
+            size = outputFile.length();
+        }
+
+        outputFiles.add(outputFilePath + File.separator + readFileName);
+
         assertTrue("Created an empty blob!", expectedSize > 0);
-        assertTrue("Got an empty blob!", size > 0);
+        assertTrue("Read an empty blob!", size > 0);
+        assertEquals(expectedSize, size);
 
-        System.out.println("BLOB read successfully! size: " + size + ", filename: " + res_get.getFilename());
-        System.out.println();
+        System.out.println("BLOB read successfully! size: " + size + ", filename: " + readFileName);
 
         /* DELETE */
         chino_admin.blobs.delete(blobId);
@@ -144,6 +159,41 @@ public class BlobsTest extends ChinoBaseTest {
         } catch (ChinoApiException e) {
             blobId = null;
             System.out.println("BLOB deleted successfully!");
+            System.out.println();
+        }
+    }
+
+    @Test
+    public void testByFilePath_get_exception() {
+        // test mapping of error API response to ErrorResponse class
+        System.out.println("- Using empty BLOB ID");
+        try {
+            chino_admin.blobs.get("", outputFilePath);
+            fail("Read blob without ID?!");
+        } catch (JsonMappingException e) {
+            fail("error in mapping object to ErrorResponse" + e.getMessage());
+        } catch (Exception e) {
+            assertTrue(e.getMessage(), e instanceof ChinoApiException);
+            assertTrue(e.getMessage(), e.getMessage().contains("404"));
+            System.out.println("Successfully thrown exception: " + e.getMessage());
+            System.out.println();
+        }
+    }
+
+    @Test
+    public void testByInputStream_get_exception() {
+        // test mapping of error API response to ErrorResponse class
+        System.out.println("- Using empty BLOB ID");
+        try {
+            chino_admin.blobs.getByteStream("");
+            fail("Read blob without ID?!");
+        } catch (JsonMappingException e) {
+            fail("error in mapping object to ErrorResponse" + e.getMessage());
+        } catch (Exception e) {
+            assertTrue(e.getMessage(), e instanceof ChinoApiException);
+            assertTrue(e.getMessage(), e.getMessage().contains("404"));
+            System.out.println("Successfully thrown exception: " + e.getMessage());
+            System.out.println();
         }
     }
 
