@@ -78,6 +78,23 @@ public class BlobsTest extends ChinoBaseTest {
         blobDocument = chino_admin.documents.create(SCHEMA_ID, fileContent);
     }
 
+    // better not run with every test suite - uncomment when needed
+    @Test
+    public void testMultiChunks() throws NoSuchAlgorithmException, ChinoApiException, IOException {
+        String filename;
+
+//        // with InputStream
+//        filename = blobFileName.replace(".jpg", "_big.jpg");
+//        FileInputStream sourceStream = new FileInputStream(resFolder + filename);
+//        System.out.println("- Using FileInputStream (many chunks):");
+//        runTestUploadGetDelete(sourceStream, filename);
+//
+//        // with File path
+//        filename = blobFileName.replace(".jpg", "_big.jpg");
+//        System.out.println("- Using File path (many chunks):");
+//        runTestUploadGetDelete(resFolder, filename);
+    }
+
     @Test
     public void testByFilepath_upload_get_delete() throws NoSuchAlgorithmException, ChinoApiException, IOException {
         String sourceFolder = resFolder;
@@ -224,7 +241,9 @@ public class BlobsTest extends ChinoBaseTest {
         for (String fileName : outputFiles) {
             File outputFile = new File(fileName);
             if (outputFile.exists())
-                outputFile.delete();
+                if (outputFile.delete()) {
+                    System.out.println("Deleted: " + outputFile.getPath());
+                }
         }
 
         new DeleteAll().deleteAll(chino_admin.documents);

@@ -17,6 +17,7 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Manage upload and download of binary files as {@link Blobs BLOBs}.
  */
+// when changing methods of this class, run BlobsTest.testMultiChunks() once
 public class Blobs extends ChinoBaseAPI {
 
     /**
