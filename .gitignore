@@ -12,3 +12,4 @@ src/test/java/io/chino/java/replicate_errors/
 *.iml
 test.env
 coverage/
+src/test/res/control/
