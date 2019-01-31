@@ -37,6 +37,8 @@ public class BlobsTest extends ChinoBaseTest {
     private static String outputFilePath = resFolder + "control";
     private static String blobId;
 
+    private static final LinkedList<String> outputFiles = new LinkedList<>();
+
     private Document blobDocument;
 
     @BeforeClass
@@ -123,6 +125,7 @@ public class BlobsTest extends ChinoBaseTest {
 
         /* GET */
         GetBlobResponse res_get = chino_admin.blobs.get(blobId, outputFilePath);
+        outputFiles.add(outputFilePath + File.separator + filename);
         long size = res_get.getSize();
 
         assertEquals(expectedSize, size);
@@ -168,9 +171,11 @@ public class BlobsTest extends ChinoBaseTest {
                 System.err.println("Blob not deleted: " + blobId);
             }
 
-        File outputFile = new File(outputFilePath + File.separator + blobFileName);
-        if (outputFile.exists())
-            outputFile.delete();
+        for (String fileName : outputFiles) {
+            File outputFile = new File(fileName);
+            if (outputFile.exists())
+                outputFile.delete();
+        }
 
         new DeleteAll().deleteAll(chino_admin.documents);
     }
