@@ -83,7 +83,13 @@ public class ChinoBaseTest {
     }
 
     @After
-    public void after() throws IOException, ChinoApiException {}
+    public void after() throws IOException, ChinoApiException {
+        try {
+            synchronized (this) {wait(3000);}
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
