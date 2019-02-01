@@ -202,7 +202,7 @@ public class ChinoAPI {
      * Get a {@link List} of all versions of Chino.io API supported by this SDK
      * (now only "v1")
      *
-     * @return a {@link List List<String>} with the supported version codes
+     * @return a {@link List List&lt;String&gt;} with the supported version codes
      */
     public static List<String> getAvailableVersions() {
         return java.util.Collections.singletonList(API_VERSION);
