@@ -114,7 +114,7 @@ public class Blobs extends ChinoBaseAPI {
 
     /**
      * Upload a local file to Chino.io as a BLOB, read from an {@link InputStream}. This method fully handles the
-     * upload of a BLOB but does NOT close the stream.
+     * upload of a BLOB but does NOT close the stream. You should close it to prevent okhttp3 to warn about leaks.
      *
      * @param fileData an {@link InputStream} where the binary data to upload can be read from.
      *                 <b>WARNING:</b> the Stream must be {@link InputStream#close() closed} in order for the SDK to
@@ -169,7 +169,7 @@ public class Blobs extends ChinoBaseAPI {
 
     /**
      * Upload a local file to Chino.io as a BLOB, read from an {@link InputStream}. This method fully handles the
-     * upload of a BLOB but does NOT close the stream.
+     * upload of a BLOB but does NOT close the stream. You should close it to prevent okhttp3 to warn about leaks.
      *
      * @param fileData an {@link InputStream} where the binary data to upload can be read from
      * @param document the Chino.io {@link Document} which contains this BLOB
@@ -280,7 +280,7 @@ public class Blobs extends ChinoBaseAPI {
 
     /**
      * Get an {@link InputStream} that can be used to read the BLOB with the specified {@code blobId} as a byte stream.
-     * Remember to close the stream to prevent errors from OkHttp3!
+     * You should close it after you are done reading data to prevent okhttp3 to warn about leaks.
      *
      * @param blobId the id of the blob to retrieve
      *
@@ -406,5 +406,19 @@ public class Blobs extends ChinoBaseAPI {
     public String delete(String blobId) throws IOException, ChinoApiException {
         checkNotNull(blobId, "blob_id");
         return deleteResource("/blobs/"+blobId, false);
+    }
+
+    /**
+     * Get the size of the chunks used by the {@code uploadBlob} methods
+     *
+     * @see #uploadBlob(String, Document, String, String)
+     * @see #uploadBlob(String, String, String, String)
+     * @see #uploadBlob(InputStream, Document, String, String)
+     * @see #uploadBlob(InputStream, String, String, String)
+     *
+     * @return the size of a chunk in bytes
+     */
+    public static int getDefaultChunkSize() {
+        return CHUNK_SIZE;
     }
 }

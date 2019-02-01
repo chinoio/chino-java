@@ -76,22 +76,24 @@ public class BlobsTest extends ChinoBaseTest {
         blobDocument = chino_admin.documents.create(SCHEMA_ID, fileContent);
     }
 
-    // better not run with every test suite - uncomment when needed
     @Test
-    public void testManyChunks() throws NoSuchAlgorithmException, ChinoApiException, IOException {
+    public void testChunkOperations() throws NoSuchAlgorithmException, ChinoApiException, IOException {
         String filename;
 
-//        // with InputStream
-//        filename = blobFileName.replace(".jpg", "_big.jpg");
-//        FileInputStream sourceStream = new FileInputStream(resFolder + filename);
-//        System.out.println("- Using FileInputStream (many chunks):");
-//        runTestUploadGetDelete(sourceStream, filename);
-//        sourceStream.close();
-//
-//        // with File path
-//        filename = blobFileName.replace(".jpg", "_big.jpg");
-//        System.out.println("- Using File path (many chunks):");
-//        runTestUploadGetDelete(resFolder, filename);
+        // check default chunk size
+        assertEquals("Wrong value for default chunk size", Blobs.getDefaultChunkSize(), 1024*1024);
+
+        // with InputStream
+        filename = blobFileName.replace(".jpg", "_big.jpg");
+        FileInputStream sourceStream = new FileInputStream(resFolder + filename);
+        System.out.println("- Using FileInputStream (many chunks):");
+        runTestUploadGetDelete(sourceStream, filename);
+        sourceStream.close();
+
+        // with File path
+        filename = blobFileName.replace(".jpg", "_big.jpg");
+        System.out.println("- Using File path (many chunks):");
+        runTestUploadGetDelete(resFolder, filename);
     }
 
     @Test
