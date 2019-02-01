@@ -2,8 +2,8 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'cobertura'
 
-group = 'com.github.chinoio'
-version = '3.0'
+group = 'io.chino.library'
+version = '3.1.0'
 
 description = "Java SDK for Chino.io API"
 

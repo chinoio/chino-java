@@ -1,13 +1,45 @@
 #  CHINO.io Java SDK [ [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) [![Maintainability](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/maintainability)](https://codeclimate.com/github/chinoio/chino-java/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/test_coverage)](https://codeclimate.com/github/chinoio/chino-java/test_coverage) ]
-Official Java wrapper for [**CHINO.io** API](https://chino.io).
+Official Java wrapper for [**CHINO.io** API](https://chino.io). 
 
 Full API docs are available [here](http://docs.chino.io).
 
+- [What's new](#whats-new)
+- [Setup](#setup)
+  - [Maven](#build-with-maven)
+  - [Gradle](#build-with-gradle)
+  - [Source](#build-from-source)
+- [Javadoc](#javadoc)
+- [Usage](#usage)
+- [SDK overview](#sdk-overview)
+  - [ChinoAPI](#the-chinoapi-client)
+  - [Users and UserSchemas](#users-iochinojavausers-and-userschemas-iochinojavauserschemas)
+  - [Auth](#auth-iochinojavaauth)
+  - [Applications](#applications-iochinojavaapplications)
+  - [Groups](#groups-iochinojavagroups)
+  - [Permissions](#permissions-iochinojavapermissions)
+  - [Repositories](#repositories-iochinojavarepositories)
+  - [Schemas](#schemas-iochinojavaschemas)
+  - [Documents](#documents-iochinojavadocuments)
+  - [BLOBs](#blobs-iochinojavablobs)
+  - [Search](#search-iochinojavasearch)
+  - [Collections](#collections-iochinojavacollections)
+- [Testing](#testing)
+- [Support](#support)
+
 ## What's new
 
-#### New version: 3.0
+### 3.1.0
 
-The new major version is backwards compatible. It is a starting point for future changes to our SDK,
+#### BLOBs API
+
+Introduced new methods to the [BLOBs API](#blobs-iochinojavablobs).
+Now it is possible to upload and download files as BLOBs using an `InputStream` instead of storing them on file system.
+
+Existing code, documentation and tests have been improved, too.
+
+### 3.0
+
+This new major version is backwards compatible. It is a starting point for future changes to our SDK,
 that will follow the semantic versioning.
 
 #### Bug fixes
@@ -45,7 +77,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>3.0</version>
+    <version>3.1.0</version>
 </dependency>
 ```
 
@@ -62,7 +94,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:3.0'
+    compile 'com.github.chinoio:chino-java:3.1.0'
 }
 ```
 
@@ -107,11 +139,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.0-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.1.0-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.0/javadoc/io/chino/java/package-summary.html)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.1.0/javadoc/io/chino/java/package-summary.html)
 
     
 ## Usage
@@ -153,49 +185,49 @@ The most common task you can perform is the creation of a Document, where data c
     Document d = chino.documents.create(s.getSchemaId(), values);
     ```
 
-And that's it! from here you can retrieve, update and delete your Document with a single API call.
+And that's it! From here you can retrieve, update or delete your Document with a single API call.
 
 Chino.io also offers User management and authentication, GDPR/HIPAA-compliant Consent tracking,
-permissions over resources, resource indexing and search. [See what you can do with Chino.io](https://chino.io/api-tutorials-home).
+permissions over resources, resource indexing and search. Read the next section to see what this SDK offers, 
+or jump right into the action with our [tutorials.](https://chino.io/api-tutorials-home).
 
-## The SDK
-The Java SDK implements all the features that are offered by **Chino.io API v1**.
+## SDK overview
+The Java SDK implements all the features that are offered by **Chino.io API**.
 
 The package `io.chino.java` contains everything you need to work with this SDK;
 we provide an overview of how it can be used.
 
-***We suggest to read the [Chino.io API docs](https://docs.chino.io/) when using this SDK.*** 
+*For more detail about our API, refer to the [full Chino.io docs](https://docs.chino.io/)*
  
 ### The ChinoAPI client
-Main API client for sending API calls to Chino.io API.
+***Note:*** Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java)
+to see some practical usage examples.
 
-You need an authenticated client in order to perform API call. There are several options to authenticate a client:
+You will use this class to perform every call to Chino.io API:
+
+```Java
+ChinoAPI chino = new ChinoAPI(<host_url>);
+```
+Use the test "host_url" `https://api.test.chino.io` during development - test sandbox is **free** to use.
+
+However, with this client most of the operations won't be available: you need to authenticate first. 
+There are two authentication options:
 
 * Authenticate with **customer credentials** (found on Chino.io console). Only for admin access - [Learn more](https://docs.chino.io/#header-application-developers)
     ```Java
     ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>);
     ```
     
-* Authenticate with **bearer token** (get one using class [Auth](#auth-iochinojavaauth))
+* Authenticate with **bearer token** - get one using class [Auth](#auth-iochinojavaauth) - then:
     ```Java
     ChinoAPI chino = new ChinoAPI(<host_url>, <bearer_token>);
     ```
-    
-* **Don't authenticate** - you will need to *login* later (see [Auth](#auth-iochinojavaauth))
-    ```Java
-    ChinoAPI chino = new ChinoAPI(<host_url>);
-    ```
-    
-Use the test "host_url" `https://api.test.chino.io` during development - test sandbox is **free** to use.
 
-You can change the authentication type with:
+You can change the authentication type anytime with:
 ```Java
 chino.setCustomer(<customer_id>, <customer_key>);
 chino.setBearerToken(<bearer_token>);
 ```
-
-Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java)
-to see some practical usage examples of the `ChinoAPI` client.
     
 ### Users `io.chino.java.Users` and UserSchemas `io.chino.java.UserSchemas`
 API clients for managing UserSchemas and Users. [*See full docs*](https://docs.chino.io/#applications)
