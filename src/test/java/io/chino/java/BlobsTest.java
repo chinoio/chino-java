@@ -1,7 +1,6 @@
 package io.chino.java;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream;
 import io.chino.api.blob.CommitBlobUploadResponse;
 import io.chino.api.blob.GetBlobResponse;
 import io.chino.api.common.ChinoApiException;
@@ -14,12 +13,11 @@ import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import org.junit.*;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -80,7 +78,7 @@ public class BlobsTest extends ChinoBaseTest {
 
     // better not run with every test suite - uncomment when needed
     @Test
-    public void testMultiChunks() throws NoSuchAlgorithmException, ChinoApiException, IOException {
+    public void testManyChunks() throws NoSuchAlgorithmException, ChinoApiException, IOException {
         String filename;
 
 //        // with InputStream
@@ -88,6 +86,7 @@ public class BlobsTest extends ChinoBaseTest {
 //        FileInputStream sourceStream = new FileInputStream(resFolder + filename);
 //        System.out.println("- Using FileInputStream (many chunks):");
 //        runTestUploadGetDelete(sourceStream, filename);
+//        sourceStream.close();
 //
 //        // with File path
 //        filename = blobFileName.replace(".jpg", "_big.jpg");
@@ -109,15 +108,17 @@ public class BlobsTest extends ChinoBaseTest {
         String filename = blobFileName.replace(".jpg", "_fileIS.jpg");
         System.out.println("- Using FileInputStream:");
         runTestUploadGetDelete(sourceStream, filename);
+        sourceStream.close();
     }
 
     @Test
     public void testByByteInputStream_upload_get_delete() throws NoSuchAlgorithmException, ChinoApiException, IOException {
         byte[] bytes = Files.readAllBytes(Paths.get(resFolder + blobFileName)); // keep the test file size SMALL!
-        ByteInputStream sourceStream = new ByteInputStream(bytes, bytes.length);
+        ByteArrayInputStream sourceStream = new ByteArrayInputStream(bytes);
         String filename = blobFileName.replace(".jpg", "_byteIS.jpg");
         System.out.println("- Using ByteInputStream:");
         runTestUploadGetDelete(sourceStream, filename);
+        sourceStream.close();
     }
 
     private void runTestUploadGetDelete(Object source, String filename) throws IOException, ChinoApiException, NoSuchAlgorithmException {
@@ -148,18 +149,21 @@ public class BlobsTest extends ChinoBaseTest {
             GetBlobResponse blob = chino_admin.blobs.get(blobId, outputFilePath);
             size = blob.getSize();
             readFileName = blob.getFilename();
+
+            outputFiles.add(outputFilePath + File.separator + readFileName);
         } else /* if (source instanceof InputStream) */ {
             readFileName = filename;
-            InputStream blob = chino_admin.blobs.getByteStream(blobId);
-            File outputFile = new File(outputFilePath + File.separator + filename);
-            if (outputFile.delete()) {
-                System.out.println("Deleted: " + outputFile.getPath());
+            Path outputFile = Paths.get(outputFilePath + File.separator + filename);
+            if (!Files.exists(outputFile)) {
+                Files.createDirectories(outputFile);
             }
-            Files.copy(blob, outputFile.toPath());
-            size = outputFile.length();
+            try (InputStream blob = chino_admin.blobs.getByteStream(blobId)) {
+                System.out.println(outputFile.toAbsolutePath());
+                Files.copy(blob, outputFile, StandardCopyOption.REPLACE_EXISTING);
+            }
+//            File outputFile = new File(outputFilePath + File.separator + filename);
+            size = Files.size(outputFile);
         }
-
-        outputFiles.add(outputFilePath + File.separator + readFileName);
 
         assertTrue("Created an empty blob!", expectedSize > 0);
         assertTrue("Read an empty blob!", size > 0);
