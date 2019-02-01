@@ -1,59 +1,59 @@
 #  CHINO.io Java SDK [ [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) [![Maintainability](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/maintainability)](https://codeclimate.com/github/chinoio/chino-java/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/test_coverage)](https://codeclimate.com/github/chinoio/chino-java/test_coverage) ]
-Official Java wrapper for [**CHINO.io** API](https://chino.io).
+Official Java wrapper for [**CHINO.io** API](https://chino.io). 
 
 Full API docs are available [here](http://docs.chino.io).
 
-#### What's new - version 1.3.1
+- [What's new](#whats-new)
+- [Setup](#setup)
+  - [Maven](#build-with-maven)
+  - [Gradle](#build-with-gradle)
+  - [Source](#build-from-source)
+- [Javadoc](#javadoc)
+- [Usage](#usage)
+- [SDK overview](#sdk-overview)
+  - [ChinoAPI](#the-chinoapi-client)
+  - [Users and UserSchemas](#users-iochinojavausers-and-userschemas-iochinojavauserschemas)
+  - [Auth](#auth-iochinojavaauth)
+  - [Applications](#applications-iochinojavaapplications)
+  - [Groups](#groups-iochinojavagroups)
+  - [Permissions](#permissions-iochinojavapermissions)
+  - [Repositories](#repositories-iochinojavarepositories)
+  - [Schemas](#schemas-iochinojavaschemas)
+  - [Documents](#documents-iochinojavadocuments)
+  - [BLOBs](#blobs-iochinojavablobs)
+  - [Search](#search-iochinojavasearch)
+  - [Collections](#collections-iochinojavacollections)
+- [Testing](#testing)
+- [Support](#support)
 
-* **Upgraded minimum JDK version**:
-    
-    Since official support for Java 7 will be dropped in December 2018, the minimum SDK version for the Chino.io SDK
-    has been raised to Java 8. We suggest to use the `openjdk8` build. 
+## What's new
 
-* **Removed deprecated method from version 1.2.3**:
-    
-    This change affects a method in class `io.chino.java.Users`.
+### 3.1.0
 
-* **Search API**:
+#### BLOBs API
 
-    The Search API used to produce strange requests, which now have been fixed.
-    
-    We have redesigned the Search system to be more developer-friendly and as a consequence 
-    **the old Search API have been deprecated**. They will be removed in a future version (1.3.X or 1.4).
-    
-    A new Search interface has been implemented: see the *Search* section below to learn more.
-    We strongly suggest to migrate to the new Search API as soon as possible to preserve compatibility with new versions 
-    of our SDK.
-    
-    **NEW in v1.3.1**: added pagination of Search results and a new method `usernameExists` to check if a user is 
-    already registered. Learn more in the [Search](#search-iochinojavasearch) section.
-    
-* **Permissions API**
+Introduced new methods to the [BLOBs API](#blobs-iochinojavablobs).
+Now it is possible to upload and download files as BLOBs using an `InputStream` instead of storing them on file system.
 
-    We also redesigned the interface of the **Permissions API** and made it easier to use.
-    You can now set or revoke Permissions to your Users with fewer lines of code and in a better readable fashion.
-    
-    The old interface is still working but has been deprecated and **will be removed in a
-    future version** (1.3.X or 1.4).
-    
-* **BLOBs API**:
-    
-    From the next release of Chino.io Java SDK, BLOB uploads will only work with the `uploadBlob(...)` method.
-    Methods that handle the intermediate steps of the upload will no longer be accessible.
-    
-    Affected methods are `initUpload`, `uploadChunk` and `commitUpload`.
-    
-    Also method `delete(String, boolean)` will be removed from the public API and replaced by `delete(String)`.
-    
-* **Documents API** and **Users API**:
+Existing code, documentation and tests have been improved, too.
 
-    Now it is possible to wait for Documents and Users to be fully indexed, so that they will appear in the Search results
-    right after the `create(...)` and `update(...)` methods return. See the [*Documents*](#documents-iochinojavadocuments) and [*Users*](#users-iochinojavausers-and-userschemas-iochinojavauserschemas) section below to learn more about synchronous creation and update.
+### 3.0
+
+This new major version is backwards compatible. It is a starting point for future changes to our SDK,
+that will follow the semantic versioning.
+
+#### Bug fixes
+
+Fixed bugs that affected the Search.
+
+#### Force HTTPS on API host URL
+
+Every client initialized with `http://api.chino.io` and `http://api.test.chino.io` will be forced to use https instead.
+
+#### Test and coverage
     
-* **Other minor changes**:
-    * Added Javadoc for most of the classes of the SDK; existing documentation has been fixed and updated.
-    * New method `Users.checkPassword(String password)` to verify a User's password
-    
+Improved tests on the SDK. Now the code coverage and code quality reports are published to 
+[Code Climate](https://codeclimate.com/github/chinoio/chino-java).
 
 ## Setup
 
@@ -77,7 +77,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>1.3.1</version>
+    <version>3.1.0</version>
 </dependency>
 ```
 
@@ -94,7 +94,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:1.3.1'
+    compile 'com.github.chinoio:chino-java:3.1.0'
 }
 ```
 
@@ -139,11 +139,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-1.3.1-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.1.0-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/1.3.1/javadoc/io/chino/java/package-summary.html)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.1.0/javadoc/io/chino/java/package-summary.html)
 
     
 ## Usage
@@ -185,49 +185,49 @@ The most common task you can perform is the creation of a Document, where data c
     Document d = chino.documents.create(s.getSchemaId(), values);
     ```
 
-And that's it! from here you can retrieve, update and delete your Document with a single API call.
+And that's it! From here you can retrieve, update or delete your Document with a single API call.
 
 Chino.io also offers User management and authentication, GDPR/HIPAA-compliant Consent tracking,
-permissions over resources, resource indexing and search. [See what you can do with Chino.io](https://chino.io/api-tutorials-home).
+permissions over resources, resource indexing and search. Read the next section to see what this SDK offers, 
+or jump right into the action with our [tutorials.](https://chino.io/api-tutorials-home).
 
-## The SDK
-The Java SDK implements all the features that are offered by **Chino.io API v1**.
+## SDK overview
+The Java SDK implements all the features that are offered by **Chino.io API**.
 
 The package `io.chino.java` contains everything you need to work with this SDK;
 we provide an overview of how it can be used.
 
-***We suggest to read the [Chino.io API docs](https://docs.chino.io/) when using this SDK.*** 
+*For more detail about our API, refer to the [full Chino.io docs](https://docs.chino.io/)*
  
 ### The ChinoAPI client
-Main API client for sending API calls to Chino.io API.
+***Note:*** Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java)
+to see some practical usage examples.
 
-You need an authenticated client in order to perform API call. There are several options to authenticate a client:
+You will use this class to perform every call to Chino.io API:
+
+```Java
+ChinoAPI chino = new ChinoAPI(<host_url>);
+```
+Use the test "host_url" `https://api.test.chino.io` during development - test sandbox is **free** to use.
+
+However, with this client most of the operations won't be available: you need to authenticate first. 
+There are two authentication options:
 
 * Authenticate with **customer credentials** (found on Chino.io console). Only for admin access - [Learn more](https://docs.chino.io/#header-application-developers)
     ```Java
     ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>);
     ```
     
-* Authenticate with **bearer token** (get one using class [Auth](#auth-iochinojavaauth))
+* Authenticate with **bearer token** - get one using class [Auth](#auth-iochinojavaauth) - then:
     ```Java
     ChinoAPI chino = new ChinoAPI(<host_url>, <bearer_token>);
     ```
-    
-* **Don't authenticate** - you will need to *login* later (see [Auth](#auth-iochinojavaauth))
-    ```Java
-    ChinoAPI chino = new ChinoAPI(<host_url>);
-    ```
-    
-Use the test "host_url" `https://api.test.chino.io` during development - test sandbox is **free** to use.
 
-You can change the authentication type with:
+You can change the authentication type anytime with:
 ```Java
 chino.setCustomer(<customer_id>, <customer_key>);
 chino.setBearerToken(<bearer_token>);
 ```
-
-Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java)
-to see some practical usage examples of the `ChinoAPI` client.
     
 ### Users `io.chino.java.Users` and UserSchemas `io.chino.java.UserSchemas`
 API clients for managing UserSchemas and Users. [*See full docs*](https://docs.chino.io/#applications)
@@ -241,7 +241,7 @@ setting different access [Permissions](#permissions-iochinojavapermissions) over
 
 To learn more about Users, check out the [tutorial](https://chino.io/tutorials/tutorial-users).
 
-***New in 1.3*** **- "consistent" creation calls**
+**"consistent" creation calls**
 
 You can wait for indexing of Users to end before proceeding.
 This is useful if you plan to [Search](#search-iochinojavasearch) for Users right after the creation.
@@ -404,7 +404,7 @@ API client for management of Documents. [*See full docs*](https://docs.chino.io/
 
 Documents are used on Chino.io to store sensitive information. Learn more about Documents in the [tutorial](https://chino.io/tutorials/tutorial-docs).
 
-***New in 1.3*** **- "consistent" creation & update calls**
+**"consistent" creation & update calls**
 
 You can wait for indexing of Documents to end before proceeding.
 This is useful if you plan to [Search](#search-iochinojavasearch) for Documents right after the creation.
@@ -435,7 +435,7 @@ API client to perform search operations on Chino.io resources. [*See full docs*]
 
 We have updated our Search API, implementing:
  
-* ***New in v1.3.1***: a new method `UsersSearch.usernameExists`, that allows to easily check if a name is already
+* a new method `UsersSearch.usernameExists`, that allows to easily check if a name is already
 registered in a specified UserSchema. E.g.:
 ```java
     boolean exists = chino.search.users(<user_schema_id>).usernameExists(<username>);
