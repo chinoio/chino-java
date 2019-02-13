@@ -595,12 +595,23 @@ API client to manage Collections of [Documents](#documents-iochinojavadocuments)
 ## Testing
 With the SDK are included some JUnit tests, that are used for continuous integration.
 If you want (for some reason) to run these tests by yourself, the best thing to do is to run them in
-an account *ad hoc*.
-In fact, after each test **every pre-existing object on the account is deleted**, in order to preserve the correctness of tests.
+an account *ad hoc*. In fact, after each test **every pre-existing object on the account is deleted**, 
+in order to preserve the correctness of tests.
 
 If you know what you are doing, you can launch tests with Gradle:
 
-1. `cd` into the repository's root
+1. Create a file `src/test/res/test.properties` with the following content:
+   ```properties
+   chino.test.host=https://api.test.chino.io/v1
+   chino.test.customer_id=
+   chino.test.customer_key=
+   chino.test.automated=
+   ```
+   Write your id/key and set `chino.test.automated=allow` to enable testing.
+   **WARNING: this allows the test suite to delete everything on the account you use to test.**
+
+1. `cd` into the repository's root.
+
 2. Launch the `test` task with:
         
         gradle test -i -Pchino.test.customer_id=<your ID> -Pchino.test.customer_key=<your KEY> -Pchino.test.automated=<allow>

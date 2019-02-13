@@ -284,3 +284,4 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,linux,macos,gradle,windows,eclipse,netbeans,intellij+all
+src/test/res/test.properties
