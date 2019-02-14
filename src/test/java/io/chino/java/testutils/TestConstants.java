@@ -91,10 +91,9 @@ public class TestConstants {
                 );
             }
         } catch (IOException e) {
-            System.err.println("Failed to load 'src/test/res/test.properties'. Reason:");
+            System.err.println("Failed to load 'src/test/res/test.properties'. Caused by:");
             e.printStackTrace(System.err);
             System.err.flush();
-            System.exit(1);
         }
         // attempt to load values from Properties
         CUSTOMER_ID = testProperties.getProperty("chino.test.customer_id", null);
