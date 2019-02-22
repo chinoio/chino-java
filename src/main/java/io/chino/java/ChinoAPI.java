@@ -128,7 +128,7 @@ public class ChinoAPI {
             // remove trailing '/' (if any)
             return hostUrl.replace(API_VERSION + "/", API_VERSION);
         } else {
-            String errString = "Chino API version not specified. Allowed values: %s";
+            String errString = "\"" + hostUrl + "\": Chino API version not specified. Allowed values: %s";
             StringBuilder versions = new StringBuilder("[");
             for (String v : getAvailableVersions()) {
                 versions.append("\"").append(v).append("\"");
