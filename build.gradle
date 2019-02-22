@@ -17,7 +17,7 @@ tasks.withType(JavaCompile) {
 
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    archiveClassifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
 }
 
@@ -53,7 +53,7 @@ dependencies {
 }
 
 cobertura {
-    coverageFormats = ['html', 'xml']
+    setCoverageFormats(['html', 'xml'] as Set<String>)
     coverageIgnoreTrivial = true
     coverageIgnores = ['org.slf4j.Logger.*']
     coverageReportDir = new File("$buildDir.path/reports/cobertura")
