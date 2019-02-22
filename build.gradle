@@ -1,14 +1,15 @@
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'cobertura'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.chino.library'
-version = '3.1.0'
+version = '3.1.1'
 
 description = "Java SDK for Chino.io API"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_10
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -16,7 +17,7 @@ tasks.withType(JavaCompile) {
 
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier = 'javadoc'
     from javadoc.destinationDir
 }
 
@@ -36,22 +37,19 @@ buildscript {
     }
 }
 
-apply plugin: 'com.github.johnrengelman.shadow'
-
 repositories {
     jcenter()
     mavenCentral()
 }
 
 dependencies {
-    compile 'junit:junit:4.12'
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
-    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
-    compile 'org.jetbrains:annotations:15.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
+    implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.9.8'
+    implementation 'org.jetbrains:annotations:17.0.0'
 
-    testRuntime "org.slf4j:slf4j-api:1.7.10"
+    testImplementation 'junit:junit:4.12'
+    testRuntime "org.slf4j:slf4j-api:1.7.25"
 }
 
 cobertura {
