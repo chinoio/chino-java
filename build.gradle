@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'net.saliman.cobertura'
+apply plugin: 'jacoco'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.chino.library'
@@ -33,7 +33,6 @@ buildscript {
 
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
-        classpath 'net.saliman:gradle-cobertura-plugin:2.6.0'
     }
 }
 
@@ -52,9 +51,15 @@ dependencies {
     testRuntime "org.slf4j:slf4j-api:1.7.25"
 }
 
-cobertura {
-    setCoverageFormats(['html', 'xml'] as Set<String>)
-    coverageIgnoreTrivial = true
-    coverageIgnores = ['org.slf4j.Logger.*']
-    coverageReportDir = new File("$buildDir.path/reports/cobertura")
+jacoco {
+    toolVersion = "0.8.2"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/jacoco/jacocoHtml")
+    }
 }

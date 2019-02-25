@@ -12,7 +12,7 @@ before_install:
 branches:
   only:
     - master
-    - feature/java-up   # temporarily add this branch for testing, replace with release when it works
+#    - feature/java-up   # temporarily add this branch for testing, replace with release when it works
     #    - release
 
 env:
@@ -38,7 +38,6 @@ jobs:
       jdk: openjdk8
       # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
       script: ./gradlew cobertura -i --stacktrace
-
     - jdk: openjdk11
       # Prepare test reporter for CodeClimate
       before_script:
