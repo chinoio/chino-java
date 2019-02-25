@@ -1,13 +1,20 @@
 language: java
+install: true
+
+before_install:
+  - echo $JAVA_HOME
+  # make Gradle wrapper executable
+  - chmod +x gradlew
 
 
 # NOTE: branch 'develop' is not tested. When a deployable version is ready
-# the commits must be merged into branch 'travis-ci-test' and a build will be
+# the commits must be merged into branch 'release' and a build will be
 # triggered automatically. When the build passes, merge the new code into 'master'.
 branches:
-    only:
+  only:
     - master
-    - travis-ci-test
+    - feature/java-up   # temporarily add this branch for testing, replace with release when it works
+    #    - release
 
 env:
   global:
@@ -22,27 +29,29 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+
+stages:
+  - test-jdk
+
+jdk:
+  - openjdk8
+  - openjdk11
+
 jobs:
   include:
-    - stage: test-jdk8
-      jdk: openjdk8
-      before_install:
-        - echo $JAVA_HOME
-        # init Gradle wrapper
-        - chmod +x gradlew
+    - stage: test-jdk
+      # Prepare test reporter for CodeClimate
       before_script:
-        # Download CodeClimate test reporter
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
-        # Prepare for test reporting
         - ./cc-test-reporter before-build
-      script:
-        # run tests with Cobertura for coverage
-        - gradle cobertura -i
+      # run tests with Cobertura using JDK 11 (last in 'jdk' array)
+      script: gradle cobertura -i
+      # format & upload coverage report
       after_script:
-        # prepare & upload coverage report to CodeClimate
         - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
         - ./cc-test-reporter upload-coverage
 
-stages:
-  - test-jdk8
+    - jdk: openjdk8
+      # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
+      script: gradle cobertura -i

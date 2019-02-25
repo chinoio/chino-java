@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'cobertura'
+apply plugin: 'net.saliman.cobertura'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.chino.library'
@@ -9,7 +9,7 @@ version = '3.1.1'
 description = "Java SDK for Chino.io API"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_10
+targetCompatibility = JavaVersion.VERSION_11
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -33,7 +33,7 @@ buildscript {
 
     dependencies {
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
-        classpath 'net.saliman:gradle-cobertura-plugin:2.5.4'
+        classpath 'net.saliman:gradle-cobertura-plugin:2.6.0'
     }
 }
 
