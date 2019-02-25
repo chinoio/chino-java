@@ -97,8 +97,6 @@ public class ChinoBaseTest {
         errorMsg =  "init() method not called";
         continueTests = true;
         test = null;
-        System.out.println("--- Test ended ---");
-        System.out.println();
         System.gc();
     }
 
