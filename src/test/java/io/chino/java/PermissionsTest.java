@@ -323,11 +323,12 @@ public class PermissionsTest extends ChinoBaseTest {
     }
 
     private Group makeGroup(int n, String testName) throws IOException, ChinoApiException {
-        if (testName.length() > 22)
-            testName = testName.substring(
-                    5, Math.min(testName.length(), 27)  // remove "test_", keep all the rest of the string,
+        String groupName = testName;
+        if (groupName.length() > 22)
+            groupName = groupName.substring(
+                    5, Math.min(groupName.length(), 27)  // remove "test_", keep all the rest of the string,
             ) + " [" + TestConstants.JAVA + "]";        // but leave 10 chars for the Java version
-        Group g = chino_admin.groups.create(testName, new HashMap());
+        Group g = chino_admin.groups.create(groupName, new HashMap());
         for (int i=0; i < n; i++) {
             User u = makeUser((i + 1) + "_" + testName);
             chino_admin.groups.addUserToGroup(u.getUserId(), g.getGroupId());

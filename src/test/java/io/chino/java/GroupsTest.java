@@ -50,7 +50,7 @@ public class GroupsTest extends ChinoBaseTest {
     @Test
     public void test_CRUD() throws IOException, ChinoApiException {
         /* CREATE */
-        String groupName = "Group for testing Chino.io SDK" + " [" + TestConstants.JAVA + "]";
+        String groupName = "chino-java test Groups" + " [" + TestConstants.JAVA + "]";
         Group c = test.create(groupName, new HashMap());
         assertNotNull("Group was not created! (null reference)", c);
 
@@ -64,7 +64,7 @@ public class GroupsTest extends ChinoBaseTest {
         Group u = test.update(c.getGroupId(), "UPDATED" + " [" + TestConstants.JAVA + "]", attrs);
 
         assertNotEquals("Object was not updated", c, u);
-        assertEquals("Update failed", "UPDATED", u.getGroupName());
+        assertEquals("Update failed", "UPDATED" + " [" + TestConstants.JAVA + "]", u.getGroupName());
         HashMap<String, Object> control = new ObjectMapper().convertValue(u.getAttributes(),
                 new TypeReference<HashMap<String, Object>>() {}
         );
