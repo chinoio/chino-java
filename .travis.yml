@@ -33,13 +33,14 @@ cache:
 stages:
   - test-jdk
 
-jdk:
-  - openjdk8
-  - openjdk11
-
 jobs:
   include:
     - stage: test-jdk
+      jdk: openjdk8
+      # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
+      script: gradle cobertura -i
+
+    - jdk: openjdk11
       # Prepare test reporter for CodeClimate
       before_script:
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
@@ -51,7 +52,3 @@ jobs:
       after_script:
         - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
         - ./cc-test-reporter upload-coverage
-
-    - jdk: openjdk8
-      # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
-      script: gradle cobertura -i
