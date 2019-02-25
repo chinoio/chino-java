@@ -64,10 +64,10 @@ public class ChinoBaseTest {
             TestConstants.HOST = host;
         }
         System.out.println();
-        System.out.print("--- Test started");
-        System.out.print(" ~ using Chino.io host: " + TestConstants.HOST);
-        System.out.print(" ---");
-        System.out.println();
+        System.out.println("--- Test started ----------------------" + "\n" +
+                           " ~ Java version: " + TestConstants.JAVA + "\n" +
+                           " ~ Chino.io host: " + TestConstants.HOST + "\n" +
+                           "---------------------------------------");
         System.out.flush();
     }
 

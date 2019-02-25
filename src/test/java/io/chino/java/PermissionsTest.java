@@ -66,7 +66,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
         // create a userschema and a user
         try {
-            USER_SCHEMA_ID = chino_admin.userSchemas.create("UserSchema for Permissions unit testing", UserSchemaStructureSample.class)
+            USER_SCHEMA_ID = chino_admin.userSchemas.create("UserSchema for Permissions unit testing"  + " [" + TestConstants.JAVA + "]", UserSchemaStructureSample.class)
                 .getUserSchemaId();
         } catch (Exception ex) {
             fail("failed to set up test for PermissionsTest (create UserSchema).\n"
@@ -75,7 +75,7 @@ public class PermissionsTest extends ChinoBaseTest {
         }
 
         // create repository and schema to set permissions on
-        REPO_ID = chino_admin.repositories.create("PermissionsTest").getRepositoryId();
+        REPO_ID = chino_admin.repositories.create("PermissionsTest"  + " [" + TestConstants.JAVA + "]").getRepositoryId();
         LinkedList<Field> fields = new LinkedList<>();
         fields.add(new Field("testMethod", "string"));
 
@@ -267,7 +267,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
         Document doc = chino_admin.documents.create(SCHEMA_ID, docContent);
         ChinoAPI chino_user = new ChinoAPI(TestConstants.HOST);
-        Application app = chino_admin.applications.create("test_readPerms_readPermsOnDoc", "password", "", ClientType.PUBLIC);
+        Application app = chino_admin.applications.create("test_readPerms_readPermsOnDoc" + "[" + TestConstants.JAVA + "]", "password", "", ClientType.PUBLIC);
         chino_user.auth.loginWithPassword(u.getUsername(), password, app.getAppId());
 
         /* READ PERMISSIONS */
@@ -323,8 +323,10 @@ public class PermissionsTest extends ChinoBaseTest {
     }
 
     private Group makeGroup(int n, String testName) throws IOException, ChinoApiException {
-        if (testName.length() > 32)
-            testName = testName.substring(0, 32);
+        if (testName.length() > 22)
+            testName = testName.substring(
+                    5, Math.min(testName.length(), 27)  // remove "test_", keep all the rest of the string,
+            ) + " [" + TestConstants.JAVA + "]";        // but leave 10 chars for the Java version
         Group g = chino_admin.groups.create(testName, new HashMap());
         for (int i=0; i < n; i++) {
             User u = makeUser((i + 1) + "_" + testName);

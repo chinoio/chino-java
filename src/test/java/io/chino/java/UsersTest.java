@@ -43,7 +43,7 @@ public class UsersTest extends ChinoBaseTest {
         );
 
         try {
-            userSchema = chino_admin.userSchemas.create("Test UserSchema for class UsersTest", UserSchemaStructureSample.class);
+            userSchema = chino_admin.userSchemas.create("Test UserSchema for class UsersTest"  + " [" + TestConstants.JAVA + "]", UserSchemaStructureSample.class);
         } catch (Exception ex) {
             fail("failed to set up test for UsersTest (create UserSchema).\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -68,7 +68,7 @@ public class UsersTest extends ChinoBaseTest {
         }
 
         // verify that login is enabled with new credentials
-        Application app = chino_admin.applications.create("test Application for checkPasswordTest", "password", "", ClientType.PUBLIC);
+        Application app = chino_admin.applications.create("test Application for checkPasswordTest" + "[" + TestConstants.JAVA + "]", "password", "", ClientType.PUBLIC);
         ChinoAPI client = null;
         String token = null;
         try {
@@ -202,7 +202,7 @@ public class UsersTest extends ChinoBaseTest {
         }
 
         // verify that login is enabled with new credentials
-        Application app = chino_admin.applications.create("test Application for UsersTest", "password", "", ClientType.PUBLIC);
+        Application app = chino_admin.applications.create("test Application for UsersTest" + "[" + TestConstants.JAVA + "]", "password", "", ClientType.PUBLIC);
         try {
             ChinoAPI appClient = new ChinoAPI(TestConstants.HOST);
             appClient.setBearerToken(

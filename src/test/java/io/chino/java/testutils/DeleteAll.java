@@ -18,6 +18,34 @@ import java.util.List;
 
 public class DeleteAll {
 
+    private String javaVersion;
+
+    /**
+     * Delete all objects created during this test suite.
+     * To delete all object, please see the other constructor of this class.
+     *
+     * @see #DeleteAll(String)
+     */
+    public DeleteAll() {
+        javaVersion = TestConstants.JAVA;
+    }
+
+    /**
+     * Delete all objects with the specified Java version. Objects created in tests specify their Java version in the
+     * description in order to make possible running tests in parallel. This {@link DeleteAll} only deletes objects
+     * that have in their description the provided Java version.
+     *
+     * @see System#getProperty(String) System.getProperty("java.version")
+     *
+     * @param javaVersion a String describing the java version.
+     *                    <b>If empty or {@code null}, any version will be matched</b>
+     */
+    public DeleteAll(String javaVersion) {
+        if (javaVersion == null)
+            javaVersion = "";
+        this.javaVersion = javaVersion;
+    }
+
     /**
      * Delete all the object of a given type, according to the implementation of {@link ChinoBaseAPI}
      * that is passed as a parameter:<br>
@@ -41,13 +69,15 @@ public class DeleteAll {
             Applications applicationsClient = (Applications) apiClient;
             List<Application> items = applicationsClient.list().getApplications();
             for (Application app:items) {
-                applicationsClient.delete(app.getAppId(), true);
+                if (hasCorrectJavaVersion(app.getAppName()))
+                    applicationsClient.delete(app.getAppId(), true);
             }
         } else if(apiClient instanceof Consents) {
             Consents consentsClient = (Consents) apiClient;
             List<Consent> items = consentsClient.list().getConsents();
             for (Consent consent:items) {
-                consentsClient.delete(consent.getConsentId());
+                if (hasCorrectJavaVersion(consent.getDescription()))
+                    consentsClient.delete(consent.getConsentId());
             }
         } else if(apiClient instanceof UserSchemas || apiClient instanceof Users || apiClient instanceof Permissions) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
@@ -55,31 +85,35 @@ public class DeleteAll {
             Users userClient = chino.users;
             List<UserSchema> schemasList = userSchemaClient.list().getUserSchemas();
             for (UserSchema userSchema:schemasList) {
-                List<User> usersList = userClient.list(userSchema.getUserSchemaId()).getUsers();
-                if (apiClient instanceof Users) { // only delete users
-                    for (User user:usersList) {
-                        userClient.delete(user.getUserId(), true);
+                if (hasCorrectJavaVersion(userSchema.getDescription())) {
+                    List<User> usersList = userClient.list(userSchema.getUserSchemaId()).getUsers();
+                    if (apiClient instanceof Users) { // only delete users
+                        for (User user:usersList) {
+                            userClient.delete(user.getUserId(), true);
+                        }
+                    } else { // delete users & u. schema
+                        userSchemaClient.delete(userSchema.getUserSchemaId(), true);
                     }
-                } else { // delete users & u. schema
-                    userSchemaClient.delete(userSchema.getUserSchemaId(), true);
                 }
             }
         } else if(apiClient instanceof Repositories || apiClient instanceof Schemas || apiClient instanceof Documents) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             List<Repository> repositories = chino.repositories.list().getRepositories();
             for (Repository r : repositories) {
-                List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
-                for (Schema s : schemas) {
-                    List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
-                    for (Document d : documents) {
-                        chino.documents.delete(d.getDocumentId(), true);
+                if (hasCorrectJavaVersion(r.getDescription())) {
+                    List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
+                    for (Schema s : schemas) {
+                        List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
+                        for (Document d : documents) {
+                            chino.documents.delete(d.getDocumentId(), true);
+                        }
+                        if (!(apiClient instanceof Documents)) {
+                            chino.schemas.delete(s.getSchemaId(), true);
+                        }
                     }
-                    if (!(apiClient instanceof Documents)) {
-                        chino.schemas.delete(s.getSchemaId(), true);
+                    if (!(apiClient instanceof Documents) && !(apiClient instanceof Schemas)) {
+                        chino.repositories.delete(r.getRepositoryId(), true);
                     }
-                }
-                if (!(apiClient instanceof Documents) && !(apiClient instanceof Schemas)) {
-                    chino.repositories.delete(r.getRepositoryId(), true);
                 }
             }
         } else if(apiClient instanceof Search) {
@@ -89,7 +123,7 @@ public class DeleteAll {
         } else if(apiClient instanceof Blobs) {
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             for (Repository r : chino.repositories.list().getRepositories()) {
-                if (r.getDescription().contains("BlobsTest")) {
+                if (r.getDescription().contains("BlobsTest") && hasCorrectJavaVersion(r.getDescription())) {
                     List<Schema> schemas = chino.schemas.list(r.getRepositoryId()).getSchemas();
                     for (Schema s : schemas) {
                         List<Document> documents = chino.documents.list(s.getSchemaId()).getDocuments();
@@ -127,31 +161,41 @@ public class DeleteAll {
         }
     }
 
+    private boolean hasCorrectJavaVersion(String name) {
+        return name.contains(javaVersion);
+    }
+
     public void deleteAll(ChinoAPI temp) throws IOException, ChinoApiException {
         List<Group> groups = temp.groups.list().getGroups();
         for(Group g : groups){
+            if (hasCorrectJavaVersion(g.getGroupName()))
             temp.groups.delete(g.getGroupId(), true);
         }
         List<Collection> collections = temp.collections.list().getCollections();
         for(Collection c : collections){
-            temp.collections.delete(c.getCollectionId(), true);
+            if (hasCorrectJavaVersion(c.getName()))
+                temp.collections.delete(c.getCollectionId(), true);
         }
         List<Application> applications = temp.applications.list().getApplications();
         for(Application a : applications){
-            temp.applications.delete(a.getAppId(), true);
+            if (hasCorrectJavaVersion(a.getAppName()))
+                temp.applications.delete(a.getAppId(), true);
         }
         deleteAll(temp.repositories);
         List<UserSchema> userSchemas = temp.userSchemas.list().getUserSchemas();
         for(UserSchema u : userSchemas){
-            List<User> users = temp.users.list(u.getUserSchemaId()).getUsers();
-            for(User user : users){
-                temp.users.delete(user.getUserId(), true);
+            if (hasCorrectJavaVersion(u.getDescription())) {
+                List<User> users = temp.users.list(u.getUserSchemaId()).getUsers();
+                for (User user : users) {
+                    temp.users.delete(user.getUserId(), true);
+                }
+                temp.userSchemas.delete(u.getUserSchemaId(), true);
             }
-            temp.userSchemas.delete(u.getUserSchemaId(), true);
         }
         ConsentList consents = temp.consents.list(); // ConsentList consents = temp.consents.list().getConsents(); // gives the same result
         for (Consent c:consents) {
-            temp.consents.delete(c.getConsentId());
+            if (hasCorrectJavaVersion(c.getDescription()))
+                temp.consents.delete(c.getConsentId());
         }
     }
 }

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import static io.chino.java.testutils.TestConstants.JAVA;
 import static org.junit.Assert.*;
 
 /**
@@ -93,7 +94,7 @@ public class ChinoAPITest {
         String step = "create user schema";
         try {
             // create a new user
-            userSchema = chino_customer.userSchemas.create("test_user_schema", UserSchemaStructureSample.class);
+            userSchema = chino_customer.userSchemas.create("test_user_schema"  + " [" + JAVA + "]", UserSchemaStructureSample.class);
             USER_SCHEMA_ID = userSchema.getUserSchemaId();
         } catch (Exception ex) {
             fail("failed to set up test for ChinoAPITest (" + step + ").\n"
@@ -167,7 +168,7 @@ public class ChinoAPITest {
 
             // use the access token to create a new repo
             step = "create repository";
-            Repository rep = apiClient.repositories.create("test_repo");
+            Repository rep = apiClient.repositories.create("test_repo"  + " [" + TestConstants.JAVA + "]");
             assertNotNull(apiClient.repositories.read(rep.getRepositoryId()));
 
             // refresh token - access token is automatically updated in apiClient
@@ -211,7 +212,7 @@ public class ChinoAPITest {
         try {
             // create a repository using customer credentials
             step = "create repository";
-            Repository rep = apiClient.repositories.create("test_repo for ChinoAPITest");
+            Repository rep = apiClient.repositories.create("test_repo for ChinoAPITest"  + " [" + TestConstants.JAVA + "]");
             assertNotNull(rep);
 
             // delete the repository
@@ -281,7 +282,7 @@ public class ChinoAPITest {
             // create a repository using costomer credentials
             step = "create repository";
             Repository rep = apiClient.setCustomer(TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY) // set credentials in client
-                    .repositories.create("test_repo for ChinoAPITest");
+                    .repositories.create("test_repo for ChinoAPITest"  + " [" + TestConstants.JAVA + "]");
             assertNotNull(rep);
 
             // delete the repository
@@ -324,7 +325,7 @@ public class ChinoAPITest {
             // use the access token to create a new repo
             step = "create repository";
             Repository rep = apiClient.setBearerToken(accessToken)              // set token in API client
-                    .repositories.create("test_repo");
+                    .repositories.create("test_repo"  + " [" + TestConstants.JAVA + "]");
             assertNotNull(apiClient.repositories.read(rep.getRepositoryId()));  // client should keep the token saved
 
             // refresh token - access token is automatically updated in apiClient
@@ -370,7 +371,7 @@ public class ChinoAPITest {
         assertClientWasCreated(c);
         Repository r = null;
         try {
-            r = c.repositories.create("testHostNormalization");
+            r = c.repositories.create("testHostNormalization"  + " [" + TestConstants.JAVA + "]");
         } catch (IOException e) {
             e.printStackTrace(System.err);
             System.err.println("I/O error: " + e.getMessage());

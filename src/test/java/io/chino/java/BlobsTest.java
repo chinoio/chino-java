@@ -59,7 +59,7 @@ public class BlobsTest extends ChinoBaseTest {
                 chino_admin.blobs
         );
 
-        REPO_ID = chino_admin.repositories.create("BlobsTest").getRepositoryId();
+        REPO_ID = chino_admin.repositories.create("BlobsTest"  + " [" + TestConstants.JAVA + "]").getRepositoryId();
 
         LinkedList<Field> fields = new LinkedList<>();
         fields.add(new Field("testName", "string"));

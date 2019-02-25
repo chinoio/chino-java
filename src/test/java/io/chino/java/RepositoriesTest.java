@@ -35,7 +35,7 @@ public class RepositoriesTest extends ChinoBaseTest {
     @Test
     public void test_CRUD() throws IOException, ChinoApiException {
         /* CREATE */
-        String repoDesc = "Repository created for RepositoriesTest";
+        String repoDesc = "Repository created for RepositoriesTest" + "[" + TestConstants.JAVA + "]";
         Repository c = test.create(repoDesc);
         assertNotNull("Repository was not created", c);
 
@@ -44,7 +44,7 @@ public class RepositoriesTest extends ChinoBaseTest {
         assertEquals("Read object is different from original", c, r);
 
         /* UPDATE */
-        String updatedDesc = "Updated repository";
+        String updatedDesc = "Updated repository" + "[" + TestConstants.JAVA + "]";
         Repository u = test.update(c.getRepositoryId(), updatedDesc);
         assertNotEquals("Object was not updated", c, u);
         assertEquals("Update failed", updatedDesc, u.getDescription());
@@ -65,7 +65,7 @@ public class RepositoriesTest extends ChinoBaseTest {
         Repository[] repos = new Repository[5];
         synchronized (this) {
             for (int i=0; i<5; i++) {
-                repos[i] = test.create("test_list_repo" + i);
+                repos[i] = test.create("test_list_repo" + i + " [" + TestConstants.JAVA + "]");
                 try {
                     wait(3000);
                 } catch (InterruptedException | IllegalMonitorStateException ignored) {}

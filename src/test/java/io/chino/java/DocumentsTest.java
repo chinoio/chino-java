@@ -43,7 +43,7 @@ public class   DocumentsTest extends ChinoBaseTest {
                 chino_admin.repositories.list().getRepositories().isEmpty(),
                 chino_admin.repositories
         );
-        REPO_ID = chino_admin.repositories.create("DocumentsTest")
+        REPO_ID = chino_admin.repositories.create("DocumentsTest"  + " [" + TestConstants.JAVA + "]")
                     .getRepositoryId();
 
         LinkedList<Field> fields = new LinkedList<>();

@@ -122,6 +122,8 @@ public class TestConstants {
         if (HOST == null) {
             HOST = "https://api.test.chino.io/v1";
         }
+
+        JAVA = testProperties.getProperty("chino.test.java.version", System.getProperty("java.version"));
         
         // sample values; you can edit those two values at will (either here or in class 'TestConstants').
         USERNAME = (defaultUserUsername == null) ? "mrossi" : defaultUserUsername;
@@ -129,5 +131,6 @@ public class TestConstants {
     }
 
     /* Other constant values used throughout the test classes */
-    public final static String APP_NAME = "chino Java SDK test";
+    public static String JAVA;
+    public final static String APP_NAME = "chino-java test [" + JAVA + "]";
 }
