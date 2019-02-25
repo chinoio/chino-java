@@ -1,5 +1,4 @@
 language: java
-install: true
 
 before_install:
   - echo $JAVA_HOME
@@ -38,7 +37,7 @@ jobs:
     - stage: test-jdk
       jdk: openjdk8
       # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
-      script: gradle cobertura -i
+      script: gradlew cobertura -i --stacktrace
 
     - jdk: openjdk11
       # Prepare test reporter for CodeClimate
@@ -47,7 +46,7 @@ jobs:
         - chmod +x ./cc-test-reporter
         - ./cc-test-reporter before-build
       # run tests with Cobertura using JDK 11 (last in 'jdk' array)
-      script: gradle cobertura -i
+      script: gradlew cobertura -i --stacktrace
       # format & upload coverage report
       after_script:
         - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
