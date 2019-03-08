@@ -65,8 +65,8 @@ public class SchemasTest extends ChinoBaseTest {
         req = new SchemaRequest("SchemaTest", struc);
 
         Schema u_class = test.update(c_class.getSchemaId(), newDesc, TestClassStructure.class);
-        Schema u_struct = test.update(c_class.getSchemaId(), newDesc, struc);
-        Schema u_req = test.update(c_class.getSchemaId(), req);
+        Schema u_struct = test.update(c_struct.getSchemaId(), newDesc, struc);
+        Schema u_req = test.update(c_req.getSchemaId(), req);
 
         assertNotEquals(c_class, u_class);
         assertNotEquals(c_struct, u_struct);
