@@ -226,6 +226,8 @@ public class PermissionsRequestBuilder implements PermissionsContainer {
 
     /**
      * Store the {@link Type Permission Types} that are granted / revoked with this request. <br>
+     * In order for the permissions to be applied, you need to call also
+     * {@link #buildRequest() .buildRequest()}{@link PermissionsRequest#execute() .execute()}<br>
      * <br>
      * <b>Note:</b> the "created_document" list can only be set on children of Schemas:
      * <pre>
