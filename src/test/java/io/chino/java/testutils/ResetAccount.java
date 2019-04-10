@@ -23,9 +23,11 @@ public class ResetAccount {
             Scanner in = new Scanner(System.in);
             System.out.println("--- YOUR ACCOUNT ----------------------" + "\n" +
                                " ~ Chino.io host: " + TestConstants.HOST + "\n" +
-                               " ~ Customer ID: " + TestConstants.CUSTOMER_ID.substring(0, 5) + "...\n" +
-                               " ~ Customer key: ..." + TestConstants.CUSTOMER_KEY.substring(TestConstants.CUSTOMER_KEY.length() - 5) + "\n" +
-                               "---------------------------------------");
+                            " ~ Customer ID: " + TestConstants.CUSTOMER_ID.substring(0, 5) + "...\n" +
+                            " ~ Customer key: ..." + TestConstants.CUSTOMER_KEY.substring(TestConstants.CUSTOMER_KEY.length() - 5) + "\n" +
+                            "--- JAVA VERSION ----------------------" + "\n" +
+                            "   " + System.getProperty("java.version") + "\n" +
+                            "---------------------------------------");
             System.out.println("Are you sure you want to delete EVERYTHING on your account?");
             System.out.print("This operation cannot be undone. [yes/NO]> ");
             response = in.nextLine().toLowerCase();
@@ -33,6 +35,7 @@ public class ResetAccount {
 
         if (response.equals("yes")) {
             ChinoAPI chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+//            new DeleteAll(TestConstants.JAVA).deleteAll(chino_admin);
             new DeleteAll("").deleteAll(chino_admin);
             System.out.println("Done.");
         } else {

@@ -50,7 +50,9 @@ public class GroupsTest extends ChinoBaseTest {
     @Test
     public void test_CRUD() throws IOException, ChinoApiException {
         /* CREATE */
-        String groupName = "chino-java test Groups" + " [" + TestConstants.JAVA + "]";
+        String groupName = "java GroupsTest" + "[" + TestConstants.JAVA + "]";
+        //System.out.println("Group name: " + groupName + " (length: " + groupName.length() + ")");
+
         Group c = test.create(groupName, new HashMap());
         assertNotNull("Group was not created! (null reference)", c);
 
@@ -129,7 +131,7 @@ public class GroupsTest extends ChinoBaseTest {
                 makeUser("test_users_usr4"),
                 makeUser("test_users_usr5")
         };
-        Group group = test.create("GroupsTest.test_users" + " [" + TestConstants.JAVA + "]", new HashMap());
+        Group group = test.create("test_users" + " [" + TestConstants.JAVA + "]", new HashMap());
 
         /* ADD */
         for (User u : users) {
