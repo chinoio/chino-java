@@ -239,10 +239,9 @@ public class ChinoAPITest {
     @Test
     public void testHostNormalization() throws IOException, ChinoApiException {
         String[] hosts = {
-                "https://{{ hostName }}/v1", // fine
                 "http://{{ hostName }}/v1",  // no HTTPS
                 "http://{{ hostName }}/v1/", // no HTTPS + trailing slash
-                "https://{{ hostName }}/v1////", // multi trailing slash
+                "http://{{ hostName }}/v1////", // multi trailing slash
         };
         String firstError = null;
         for (String hostName : hosts) {
@@ -266,7 +265,7 @@ public class ChinoAPITest {
                 c = new ChinoAPI(hostName, user.getAccessToken());
                 assertUrlIsNormalized(c, hostName);
             } catch (IOException | ChinoApiException e) {
-                String thisError = String.format("Error with %s and host %s", clientConstructor, hostName);
+                String thisError = String.format("Error with %s and host %s: %s", clientConstructor, hostName, e.getMessage());
                 if (firstError == null)
                     firstError = thisError + "\n" + e.getMessage();  // Display all errors, but fail with first one
                 System.err.println(thisError);
