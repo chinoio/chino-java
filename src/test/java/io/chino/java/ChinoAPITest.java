@@ -4,6 +4,7 @@ import io.chino.api.application.Application;
 import io.chino.api.auth.LoggedUser;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.permission.PermissionRule;
+import io.chino.api.permission.PermissionSetter;
 import io.chino.api.repository.Repository;
 import io.chino.api.user.User;
 import io.chino.api.userschema.UserSchema;
@@ -111,10 +112,18 @@ public class ChinoAPITest {
         try {
             User user = chino_customer.users.create(TestConstants.USERNAME, TestConstants.PASSWORD, attributes, USER_SCHEMA_ID);
             USER_ID = user.getUserId();
+            chino_customer.permissions.grant()
+                    .toUser(USER_ID)
+                    .onEvery(Permissions.ResourceType.REPOSITORY)
+                    .permissions(
+                            new PermissionSetter()
+                            .manage(Permissions.Type.CREATE)
+                    ).buildRequest().execute();
         } catch (Exception ex) {
             fail("failed to set up test for ChinoAPITest (" + step + ").\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getMessage());
         }
+
     }
     
     @AfterClass
@@ -131,7 +140,7 @@ public class ChinoAPITest {
     @Test
     public void testUserClient() {
         ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST);
-        assertClientWasCreated(apiClient);
+        assertClientInitialized(apiClient);
     }
 
     @Test
@@ -157,7 +166,7 @@ public class ChinoAPITest {
         }
         // Do some operations with the bearer token client
         ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST, accessToken);
-        assertClientWasCreated(apiClient);
+        assertClientInitialized(apiClient);
         try {
             // give the user permission to CRUD and List repositories
             step = "grant perms on repositories";
@@ -207,7 +216,7 @@ public class ChinoAPITest {
     public void testCustomerClient() {
         String step = "initialize";
         ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-        assertClientWasCreated(apiClient);
+        assertClientInitialized(apiClient);
         try {
             // create a repository using customer credentials
             step = "create repository";
@@ -218,7 +227,7 @@ public class ChinoAPITest {
             step = "delete repository";
             apiClient.repositories.delete(rep.getRepositoryId(), true);
 
-            assertRepositoryWasDeleted(apiClient, rep);
+            assertRepositoryDeleted(apiClient, rep);
         } catch (ChinoApiException ex) {
             fail("Thrown ChinoApiException. Failed to " + step + ". \n" + ex.getMessage());
         } catch (IOException ex) {
@@ -230,42 +239,70 @@ public class ChinoAPITest {
     @Test
     public void testHostNormalization() throws IOException, ChinoApiException {
         String[] hosts = {
-                "https://api.test.chino.io/v1", // fine
-                "http://api.test.chino.io/v1",  // no HTTPS
-                "http://api.test.chino.io/v1/" // trailing slash
+                "https://{{ hostName }}/v1", // fine
+                "http://{{ hostName }}/v1",  // no HTTPS
+                "http://{{ hostName }}/v1/", // no HTTPS + trailing slash
+                "https://{{ hostName }}/v1////", // multi trailing slash
         };
+        String firstError = null;
         for (String hostName : hosts) {
-            // test constructor 1 (customer auth)
-            ChinoAPI c = new ChinoAPI(hostName, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-            assertUrlIsNormalized(c, hostName);
-            // test constructor 2 (no auth)
-            c = new ChinoAPI(hostName);
-            c.setCustomer(TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
-            assertUrlIsNormalized(c, hostName);
-            // test constructor 3 (bearer auth)
-            LoggedUser user = c.auth.loginWithPassword(TestConstants.USERNAME, TestConstants.PASSWORD, APP_ID, APP_SECRET);
-            c = new ChinoAPI(hostName, user.getAccessToken());
-            assertUrlIsNormalized(c, hostName);
+            String clientConstructor = "";
+            hostName = hostName.replace("{{ hostName }}", getDomain(TestConstants.HOST));
+            try {
+                // test constructor 1 (customer auth)
+                clientConstructor = "ChinoAPI(String hostUrl, String customerId, String customerKey)";
+                ChinoAPI c = new ChinoAPI(hostName, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+                assertUrlIsNormalized(c, hostName);
+                // test constructor 2 (no auth)
+                clientConstructor = "ChinoAPI(String hostUrl)";
+                c = new ChinoAPI(hostName);
+                c.setCustomer(TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+                assertUrlIsNormalized(c, hostName);
+                // test constructor 3 (bearer auth)
+                clientConstructor = "ChinoAPI(String hostUrl, String bearerToken)";
+                LoggedUser user = c.auth.loginWithPassword(
+                        TestConstants.USERNAME, TestConstants.PASSWORD, APP_ID, APP_SECRET
+                );
+                c = new ChinoAPI(hostName, user.getAccessToken());
+                assertUrlIsNormalized(c, hostName);
+            } catch (IOException | ChinoApiException e) {
+                String thisError = String.format("Error with %s and host %s", clientConstructor, hostName);
+                if (firstError == null)
+                    firstError = thisError + "\n" + e.getMessage();  // Display all errors, but fail with first one
+                System.err.println(thisError);
+            }
         }
+
+        if (firstError != null)
+            fail(firstError);
+    }
+
+    private static String getDomain(String url) {
+        if (!url.startsWith("http"))
+            return "";
+        // remove protocol
+        url = url.split("://")[1];
+        // remove path
+        return url.split("/")[0];
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testHostWithoutVersionCode_withSlash() {
         String errorHost = "http://api.test.chino.io/";  // no version code (with slash)
-        ChinoAPI c = new ChinoAPI(errorHost, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+        new ChinoAPI(errorHost, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testHostWithoutVersionCode_withoutSlash() {
         String errorHost = "http://api.test.chino.io";  // no version code (without slash)
-        ChinoAPI c = new ChinoAPI(errorHost, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+        new ChinoAPI(errorHost, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
     }
 
     @Test
     public void testSetCustomer() {
         String step = "initialize";
         ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST);
-        assertClientWasCreated(apiClient);
+        assertClientInitialized(apiClient);
         try {
             // create a repository using costomer credentials
             step = "create repository";
@@ -276,7 +313,7 @@ public class ChinoAPITest {
             // delete the repository
             step = "delete repository";
             apiClient.repositories.delete(rep.getRepositoryId(), true); // client should keep the credentials saved.
-            assertRepositoryWasDeleted(apiClient, rep);
+            assertRepositoryDeleted(apiClient, rep);
         } catch (ChinoApiException ex) {
             fail("Thrown ChinoApiException. Failed to " + step + ". \n" + ex.getMessage());
         } catch (IOException ex) {
@@ -303,7 +340,7 @@ public class ChinoAPITest {
 
             // Do some operations with the bearer token client
             ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST);
-            assertClientWasCreated(apiClient);
+            assertClientInitialized(apiClient);
             // give the user permission to CRUD and List repositories
             step = "grant perms on repositories";
             PermissionRule repo_grant = new PermissionRule();
@@ -330,7 +367,7 @@ public class ChinoAPITest {
             apiClient.setBearerToken(accessToken)  // set new token in API client
                     .repositories.delete(repId, true);
 
-            assertRepositoryWasDeleted(apiClient, rep);
+            assertRepositoryDeleted(apiClient, rep);
 
             // log out from the api client
             step = "logout";
@@ -343,7 +380,7 @@ public class ChinoAPITest {
         }
     }
 
-    private static void assertRepositoryWasDeleted(ChinoAPI apiClient, Repository repository) throws IOException {
+    private static void assertRepositoryDeleted(ChinoAPI apiClient, Repository repository) throws IOException {
         boolean deleted = false;
         try {
             apiClient.repositories.read(repository.getRepositoryId());
@@ -356,14 +393,14 @@ public class ChinoAPITest {
     }
 
     public static void assertUrlIsNormalized(ChinoAPI c, String url) throws IOException, ChinoApiException {
-        assertClientWasCreated(c);
+        assertClientInitialized(c);
         Repository r = c.repositories.create("testHostNormalization");
         assertNotNull("Host normalization failed for '" + url + "'", r);
         c.repositories.delete(r.getRepositoryId(), true);
-        assertRepositoryWasDeleted(c, r);
+        assertRepositoryDeleted(c, r);
     }
 
-    private static void assertClientWasCreated(ChinoAPI c) {
+    private static void assertClientInitialized(ChinoAPI c) {
         assertNotNull(c);
         assertNotNull(c.applications);
         assertNotNull(c.auth);
