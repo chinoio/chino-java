@@ -64,9 +64,10 @@ public class SchemasTest extends ChinoBaseTest {
         struc = new SchemaStructure(newFields);
         req = new SchemaRequest("SchemaTest", struc);
 
+        // test Schema update with the same ID. Empty Schemas can be updated and fields can be removed.
         Schema u_class = test.update(c_class.getSchemaId(), newDesc, TestClassStructure.class);
-        Schema u_struct = test.update(c_struct.getSchemaId(), newDesc, struc);
-        Schema u_req = test.update(c_req.getSchemaId(), req);
+        Schema u_struct = test.update(c_class.getSchemaId(), newDesc, struc);
+        Schema u_req = test.update(c_class.getSchemaId(), req);
 
         assertNotEquals(c_class, u_class);
         assertNotEquals(c_struct, u_struct);
@@ -97,7 +98,6 @@ public class SchemasTest extends ChinoBaseTest {
             System.out.println("Success");
         }
     }
-
 
 
     @Test

@@ -601,14 +601,14 @@ in order to preserve the correctness of tests.
 If you know what you are doing, you can launch tests with Gradle:
 
 1. Create a file `src/test/res/test.properties` with the following content:
-   ```properties
-   chino.test.host=https://api.test.chino.io/v1
-   chino.test.customer_id=
-   chino.test.customer_key=
-   chino.test.automated=
-   ```
-   Write your id/key and set `chino.test.automated=allow` to enable testing.
-   **WARNING: this allows the test suite to delete everything on the account you use to test.**
+    ```properties
+    chino.test.host=https://api.test.chino.io/v1
+    chino.test.customer_id=<your-chino-io-customer-id>
+    chino.test.customer_key=<your-chino-io-customer-key>
+    chino.test.automated=allow
+    ```
+    Write your id/key and set `chino.test.automated=allow` to enable testing.
+    **WARNING: this allows the test suite to delete everything on the account you use to test.**
 
 1. `cd` into the repository's root.
 

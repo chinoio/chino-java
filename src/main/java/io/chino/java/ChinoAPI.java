@@ -125,8 +125,10 @@ public class ChinoAPI {
 
         // check version is specified
         if (hostUrl.contains(API_VERSION)) {
-            // remove trailing '/' (if any)
-            return hostUrl.replace(API_VERSION + "/", API_VERSION);
+            while (hostUrl.endsWith("/")) {
+                // remove trailing '/' (if any)
+                hostUrl = hostUrl.replaceFirst("/$", "");
+            }
         } else {
             String errString = "Chino API version not specified. Allowed values: %s";
             StringBuilder versions = new StringBuilder("[");
@@ -138,6 +140,8 @@ public class ChinoAPI {
                     String.format(errString, versions.toString())
             );
         }
+
+        return hostUrl;
     }
 
     /**
@@ -202,7 +206,7 @@ public class ChinoAPI {
      * Get a {@link List} of all versions of Chino.io API supported by this SDK
      * (now only "v1")
      *
-     * @return a {@link List List<String>} with the supported version codes
+     * @return a {@link List List&lt;String&gt;} with the supported version codes
      */
     public static List<String> getAvailableVersions() {
         return java.util.Collections.singletonList(API_VERSION);
