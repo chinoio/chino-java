@@ -125,8 +125,10 @@ public class ChinoAPI {
 
         // check version is specified
         if (hostUrl.contains(API_VERSION)) {
-            // remove trailing '/' (if any)
-            return hostUrl.replace(API_VERSION + "/", API_VERSION);
+            while (hostUrl.endsWith("/")) {
+                // remove trailing '/' (if any)
+                hostUrl = hostUrl.replaceFirst("/$", "");
+            }
         } else {
             String errString = "Chino API version not specified. Allowed values: %s";
             StringBuilder versions = new StringBuilder("[");
@@ -138,6 +140,8 @@ public class ChinoAPI {
                     String.format(errString, versions.toString())
             );
         }
+
+        return hostUrl;
     }
 
     /**
