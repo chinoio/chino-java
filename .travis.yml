@@ -12,7 +12,7 @@ before_install:
 branches:
   only:
     - master
-#    - feature/java-up   # temporarily add this branch for testing, replace with release when it works
+    - feature/java-up   # temporarily add this branch for testing, replace with release when it works
     #    - release
 
 env:
@@ -37,7 +37,7 @@ jobs:
     - stage: test-jdk
       jdk: openjdk8
       # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
-      script: ./gradlew cobertura -i --stacktrace
+      script: ./gradlew test -i --stacktrace
     - jdk: openjdk11
       # Prepare test reporter for CodeClimate
       before_script:
@@ -45,8 +45,8 @@ jobs:
         - chmod +x ./cc-test-reporter
         - ./cc-test-reporter before-build
       # run tests with Cobertura using JDK 11 (last in 'jdk' array)
-      script: ./gradlew cobertura -i --stacktrace
+      script: ./gradlew test jacocoTestReport -i --stacktrace
       # format & upload coverage report
       after_script:
-        - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
+        - ./cc-test-reporter format-coverage -t jacoco build/reports/jacoco/test/jacocoTestReport.xml
         - ./cc-test-reporter upload-coverage

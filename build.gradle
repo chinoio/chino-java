@@ -5,11 +5,25 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.chino.library'
 version = '3.1.1'
-
 description = "Java SDK for Chino.io API"
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+JavaVersion latestSupportedLTS = JavaVersion.VERSION_11
+JavaVersion minimumSupportedVersion = JavaVersion.VERSION_1_8
+if(JavaVersion.current() != latestSupportedLTS) {
+    System.err.println(
+            String.format("(chino-java) WARNING: Java %s detected, but the current supported LTS version is Java %s." +
+                    "Please consider upgrading to get all the latest security updates.",
+                    JavaVersion.current(),
+                    latestSupportedLTS
+            )
+    )
+    sourceCompatibility = minimumSupportedVersion
+    targetCompatibility = minimumSupportedVersion
+} else {
+    println "(chino-java) Using Java LTS version " + latestSupportedLTS
+    sourceCompatibility = latestSupportedLTS
+    targetCompatibility = latestSupportedLTS
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -57,9 +71,16 @@ jacoco {
 }
 
 jacocoTestReport {
+    group = "Reports"
     reports {
         xml.enabled true
         csv.enabled false
         html.destination file("${buildDir}/jacoco/jacocoHtml")
     }
+}
+
+task testWithCoverage(type: GradleBuild) {
+    // clean and recompile code for the current Java version.
+    // required to automate tests for different JDK versions.
+    tasks = ['clean', 'build', 'test', 'jacocoTestReport']
 }
