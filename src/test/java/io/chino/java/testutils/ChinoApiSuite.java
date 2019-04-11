@@ -14,9 +14,12 @@ public class ChinoApiSuite extends Suite {
     public ChinoApiSuite(Class<?> klass, RunnerBuilder builder) throws InitializationError {
         super(klass, builder);
 
-        TestConstants.init();
+        if (TestConstants.HOST == null) {
+            TestConstants.init();
+        }
+
         this.message = String.format(
-                "%s is only executed against a *.chino.io host. Current host is: %s",
+                "%s is only executed against a *.chino.io host. Current host is: %s. If you want to run it anyway, run with property chino.test.force_all=true",
                 klass.getCanonicalName(),
                 TestConstants.HOST
         );
@@ -24,7 +27,7 @@ public class ChinoApiSuite extends Suite {
 
     @Override
     public void run(RunNotifier notifier) {
-        if (TestConstants.HOST.contains(".chino.io")) {
+        if (TestConstants.FORCE_ALL_TESTS || TestConstants.HOST.contains(".chino.io")) {
             super.run(notifier);
         } else {
             System.out.println(message);
