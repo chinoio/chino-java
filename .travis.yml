@@ -12,8 +12,7 @@ before_install:
 branches:
   only:
     - master
-    - feature/java-up   # temporarily add this branch for testing, replace with release when it works
-    #    - release
+    - release
 
 env:
   global:
