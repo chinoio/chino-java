@@ -7,6 +7,8 @@ import org.junit.runners.model.RunnerBuilder;
 
 /**
  * Identifies a test suite which can only be executed against *.chino.io API host.
+ *
+ * (currently unused)
  */
 public class ChinoApiSuite extends Suite {
     private final String message;

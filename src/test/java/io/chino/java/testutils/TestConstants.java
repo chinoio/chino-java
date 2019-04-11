@@ -98,7 +98,8 @@ public class TestConstants {
                 );
             }
         } catch (IOException e) {
-            System.err.println("Failed to load 'src/test/res/test.properties'. Caused by:");
+            System.err.println("Failed to load 'src/test/res/test.properties' - " +
+                    "properties will be read from environment. Caused by:");
             e.printStackTrace(System.err);
             System.err.flush();
         }
@@ -115,9 +116,9 @@ public class TestConstants {
         // error - no variables set
         if (CUSTOMER_ID == null || CUSTOMER_KEY == null) {
             System.err.println("To test the SDK, you need to obtain your Chino.io customer id and customer key.\n"
-                    + "Once you have the required credentials, write them in 'src/test/res/test.properties' as CUSTOMER_ID/CUSTOMER_KEY\n"
-                    + "or create the system environment variables 'customer_id'/'customer_key'.\n"
-                    + "ChinoAPIExample will read the values from there (in this order) and authenticate the API calls with your credentials.\n");
+                    + "Once you have the required credentials, write them in 'src/test/res/test.properties' as "
+                    + "CUSTOMER_ID/CUSTOMER_KEY\n"
+                    + "or create the system environment variables 'customer_id'/'customer_key'.");
 
             System.exit(2);
         }
