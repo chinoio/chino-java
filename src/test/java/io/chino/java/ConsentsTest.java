@@ -300,8 +300,8 @@ public class ConsentsTest extends ChinoBaseTest {
         
         Consent consentOld = test.create(base);
         createdObjects.add(consentOld);
-        long secsBeforeUpdate = 5;
-        TimeUnit.SECONDS.sleep(secsBeforeUpdate);
+        long waitingTime = 5;
+        TimeUnit.SECONDS.sleep(waitingTime);
         DataController updatedDataController = new DataController(dcSample.getCompany(), "new contact", "new address", "new_email@mail.ml", dcSample.getVAT(), true);
         ArrayList<Purpose> newPurposes = new ArrayList<>();
         newPurposes.add(pSample1);
@@ -312,6 +312,7 @@ public class ConsentsTest extends ChinoBaseTest {
         assertEquals(consentUpdated.getConsentId(), consentOld.getConsentId());
         assertNotEquals(consentUpdated.getDataController(), updatedDataController);
         assertNotEquals(consentUpdated.getPurposes(), consentOld.getPurposes());
+        TimeUnit.SECONDS.sleep(waitingTime);
         
         System.out.println("history");
         // Test method (history)
@@ -344,7 +345,7 @@ public class ConsentsTest extends ChinoBaseTest {
         // get the Consent that was active right before consentUpdated (i.e. consentOld)
         Calendar beforeUpdate = Calendar.getInstance();
         beforeUpdate.setTime(consentUpdated.getInsertedDate());
-        beforeUpdate.add(Calendar.SECOND,  (int) -(secsBeforeUpdate / 2));
+        beforeUpdate.add(Calendar.SECOND,  (int) -(waitingTime / 2));
         assertEquals(history.getActiveConsentOnDate(beforeUpdate.getTime()), consentOld);
         // get the Consent that was active before consentOld was created (i.e. null)
         assertNull(history.getActiveConsentOnDate(new Date(0)));
