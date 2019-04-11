@@ -162,6 +162,9 @@ public class DeleteAll {
     }
 
     private boolean hasCorrectJavaVersion(String name) {
+        if (TestConstants.FORCE_DELETE_ALL_ON_TESTS){
+            return true;
+        }
         return name.contains(javaVersion);
     }
 

@@ -19,7 +19,8 @@ public class ChinoApiSuite extends Suite {
         }
 
         this.message = String.format(
-                "%s is only executed against a *.chino.io host. Current host is: %s. If you want to run it anyway, run with property chino.test.force_all=true",
+                "%s is set up to be run only executed against a '*.chino.io' host - current host is: %s.\n" +
+                "If you want to run it anyway, run with property 'chino.test.force_all=true'.",
                 klass.getCanonicalName(),
                 TestConstants.HOST
         );

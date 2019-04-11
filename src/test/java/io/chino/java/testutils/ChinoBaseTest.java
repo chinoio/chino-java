@@ -93,6 +93,7 @@ public class ChinoBaseTest {
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
+        System.out.println("Force-deleting objects is enabled. Java version will not be considered.");
         new DeleteAll().deleteAll(test);
         errorMsg =  "init() method not called";
         continueTests = true;
