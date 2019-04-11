@@ -17,40 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DeleteAll {
-
-    private String javaVersion;
-
+    
     /**
      * Delete all objects created during this test suite.
      */
-    public DeleteAll() {
-//        if (TestConstants.JAVA == null)
-//            throw new IllegalStateException("Value of TestConstants.JAVA is 'null'. Run TestConstant.init() first.");
-//        else
-//            javaVersion = TestConstants.JAVA;
-    }
-//
-//    /**
-//     * Delete all objects with the specified Java version. Objects created in tests specify their Java version in the
-//     * description in order to make possible running tests in parallel. This {@link DeleteAll} only deletes objects
-//     * that have in their description the provided Java version.To ignore Java version call
-//     * {@link #ignoreJavaVersion()} rigth after the constructor.
-//     *
-//     * @see System#getProperty(String) System.getProperty("java.version")
-//     *
-//     * @param javaVersion a String describing the java version.
-//     *                    <b>If empty or {@code null}, any version will be matched</b>
-//     */
-//    public DeleteAll(String javaVersion) {
-//        if (javaVersion == null)
-//            javaVersion = "";
-//        this.javaVersion = javaVersion;
-//    }
-//
-//    public DeleteAll ignoreJavaVersion() {
-//        javaVersion = null;
-//        return this;
-//    }
+    public DeleteAll() {}
 
     /**
      * Delete ALL the object of a given type, according to the implementation of {@link ChinoBaseAPI}
