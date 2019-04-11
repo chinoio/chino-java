@@ -58,9 +58,10 @@ public class ApplicationsTest extends ChinoBaseTest {
         // read
         Application readApp = test.read(appId);
         assertEquals(readApp.getAppId(), appId);
-        assertEquals(readApp.getAppName(), updatedApp.getAppName());
-        assertEquals(readApp.getGrantType(), updatedApp.getGrantType());
-        assertEquals(readApp.getRedirectUrl(), updatedApp.getRedirectUrl());
+//        assertEquals(readApp.getAppName(), updatedApp.getAppName());
+//        assertEquals(readApp.getGrantType(), updatedApp.getGrantType());
+//        assertEquals(readApp.getRedirectUrl(), updatedApp.getRedirectUrl());
+        assertEquals(readApp, updatedApp);
 
         // delete
         if (test.delete(readApp.getAppId(), true).equals("success")) {

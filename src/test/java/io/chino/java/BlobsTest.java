@@ -8,10 +8,13 @@ import io.chino.api.common.Field;
 import io.chino.api.document.Document;
 import io.chino.api.repository.Repository;
 import io.chino.api.schema.SchemaStructure;
+import io.chino.java.testutils.ChinoApiSuite;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import org.junit.*;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -24,6 +27,8 @@ import java.util.LinkedList;
 
 import static org.junit.Assert.*;
 
+@RunWith(ChinoApiSuite.class)
+@Suite.SuiteClasses(BlobsTest.class)
 public class BlobsTest extends ChinoBaseTest {
 
     private static ChinoAPI chino_admin;
@@ -59,7 +64,7 @@ public class BlobsTest extends ChinoBaseTest {
                 chino_admin.blobs
         );
 
-        REPO_ID = chino_admin.repositories.create("BlobsTest").getRepositoryId();
+        REPO_ID = chino_admin.repositories.create("BlobsTest"  + " [" + TestConstants.JAVA + "]").getRepositoryId();
 
         LinkedList<Field> fields = new LinkedList<>();
         fields.add(new Field("testName", "string"));

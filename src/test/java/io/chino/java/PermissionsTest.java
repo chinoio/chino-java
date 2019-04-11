@@ -66,8 +66,8 @@ public class PermissionsTest extends ChinoBaseTest {
 
         // create a userschema and a user
         try {
-            USER_SCHEMA_ID = chino_admin.userSchemas.create("UserSchema for Permissions unit testing", UserSchemaStructureSample.class)
-                .getUserSchemaId();
+            USER_SCHEMA_ID = chino_admin.userSchemas.create("UserSchema for Permissions unit testing"  + " [" + TestConstants.JAVA + "]", UserSchemaStructureSample.class)
+                    .getUserSchemaId();
         } catch (Exception ex) {
             fail("failed to set up test for PermissionsTest (create UserSchema).\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -75,7 +75,7 @@ public class PermissionsTest extends ChinoBaseTest {
         }
 
         // create repository and schema to set permissions on
-        REPO_ID = chino_admin.repositories.create("PermissionsTest").getRepositoryId();
+        REPO_ID = chino_admin.repositories.create("PermissionsTest"  + " [" + TestConstants.JAVA + "]").getRepositoryId();
         LinkedList<Field> fields = new LinkedList<>();
         fields.add(new Field("testMethod", "string"));
 
@@ -146,12 +146,12 @@ public class PermissionsTest extends ChinoBaseTest {
 //        test.permissionsOnResourceChildren(GRANT, SCHEMAS, SCHEMA_ID, childrenOf(SCHEMAS),  USERS, user.getUserId(), createRead);
 
         boolean success = test.grant().toUser(user.getUserId()).onChildrenOf(ResourceType.SCHEMA, SCHEMA_ID)
-                                    .permissions(
-                                            new PermissionSetter()
-                                                    .manage(READ, DELETE)
-                                                    .manageOnCreatedDocuments(READ, UPDATE, DELETE)
-                                                    .authorizeOnCreatedDocuments(READ)
-                                    ).buildRequest().execute();
+                .permissions(
+                        new PermissionSetter()
+                                .manage(READ, DELETE)
+                                .manageOnCreatedDocuments(READ, UPDATE, DELETE)
+                                .authorizeOnCreatedDocuments(READ)
+                ).buildRequest().execute();
         assertTrue("Permissions API call failed.", success);
 
         // read Permissions (use call with User parameter)
@@ -170,7 +170,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
     @Test
     public void test_GrantOnResource_readPermsGroup() throws IOException, ChinoApiException {
-        Group group = makeGroup(5, "test_GrantOnResource_readPermsGroup");
+        Group group = makeGroup(5, "test java readPermsGroup");
 
         // grant 'create' Permission to group
 //        PermissionRule create = new PermissionRule();
@@ -178,10 +178,10 @@ public class PermissionsTest extends ChinoBaseTest {
 //        test.permissionsOnaResource(GRANT, USER_SCHEMAS, USER_SCHEMA_ID, GROUPS, group.getGroupId(), create);
 
         boolean success = test.grant().on(ResourceType.USER_SCHEMA, USER_SCHEMA_ID).to(group)
-            .permissions(
-                    new PermissionSetter().manage(READ, UPDATE)
-            ).buildRequest()
-            .execute();
+                .permissions(
+                        new PermissionSetter().manage(READ, UPDATE)
+                ).buildRequest()
+                .execute();
         assertTrue("Permissions API call failed.", success);
 
         // read Permissions
@@ -234,7 +234,7 @@ public class PermissionsTest extends ChinoBaseTest {
                 .permissions(
                         new PermissionSetter().manage(CREATE).authorize(READ)
                 )
-        .buildRequest().execute();
+                .buildRequest().execute();
         perms = test.readPermissions(u).getPermissions();
         for (Permission p : perms) {
             if (ResourceType.fromString(p.getResourceType()).equals(ResourceType.REPOSITORY)) {
@@ -267,7 +267,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
         Document doc = chino_admin.documents.create(SCHEMA_ID, docContent);
         ChinoAPI chino_user = new ChinoAPI(TestConstants.HOST);
-        Application app = chino_admin.applications.create("test_readPerms_readPermsOnDoc", "password", "", ClientType.PUBLIC);
+        Application app = chino_admin.applications.create("test_readPerms_readPermsOnDoc" + "[" + TestConstants.JAVA + "]", "password", "", ClientType.PUBLIC);
         chino_user.auth.loginWithPassword(u.getUsername(), password, app.getAppId());
 
         /* READ PERMISSIONS */
@@ -282,7 +282,7 @@ public class PermissionsTest extends ChinoBaseTest {
 //                new PermissionRule(new String[]{"U"}, new String[]{})
 //        );
         test.grant().on(ResourceType.DOCUMENT, doc.getDocumentId()).to(u).permissions(new PermissionSetter().manage(UPDATE))
-        .buildRequest().execute();
+                .buildRequest().execute();
 
         perms = chino_user.permissions.readPermissionsOn(doc).getPermissions();
         assertEquals(1, perms.size());
@@ -310,7 +310,7 @@ public class PermissionsTest extends ChinoBaseTest {
         userData.put("test_float", 12.4);
 
         String name = testName.replace("test_", "user_"),
-            password = testName;
+                password = testName;
 
         try {
             user = chino_admin.users.create(name, password, userData, USER_SCHEMA_ID);
@@ -323,13 +323,22 @@ public class PermissionsTest extends ChinoBaseTest {
     }
 
     private Group makeGroup(int n, String testName) throws IOException, ChinoApiException {
-        if (testName.length() > 32)
-            testName = testName.substring(0, 32);
-        Group g = chino_admin.groups.create(testName, new HashMap());
+        String groupName = testName;
+        if (groupName.length() > 22)
+            // remove "test_", keep all the rest of the string, but leave 9 chars for the Java version + 2 chars for []
+            // N.B. max Group name length is 32.
+            groupName = groupName.substring(
+                    5, Math.min(groupName.length(), 26)
+            ) + "[" + TestConstants.JAVA + "]";
+        //System.out.println(groupName);
+        //System.out.println(groupName.length() + " chars");
+        Group g = chino_admin.groups.create(groupName, new HashMap());
         for (int i=0; i < n; i++) {
-            User u = makeUser((i + 1) + "_" + testName);
+            User u = makeUser((i + 1) + "_" + testName.replaceAll(" ", "_"));
             chino_admin.groups.addUserToGroup(u.getUserId(), g.getGroupId());
         }
+        System.out.println(groupName);
+        System.out.println(groupName.length());
         return g;
     }
 }

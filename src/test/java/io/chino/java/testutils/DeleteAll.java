@@ -18,17 +18,66 @@ import java.util.List;
 
 public class DeleteAll {
 
+    private String javaVersion;
+
+    /**
+     * Delete all objects created during this test suite.
+     */
+    public DeleteAll() {
+//        if (TestConstants.JAVA == null)
+//            throw new IllegalStateException("Value of TestConstants.JAVA is 'null'. Run TestConstant.init() first.");
+//        else
+//            javaVersion = TestConstants.JAVA;
+    }
+//
+//    /**
+//     * Delete all objects with the specified Java version. Objects created in tests specify their Java version in the
+//     * description in order to make possible running tests in parallel. This {@link DeleteAll} only deletes objects
+//     * that have in their description the provided Java version.To ignore Java version call
+//     * {@link #ignoreJavaVersion()} rigth after the constructor.
+//     *
+//     * @see System#getProperty(String) System.getProperty("java.version")
+//     *
+//     * @param javaVersion a String describing the java version.
+//     *                    <b>If empty or {@code null}, any version will be matched</b>
+//     */
+//    public DeleteAll(String javaVersion) {
+//        if (javaVersion == null)
+//            javaVersion = "";
+//        this.javaVersion = javaVersion;
+//    }
+//
+//    public DeleteAll ignoreJavaVersion() {
+//        javaVersion = null;
+//        return this;
+//    }
+
     /**
      * Delete ALL the object of a given type, according to the implementation of {@link ChinoBaseAPI}
      * that is passed as a parameter:<br>
      *     <ul>
-     *         <li>{@link Applications}: delete all {@link Application} objects</li>
-     *         <li>{@link Consents}: delete all the {@link Consent} objects</li>
-     *         <li>{@link Users}: delete all the {@link User} objects that are stored in every UserSchema, but keeps the UserSchemas</li>
-     *         <li>{@link UserSchemas}: delete all the User objects that are stored in every {@link UserSchema} and the UserSchemas themselves</li>
-     *         <li>{@link Documents}: delete all the {@link Document} objects in every Schema, but keeps the Schemas and the Repositories</li>
-     *         <li>{@link Schemas}: delete all the Document objects and every {@link Schema}, but keeps the Repositories</li>
-     *         <li>{@link Repositories}: delete all the Document, every Schema and every {@link Repository} from the account.</li>
+     *         <li>{@link Applications}:
+     *              delete all {@link Application} objects
+     *         </li>
+     *         <li>{@link Consents}:
+     *              delete all the {@link Consent} objects
+     *         </li>
+     *         <li>{@link Users}:
+     *              delete all the {@link User} objects that are stored in every UserSchema, but keeps the UserSchemas
+     *         </li>
+     *         <li>{@link UserSchemas}:
+     *              delete all the User objects that are stored in every {@link UserSchema} and the UserSchemas
+     *              themselves
+     *         </li>
+     *         <li>{@link Documents}:
+     *              delete all the {@link Document} objects in every Schema, but keeps the Schemas and the Repositories
+     *         </li>
+     *         <li>{@link Schemas}:
+     *              delete all the Document objects and every {@link Schema}, but keeps the Repositories
+     *         </li>
+     *         <li>{@link Repositories}:
+     *              delete all the Document, every Schema and every {@link Repository} from the account.
+     *         </li>
      *     </ul>
      *
      * @param apiClient one of the allowed implementation of {@link ChinoBaseAPI} listed above.
@@ -58,10 +107,10 @@ public class DeleteAll {
                 items = consentsClient.list().getConsents();
             }
         } else if(apiClient instanceof UserSchemas || apiClient instanceof Users || apiClient instanceof Permissions) {
+            LinkedList<UserSchema> processedUserSchemas = new LinkedList<>();
             ChinoAPI chino = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
             UserSchemas userSchemaClient = chino.userSchemas;
             Users userClient = chino.users;
-            LinkedList<UserSchema> processedUserSchemas = new LinkedList<>();
             List<UserSchema> userSchemasList = userSchemaClient.list().getUserSchemas();
             while (!userSchemasList.isEmpty()) {
                 for (UserSchema userSchema:userSchemasList) {
@@ -172,9 +221,10 @@ public class DeleteAll {
                 groups = chino.groups.list().getGroups();
             }
         } else if (apiClient instanceof Auth) {
-            // do nothing
+            return;
         } else {
-            throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() + ") is not supported.");
+            throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() +
+                    ") is not supported.");
         }
     }
 

@@ -622,6 +622,9 @@ Default test host is `https://api.test.chino.io/v1`. **Remember to append `/v1` 
 After every test, all the related object will be deleted.
 (E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)
 
+**NOTE: some tests are executed only against a `*.chino.io` API URL.** You can force-include those tests by adding 
+`chino.test.force_all=true` to the .properties file or to your environment, but they may not work properly.
+
 Testing is made with JUnit 4. Tests are implemented for the following classes:
 * `io.chino.java.Applications`
 * `io.chino.java.Auth`

@@ -69,7 +69,7 @@ public class ConsentsTest extends ChinoBaseTest {
         
         // creating sample consent for "mariorossi@mailmail.com".
         // Local object, not on Chino.io
-        consentSample1 = new Consent(userId1, "Consent sample created for testing - class ConsentsTest",
+        consentSample1 = new Consent(userId1, "Consent sample created for testing - class ConsentsTest"  + " [" + TestConstants.JAVA + "]",
                 "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purposes);
         System.out.println(consentSample1.getConsentId());
         
@@ -336,7 +336,7 @@ public class ConsentsTest extends ChinoBaseTest {
         
         Consent test1 = history.getActiveConsentOnDate(consentOld.getInsertedDate());
         System.out.println("TEST1: inserted " + test1.getInsertedDate() + ", removed: " + test1.getWithdrawnDate());
-        System.out.println(history.getActiveConsentOnDate(new Date(0)));
+        System.out.println(history.getActiveConsentOnDate(new Date(((long) 1000))));
         Consent test2 = history.getActiveConsentOnDate(new Date());
         System.out.println("TEST2: inserted " + test2.getInsertedDate() + ", removed: " + test2.getWithdrawnDate());
         assertEquals(history.getActiveConsentOnDate(consentOld.getInsertedDate()), consentOld);

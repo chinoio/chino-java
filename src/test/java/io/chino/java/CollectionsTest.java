@@ -38,7 +38,7 @@ public class CollectionsTest extends ChinoBaseTest {
                 chino_admin.collections
         ); // cleans repositories too
 
-        REPO_ID = chino_admin.repositories.create("CollectionsTest")
+        REPO_ID = chino_admin.repositories.create("CollectionsTest"  + " [" + TestConstants.JAVA + "]")
                 .getRepositoryId();
 
         LinkedList<Field> fields = new LinkedList<>();
