@@ -38,15 +38,23 @@ jobs:
       jdk: openjdk8
       # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
       script: ./gradlew test -i --stacktrace
+      after_script:
+        - mkdir jars
+        - cp build/libs/chino-java-3.1.1.jar jars/chino-java-3.1.1-java8.jar
+        - cp build/libs/chino-java-3.1.1-javadoc.jar jars/chino-java-3.1.1-javadoc.jar
+        - ls jars
     - jdk: openjdk11
       # Prepare test reporter for CodeClimate
       before_script:
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
-        - ./cc-test-reporter before-build
+        - ./cc-test-reporter before-build --debug
       # run tests with Cobertura using JDK 11 (last in 'jdk' array)
       script: ./gradlew test jacocoTestReport -i --stacktrace
       # format & upload coverage report
       after_script:
-        - ./cc-test-reporter format-coverage -t jacoco build/reports/jacoco/test/jacocoTestReport.xml
-        - ./cc-test-reporter upload-coverage
+        - ./cc-test-reporter format-coverage --debug -t jacoco build/reports/jacoco/test/jacocoTestReport.xml
+        - ./cc-test-reporter upload-coverage --debug
+        - cp build/libs/chino-java-3.1.1.jar jars/chino-java-3.1.1.jar
+        # Check that files from previous stage persisted. TODO: replace with upload to github release draft
+        - ls jars
