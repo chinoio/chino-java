@@ -28,13 +28,13 @@ public class TestConstants {
      * @see TestConstants
      */
     public static String CUSTOMER_ID = null;
-    
+
     /**
      * Your customer key - DO NOT WRITE IT HERE IN THE CODE.
      * @see TestConstants
      */
     public static String CUSTOMER_KEY = null;
-    
+
     /**
      * Sample username for User log-in - if null, this value is set automatically.
      * with {@link #init(String, String)}.
@@ -55,6 +55,13 @@ public class TestConstants {
      * If you want to avoid this, you should use a separate account to perform tests.
      */
     public static boolean FORCE_DELETE_ALL_ON_TESTS = false;
+    /**
+     * Force executions of all tests, even if they are executed by {@link ChinoApiSuite}
+     * (which ignores tests that usually work only against a *.chino.io API host).
+     *
+     * Read from property chino.test.force_all
+     */
+    public static boolean FORCE_ALL_TESTS;
     static Properties testProperties = null;
 
     /**
@@ -67,7 +74,7 @@ public class TestConstants {
     public static void init() {
         init(null, null);
     }
-    
+
     /**
      * Initializes values in {@link TestConstants} with the customer information and
      * username/password values for the {@link User Users} which will be created
@@ -91,7 +98,8 @@ public class TestConstants {
                 );
             }
         } catch (IOException e) {
-            System.err.println("Failed to load 'src/test/res/test.properties'. Caused by:");
+            System.err.println("Failed to load 'src/test/res/test.properties' - " +
+                    "properties will be read from environment. Caused by:");
             e.printStackTrace(System.err);
             System.err.flush();
         }
@@ -108,9 +116,9 @@ public class TestConstants {
         // error - no variables set
         if (CUSTOMER_ID == null || CUSTOMER_KEY == null) {
             System.err.println("To test the SDK, you need to obtain your Chino.io customer id and customer key.\n"
-                    + "Once you have the required credentials, write them in 'src/test/res/test.properties' as CUSTOMER_ID/CUSTOMER_KEY\n"
-                    + "or create the system environment variables 'customer_id'/'customer_key'.\n"
-                    + "ChinoAPIExample will read the values from there (in this order) and authenticate the API calls with your credentials.\n");
+                    + "Once you have the required credentials, write them in 'src/test/res/test.properties' as "
+                    + "CUSTOMER_ID/CUSTOMER_KEY\n"
+                    + "or create the system environment variables 'customer_id'/'customer_key'.");
 
             System.exit(2);
         }
@@ -122,12 +130,21 @@ public class TestConstants {
         if (HOST == null) {
             HOST = "https://api.test.chino.io/v1";
         }
-        
+
+        FORCE_ALL_TESTS = String.valueOf(
+                testProperties.getProperty(
+                        "chino.test.force_all",
+                        System.getenv("chino.test.force_all")
+                )).toLowerCase().equals("true");
+
+        JAVA = testProperties.getProperty("chino.test.java.version", System.getProperty("java.version"));
+
         // sample values; you can edit those two values at will (either here or in class 'TestConstants').
         USERNAME = (defaultUserUsername == null) ? "mrossi" : defaultUserUsername;
         PASSWORD = (defaultUserPassword == null) ? "rossimario57" : defaultUserPassword;
     }
 
     /* Other constant values used throughout the test classes */
-    public final static String APP_NAME = "chino Java SDK test";
+    public static String JAVA;
+    public final static String APP_NAME = "chino-java test [" + JAVA + "]";
 }

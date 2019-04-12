@@ -53,7 +53,8 @@ public class ConsentHistory extends ConsentList {
         Date now = new Date();
         if (date.after(now)) {
             throw new IllegalArgumentException("'insertedDate' cannot be a date in the future.\n"
-                    + "Illegal value:" + date);
+                    + "\tCurrent time:" + now + "\n"
+                    + "\tIllegal value:" + date);
         }
         
         Date nearestDate = null;

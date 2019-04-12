@@ -3,11 +3,7 @@ package io.chino.java;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.chino.api.common.ChinoApiException;
-import io.chino.api.common.ErrorResponse;
-import io.chino.api.common.Field;
-import io.chino.api.common.indexed;
-import io.chino.api.common.Pair;
+import io.chino.api.common.*;
 import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -15,6 +11,7 @@ import okhttp3.Response;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -296,43 +293,57 @@ public class ChinoBaseAPI {
     }
 
     /*
-        This is a function used in both Schema and UserSchema. It is used when a custom class is passed in the constructor to create or update a new
-        Schema or UserSchema, and all the Fields in such class are checked. This function returns a String of the type of the Field passed.
-    */
-    protected String checkType(Class type) throws ChinoApiException {
-        if(type==String.class){
-            return "string";
-        } else if (type==int.class || type == Integer.class){
-            return "integer";
-        } else if (type==boolean.class || type == Boolean.class){
-            return "boolean";
-        } else if (type==float.class){
-            return "float";
-        } else if (type == Date.class || type == java.sql.Date.class){
-            return "date";
+     *  This is a function used in both Schema and UserSchema. It is used when a custom class is passed in the
+     *  constructor to create or update a new Schema or UserSchema, and all the Fields in such class are checked.
+     *  This function returns a String of the type of the Field passed.
+     *
+     *  Arrays are allowed, but just for 'string',
+     */
+    protected String getChinoType(Class type) throws ChinoApiException {
+        String typeStr = "";
+        String returnStr = (type.getComponentType() != null) ? "array[%s]" : "%s";
+
+        if(type == String.class || type.getComponentType() == String.class){
+            typeStr = "string";
+        } else if (type == int.class || type == Integer.class || type.getComponentType() == Integer.class){
+            typeStr = "integer";
+        } else if (type == boolean.class || type == Boolean.class) {
+            typeStr = "boolean";
+        } else if (type==float.class || type.getComponentType() == float.class){
+            typeStr = "float";
+        } else if ((type == Date.class) || (type == java.sql.Date.class) ) {
+            typeStr = "date";
         } else if (type == Time.class){
-            return "time";
-        } else if (type == Timestamp.class || type == java.security.Timestamp.class){
-            return "datetime";
+            typeStr = "time";
+        } else if (type == Timestamp.class || type == java.security.Timestamp.class) {
+            typeStr = "datetime";
         } else if (type == File.class){
-            return "blob";
+            typeStr = "blob";
         } else {
-            throw new ChinoApiException("error, invalid type: " + type + ".");
+            throw new ChinoApiException("error, invalid type: " + String.format(returnStr, typeStr) + ".");
         }
+
+        return String.format(returnStr, typeStr);
     }
 
-    //Used for the Reflection operation when a custom class is passed as argument to create or update a Schema or a UserSchema to retrieve the fields in the class
+    /**
+     * Used for the Reflection operation when a custom class is passed as argument to create or update a Schema or a UserSchema to retrieve the fields in the class
+     *
+     */
     protected List<Field> returnFields(Class myClass) throws ChinoApiException{
         checkNotNull(myClass, "my_class");
         java.lang.reflect.Field[] fields = myClass.getDeclaredFields();
         List<Field> fieldsList= new ArrayList<>();
         for(java.lang.reflect.Field field : fields){
-            String temp = checkType(field.getType());
-            if(temp!=null) {
-                if(field.getAnnotation(indexed.class)!=null){
-                    fieldsList.add(new Field(field.getName(), temp, true));
-                } else {
-                    fieldsList.add(new Field(field.getName(), temp));
+            // ignore transient fields, i.e. fields used for test coverage with Jacoco
+            if (!Modifier.isTransient(field.getModifiers())) {
+                String chinoType = getChinoType(field.getType());
+                if (chinoType != null) {
+                    if (field.getAnnotation(indexed.class) != null) {
+                        fieldsList.add(new Field(field.getName(), chinoType, true));
+                    } else {
+                        fieldsList.add(new Field(field.getName(), chinoType));
+                    }
                 }
             }
         }

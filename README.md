@@ -1,7 +1,30 @@
-#  CHINO.io Java SDK [ [![Build Status](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) [![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) [![Maintainability](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/maintainability)](https://codeclimate.com/github/chinoio/chino-java/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8924f3ef7f304683fe2/test_coverage)](https://codeclimate.com/github/chinoio/chino-java/test_coverage) ]
-Official Java wrapper for [**CHINO.io** API](https://chino.io). 
+#  CHINO.io Java SDK 
 
-Full API docs are available [here](http://docs.chino.io).
+[![](https://travis-ci.org/chinoio/chino-java.svg?branch=master)](https://travis-ci.org/chinoio/chino-java) 
+[![](https://jitpack.io/v/chinoio/chino-java.svg)](https://jitpack.io/#chinoio/chino-java) 
+[![](https://api.codeclimate.com/v1/badges/42cfaf2122e676b33f92/maintainability)](https://codeclimate.com/github/chinoio/chino-java/maintainability) 
+[![](https://api.codeclimate.com/v1/badges/42cfaf2122e676b33f92/test_coverage)](https://codeclimate.com/github/chinoio/chino-java/test_coverage) 
+
+Official Java wrapper for [**CHINO.io**](https://chino.io) API
+ 
+Full documentation:
+ - [API docs](http://docs.chino.io)
+ - [javadoc](https://jitpack.io/com/github/chinoio/chino-java/3.2.0/javadoc/io/chino/java/package-summary.html)
+
+For issues or questions, please contact [tech-support@chino.io](mailto:tech-support@chino.io).
+
+--------------------------------------------------------------------------------------------------------
+***NOTE:***
+
+Because of the new policies of Oracle about Java updates, we strongly suggest to adopt one of the 
+open source builds of Java, which are provided by [AdoptOpenJDK](https://adoptopenjdk.net/about.html):
+
+- [Java 8 with OpenJ9](https://adoptopenjdk.net/installation.html?variant=openjdk8&jvmVariant=openj9#)
+- [Java 11 with OpenJ9](https://adoptopenjdk.net/installation.html?variant=openjdk11&jvmVariant=openj9#)
+
+Other free Java distributions can be found, provided by Azul, IBM, Red Hat, Linux distros and more.
+
+--------------------------------------------------------------------------------------------------------
 
 - [What's new](#whats-new)
 - [Setup](#setup)
@@ -27,6 +50,23 @@ Full API docs are available [here](http://docs.chino.io).
 - [Support](#support)
 
 ## What's new
+([skip to next section](#setup))
+
+### 3.2.0
+
+#### Support for Java 11
+
+The project now officially supports Java 11, which is the current LTS version. Backwards compatibility with Java 8
+is still granted, but developers should upgrade their Java version to keep up with the 
+[Java SE support roadmap](https://www.oracle.com/technetwork/java/java-se-support-roadmap.html).
+
+#### Bug fixes, test and docs
+
+Improved overall quality of tests and javadoc.
+
+Fixed URL parsing in ChinoAPI, where sometimes a double slash at the end of the API host URL wouldn't be removed.
+
+Overall improvements and minor fixes.
 
 ### 3.1.0
 
@@ -77,7 +117,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>3.1.0</version>
+    <version>3.2.0</version>
 </dependency>
 ```
 
@@ -94,7 +134,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:3.1.0'
+    compile 'com.github.chinoio:chino-java:3.2.0'
 }
 ```
 
@@ -139,11 +179,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.1.0-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.2.0-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.1.0/javadoc/io/chino/java/package-summary.html)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.2.0/javadoc/io/chino/java/package-summary.html)
 
     
 ## Usage
@@ -621,6 +661,9 @@ Default test host is `https://api.test.chino.io/v1`. **Remember to append `/v1` 
     
 After every test, all the related object will be deleted.
 (E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)
+
+**NOTE: some tests are executed only against a `*.chino.io` API URL.** You can force-include those tests by adding 
+`chino.test.force_all=true` to the .properties file or to your environment, but they may not work properly.
 
 Testing is made with JUnit 4. Tests are implemented for the following classes:
 * `io.chino.java.Applications`

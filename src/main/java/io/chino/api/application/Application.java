@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.util.Objects;
+
 /**
  * An Application of Chino.io
  */
@@ -83,12 +85,23 @@ public class Application {
     @Override
     public String toString(){
         String s="\n";
-        s+="app_secret: " + appSecret;
-        s+=",\ngrant_type: " + grantType;
         s+=",\napp_name: "+appName;
-        s+=",\nredirect_url: " + redirectUrl;
+        s+=",\ngrant_type: " + grantType;
         s+=",\napp_id: " + appId;
+        s+="app_secret: " + appSecret;
+        s+=",\nredirect_url: " + redirectUrl;
         s+="\n";
         return s;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj == this ||
+                obj instanceof Application
+                && Objects.equals(((Application) obj).appId, this.appId)
+                && Objects.equals(((Application) obj).grantType, this.grantType)
+                && Objects.equals(((Application) obj).appName, this.appName)
+                && Objects.equals(((Application) obj).redirectUrl, this.redirectUrl)
+                && Objects.equals(((Application) obj).clientType, this.clientType);
     }
 }

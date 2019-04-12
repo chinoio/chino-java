@@ -130,7 +130,7 @@ public class ChinoAPI {
                 hostUrl = hostUrl.replaceFirst("/$", "");
             }
         } else {
-            String errString = "Chino API version not specified. Allowed values: %s";
+            String errString = "\"" + hostUrl + "\": Chino API version not specified. Allowed values: %s";
             StringBuilder versions = new StringBuilder("[");
             for (String v : getAvailableVersions()) {
                 versions.append("\"").append(v).append("\"");

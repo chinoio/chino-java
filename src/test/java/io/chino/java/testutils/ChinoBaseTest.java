@@ -64,10 +64,10 @@ public class ChinoBaseTest {
             TestConstants.HOST = host;
         }
         System.out.println();
-        System.out.print("--- Test started");
-        System.out.print(" ~ using Chino.io host: " + TestConstants.HOST);
-        System.out.print(" ---");
-        System.out.println();
+        System.out.println("--- Test started ----------------------" + "\n" +
+                           " ~ Java version: " + TestConstants.JAVA + "\n" +
+                           " ~ Chino.io host: " + TestConstants.HOST + "\n" +
+                           "---------------------------------------");
         System.out.flush();
     }
 
@@ -93,12 +93,11 @@ public class ChinoBaseTest {
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
+        System.out.println("Force-deleting objects is enabled. Java version will not be considered.");
         new DeleteAll().deleteAll(test);
         errorMsg =  "init() method not called";
         continueTests = true;
         test = null;
-        System.out.println("--- Test ended ---");
-        System.out.println();
         System.gc();
     }
 
