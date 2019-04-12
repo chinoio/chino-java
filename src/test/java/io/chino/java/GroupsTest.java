@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.group.Group;
 import io.chino.api.user.User;
-import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.ChinoBaseTest;
+import io.chino.java.testutils.TestClassStructure;
 import io.chino.java.testutils.TestConstants;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -43,14 +43,16 @@ public class GroupsTest extends ChinoBaseTest {
                 chino_admin.userSchemas
         );
 
-        USER_SCHEMA_ID = chino_admin.userSchemas.create("GroupsTest", TestClassStructure.class)
+        USER_SCHEMA_ID = chino_admin.userSchemas.create("GroupsTest" + " [" + TestConstants.JAVA + "]", TestClassStructure.class)
                             .getUserSchemaId();
     }
 
     @Test
     public void test_CRUD() throws IOException, ChinoApiException {
         /* CREATE */
-        String groupName = "Group for testing Chino.io SDK";
+        String groupName = "java GroupsTest" + "[" + TestConstants.JAVA + "]";
+        //System.out.println("Group name: " + groupName + " (length: " + groupName.length() + ")");
+
         Group c = test.create(groupName, new HashMap());
         assertNotNull("Group was not created! (null reference)", c);
 
@@ -61,10 +63,10 @@ public class GroupsTest extends ChinoBaseTest {
         /* UPDATE */
         HashMap<String, Object> attrs = new HashMap<>();
         attrs.put("attr", "");
-        Group u = test.update(c.getGroupId(), "UPDATED", attrs);
+        Group u = test.update(c.getGroupId(), "UPDATED" + " [" + TestConstants.JAVA + "]", attrs);
 
         assertNotEquals("Object was not updated", c, u);
-        assertEquals("Update failed", "UPDATED", u.getGroupName());
+        assertEquals("Update failed", "UPDATED" + " [" + TestConstants.JAVA + "]", u.getGroupName());
         HashMap<String, Object> control = new ObjectMapper().convertValue(u.getAttributes(),
                 new TypeReference<HashMap<String, Object>>() {}
         );
@@ -85,11 +87,11 @@ public class GroupsTest extends ChinoBaseTest {
     @Test
     public void test_list() throws IOException, ChinoApiException {
         Group[] groups = {
-                test.create("test_list_group1", new HashMap()),
-                test.create("test_list_group2", new HashMap()),
-                test.create("test_list_group3", new HashMap()),
-                test.create("test_list_group4", new HashMap()),
-                test.create("test_list_group5", new HashMap())
+                test.create("test_list_group1" + " [" + TestConstants.JAVA + "]", new HashMap()),
+                test.create("test_list_group2" + " [" + TestConstants.JAVA + "]", new HashMap()),
+                test.create("test_list_group3" + " [" + TestConstants.JAVA + "]", new HashMap()),
+                test.create("test_list_group4" + " [" + TestConstants.JAVA + "]", new HashMap()),
+                test.create("test_list_group5" + " [" + TestConstants.JAVA + "]", new HashMap())
         };
         /* LIST (no args) */
         assertEquals( "Missing groups in list",
@@ -129,7 +131,7 @@ public class GroupsTest extends ChinoBaseTest {
                 makeUser("test_users_usr4"),
                 makeUser("test_users_usr5")
         };
-        Group group = test.create("GroupsTest.test_users", new HashMap());
+        Group group = test.create("test_users" + " [" + TestConstants.JAVA + "]", new HashMap());
 
         /* ADD */
         for (User u : users) {

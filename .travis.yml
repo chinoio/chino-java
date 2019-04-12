@@ -1,17 +1,22 @@
 language: java
 
+before_install:
+  - echo $JAVA_HOME
+  # make Gradle wrapper executable
+  - chmod +x gradlew
+
 
 # NOTE: branch 'develop' is not tested. When a deployable version is ready
-# the commits must be merged into branch 'travis-ci-test' and a build will be
+# the commits must be merged into branch 'release' and a build will be
 # triggered automatically. When the build passes, merge the new code into 'master'.
 branches:
-    only:
+  only:
     - master
-    - travis-ci-test
+    - release
 
 env:
   global:
-    - CC_TEST_REPORTER_ID=1a40cf4d7c373bae338a42587014cd23bd8a17ce866f03d127b1e065c4ccfacb
+    - CC_TEST_REPORTER_ID=61bfd063a76dbfb47380bb1416c9d338da57f9e6eac475eaf0ae2294ff45912c
     - automated_test=allow
 
 before_cache:
@@ -22,27 +27,25 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+
+stages:
+  - test-jdk8
+  - test-jdk11-report
+
 jobs:
   include:
     - stage: test-jdk8
       jdk: openjdk8
-      before_install:
-        - echo $JAVA_HOME
-        # init Gradle wrapper
-        - chmod +x gradlew
+      # run tests using JDK 8 (test compatibility with older versions of the SDK)
+      script: ./gradlew clean build test -i --stacktrace
+    - stage: test-jdk11-report
+      jdk: openjdk11
+      # Prepare test reporter for CodeClimate
       before_script:
-        # Download CodeClimate test reporter
         - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
         - chmod +x ./cc-test-reporter
-        # Prepare for test reporting
-        - ./cc-test-reporter before-build
-      script:
-        # run tests with Cobertura for coverage
-        - gradle cobertura -i
+        - ./cc-test-reporter before-build --debug
+      script: ./gradlew clean build test jacocoTestReport -i --stacktrace
       after_script:
-        # prepare & upload coverage report to CodeClimate
-        - ./cc-test-reporter format-coverage -t cobertura build/reports/cobertura/coverage.xml
-        - ./cc-test-reporter upload-coverage
-
-stages:
-  - test-jdk8
+        - ./cc-test-reporter format-coverage --debug -t jacoco build/reports/jacoco/test/jacocoTestReport.xml
+        - ./cc-test-reporter upload-coverage --debug

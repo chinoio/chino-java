@@ -35,7 +35,7 @@ public class SchemasTest extends ChinoBaseTest {
                 chino_admin.repositories
         ); // cleans repositories too
 
-        REPO_ID = chino_admin.repositories.create("SchemasTest")
+        REPO_ID = chino_admin.repositories.create("SchemasTest" + " [" + TestConstants.JAVA + "]")
                 .getRepositoryId();
     }
 

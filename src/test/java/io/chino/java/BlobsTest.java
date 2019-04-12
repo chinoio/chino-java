@@ -59,13 +59,14 @@ public class BlobsTest extends ChinoBaseTest {
                 chino_admin.blobs
         );
 
-        REPO_ID = chino_admin.repositories.create("BlobsTest").getRepositoryId();
+        REPO_ID = chino_admin.repositories.create("BlobsTest"  + " [" + TestConstants.JAVA + "]").getRepositoryId();
 
         LinkedList<Field> fields = new LinkedList<>();
         fields.add(new Field("testName", "string"));
         fields.add(new Field(blobFieldName, "blob"));
         SchemaStructure s = new SchemaStructure(fields);
-        SCHEMA_ID = chino_admin.schemas.create(REPO_ID, "This schema is used for Documents that store BLOBs in BlobsTest", s).getSchemaId();
+        SCHEMA_ID = chino_admin.schemas.create(REPO_ID,
+                "This schema is used for Documents that store BLOBs in BlobsTest", s).getSchemaId();
     }
 
     @Before

@@ -1,14 +1,29 @@
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'cobertura'
+apply plugin: 'jacoco'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.chino.library'
-version = '3.1.0'
-
+version = '3.2.0'
 description = "Java SDK for Chino.io API"
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+JavaVersion latestSupportedLTS = JavaVersion.VERSION_11
+JavaVersion minimumSupportedVersion = JavaVersion.VERSION_1_8
+if(JavaVersion.current() != latestSupportedLTS) {
+    System.err.println(
+            String.format("(chino-java) WARNING: Java %s detected, but the current supported LTS version is Java %s." +
+                    "Please consider upgrading to get all the latest security updates.",
+                    JavaVersion.current(),
+                    latestSupportedLTS
+            )
+    )
+    sourceCompatibility = minimumSupportedVersion
+    targetCompatibility = minimumSupportedVersion
+} else {
+    println "(chino-java) Using Java LTS version " + latestSupportedLTS
+    sourceCompatibility = latestSupportedLTS
+    targetCompatibility = latestSupportedLTS
+}
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -16,7 +31,7 @@ tasks.withType(JavaCompile) {
 
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from javadoc.destinationDir
 }
 
@@ -31,12 +46,9 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.github.jengelman.gradle.plugins:shadow:2.0.0'
-        classpath 'net.saliman:gradle-cobertura-plugin:2.5.4'
+        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.2'
     }
 }
-
-apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
     jcenter()
@@ -44,19 +56,31 @@ repositories {
 }
 
 dependencies {
-    compile 'junit:junit:4.12'
-    compile 'com.squareup.okhttp3:okhttp:3.5.0'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.8.1'
-    compile 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.1'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.1'
-    compile 'org.jetbrains:annotations:15.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.13.1'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.9.8'
+    implementation 'com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.9.8'
+    implementation 'org.jetbrains:annotations:17.0.0'
 
-    testRuntime "org.slf4j:slf4j-api:1.7.10"
+    testImplementation 'junit:junit:4.12'
+    testRuntime "org.slf4j:slf4j-api:1.7.25"
 }
 
-cobertura {
-    coverageFormats = ['html', 'xml']
-    coverageIgnoreTrivial = true
-    coverageIgnores = ['org.slf4j.Logger.*']
-    coverageReportDir = new File("$buildDir.path/reports/cobertura")
+jacoco {
+    toolVersion = "0.8.2"
+    reportsDir = file("$buildDir/reports/jacoco")
+}
+
+jacocoTestReport {
+    group = "Reports"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination file("${buildDir}/jacoco/jacocoHtml")
+    }
+}
+
+task testWithCoverage(type: GradleBuild) {
+    // clean and recompile code for the current Java version.
+    // required to automate tests for different JDK versions.
+    tasks = ['clean', 'build', 'test', 'jacocoTestReport']
 }

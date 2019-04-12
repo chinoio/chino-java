@@ -37,7 +37,7 @@ public class UserSchemasTest extends ChinoBaseTest {
     @Test
     public void test_CRUD_Class() throws IOException, ChinoApiException {
         /* CREATE */
-        UserSchema c = test.create("User Schema created for testing purposes",
+        UserSchema c = test.create("User Schema created for testing purposes"  + " [" + TestConstants.JAVA + "]",
                 TestClassStructure.class
         );
 
@@ -46,7 +46,7 @@ public class UserSchemasTest extends ChinoBaseTest {
         assertEquals("userSchemas.read returned an unexpected object: " + r.toString(), c, r);
 
         /* UPDATE */
-        String newDesc = "Updated description for UserSchema";
+        String newDesc = "Updated description for UserSchema"  + " [" + TestConstants.JAVA + "]";
 
         UserSchema u = test.update(c.getUserSchemaId(), newDesc, TestClassStructure.class);
         assertEquals("Updated userschema has different ID!", r.getUserSchemaId(), u.getUserSchemaId());
@@ -69,7 +69,7 @@ public class UserSchemasTest extends ChinoBaseTest {
         fields.add(new Field("testMethod", "string", true));
         UserSchemaStructure struct = new UserSchemaStructure(fields);
         UserSchemaRequest req = new UserSchemaRequest(
-                "User Schema created for testing purposes",
+                "User Schema created for testing purposes"  + " [" + TestConstants.JAVA + "]",
                 struct
         );
 
@@ -77,7 +77,7 @@ public class UserSchemasTest extends ChinoBaseTest {
         UserSchema c = test.create(req);
 
         /* UPDATE */
-        String newDesc = "Updated description for UserSchema";
+        String newDesc = "Updated description for UserSchema"  + " [" + TestConstants.JAVA + "]";
         req.setDescription(newDesc);
 
         UserSchema u = test.update(c.getUserSchemaId(), req);
@@ -102,12 +102,12 @@ public class UserSchemasTest extends ChinoBaseTest {
 
         /* CREATE */
         UserSchema c = test.create(
-                "User Schema created for testing purposes",
+                "User Schema created for testing purposes"  + " [" + TestConstants.JAVA + "]",
                 new UserSchemaStructure(fields)
         );
 
         /* UPDATE */
-        String newDesc = "Updated description for UserSchema";
+        String newDesc = "Updated description for UserSchema"  + " [" + TestConstants.JAVA + "]";
 
         UserSchema u = test.update(c.getUserSchemaId(), newDesc, new UserSchemaStructure(fields));
         assertEquals("Updated userschema has different ID!", c.getUserSchemaId(), u.getUserSchemaId());
@@ -130,7 +130,7 @@ public class UserSchemasTest extends ChinoBaseTest {
 
         synchronized (this) {
             for (int i=0; i<5; i++) {
-                userSchemas[i] = test.create("UserSchema_list_test_" + (i+1), TestClassStructure.class);
+                userSchemas[i] = test.create("UserSchema_list_test_" + (i+1)  + " [" + TestConstants.JAVA + "]", TestClassStructure.class);
                 try {
                     wait(3000);
                 } catch (InterruptedException ignored) {

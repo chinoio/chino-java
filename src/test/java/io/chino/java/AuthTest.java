@@ -15,13 +15,16 @@ import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import io.chino.java.testutils.UserSchemaStructureSample;
 import junit.framework.AssertionFailedError;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class AuthTest extends ChinoBaseTest {
 
@@ -46,7 +49,7 @@ public class AuthTest extends ChinoBaseTest {
 
         UserSchema schema;
         try {
-            schema = chino_admin.userSchemas.create("UserSchema for Auth unit testing", UserSchemaStructureSample.class);
+            schema = chino_admin.userSchemas.create("UserSchema for Auth unit testing"  + " [" + TestConstants.JAVA + "]", UserSchemaStructureSample.class);
         } catch (Exception ex) {
             fail("failed to set up test for AuthTest (create UserSchema).\n"
                     + ex.getClass().getSimpleName() + ": " + ex.getMessage());
@@ -74,7 +77,7 @@ public class AuthTest extends ChinoBaseTest {
                 chino_admin.repositories
         );
 
-        Repository repo = chino_admin.repositories.create("AuthTest");
+        Repository repo = chino_admin.repositories.create("AuthTest"  + " [" + TestConstants.JAVA + "]");
         LinkedList<Field> fields = new LinkedList<>();
         fields.add(new Field("testMethod", "string"));
 

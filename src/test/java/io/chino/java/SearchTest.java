@@ -45,7 +45,7 @@ public class SearchTest extends ChinoBaseTest {
                 chino_admin.repositories.list().getRepositories().isEmpty(),
                 chino_admin.repositories
         );
-        REPO_ID = chino_admin.repositories.create("SearchTest")
+        REPO_ID = chino_admin.repositories.create("SearchTest" + " [" + TestConstants.JAVA + "]")
                 .getRepositoryId();
 
         // add some attributes that can be used to search users
@@ -63,7 +63,7 @@ public class SearchTest extends ChinoBaseTest {
 
         // create a UserSchema
         USER_SCHEMA_ID = chino_admin.userSchemas.create(
-                "This UserSchema is searched for Users using the new Chino.io Search interface.",
+                "test new Search."  + " [" + TestConstants.JAVA + "]",
                 SampleUser.class
         ).getUserSchemaId();
 
@@ -401,7 +401,7 @@ public class SearchTest extends ChinoBaseTest {
     public void testNewSearch_Not() throws ChinoApiException, IOException {
         int ERRORS = 0;
         // Setup
-        String customRepoId = chino_admin.repositories.create("testSearchDocsWithDateTime").getRepositoryId();
+        String customRepoId = chino_admin.repositories.create("testSearchDocsWithDateTime" + " [" + TestConstants.JAVA + "]").getRepositoryId();
 
         SchemaStructure structure = new SchemaStructure();
         List<Field> fields = new LinkedList<>();
