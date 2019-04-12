@@ -83,7 +83,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>3.1.0</version>
+    <version>3.2.0</version>
 </dependency>
 ```
 
@@ -100,7 +100,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:3.1.0'
+    compile 'com.github.chinoio:chino-java:3.2.0'
 }
 ```
 
@@ -145,11 +145,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.1.0-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.2.0-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.1.0/javadoc/io/chino/java/package-summary.html)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.2.0/javadoc/io/chino/java/package-summary.html)
 
     
 ## Usage

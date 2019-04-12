@@ -36,13 +36,8 @@ jobs:
   include:
     - stage: test-jdk8
       jdk: openjdk8
-      # run tests with JaCoCo using JDK 8 (test retro compatibility with older versions of the SDK)
+      # run tests using JDK 8 (test compatibility with older versions of the SDK)
       script: ./gradlew clean build test -i --stacktrace
-      after_script:
-        - mkdir jars
-        - cp build/libs/chino-java-3.1.1.jar jars/chino-java-3.1.1-java8.jar
-        - cp build/libs/chino-java-3.1.1-javadoc.jar jars/chino-java-3.1.1-javadoc.jar
-        - ls jars
     - stage: test-jdk11-report
       jdk: openjdk11
       # Prepare test reporter for CodeClimate
