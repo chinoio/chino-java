@@ -29,7 +29,7 @@ cache:
 
 
 stages:
-#  - test-jdk8
+  - test-jdk8
   - test-jdk11-report
 
 jobs:
