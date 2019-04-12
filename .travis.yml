@@ -16,7 +16,7 @@ branches:
 
 env:
   global:
-    - CC_TEST_REPORTER_ID=1a40cf4d7c373bae338a42587014cd23bd8a17ce866f03d127b1e065c4ccfacb
+    - CC_TEST_REPORTER_ID=61bfd063a76dbfb47380bb1416c9d338da57f9e6eac475eaf0ae2294ff45912c
     - automated_test=allow
 
 before_cache:
@@ -29,45 +29,28 @@ cache:
 
 
 stages:
-  - test-jdk8
-  - test-jdk11
-  - name: GitHub Release
-    if: branch = master
+#  - test-jdk8
+  - test-jdk11-report
 
 jobs:
   include:
     - stage: test-jdk8
       jdk: openjdk8
-      # run tests with Cobertura using JDK 8 (test retro compatibility with older versions of the SDK)
+      # run tests with JaCoCo using JDK 8 (test retro compatibility with older versions of the SDK)
       script: ./gradlew clean build test -i --stacktrace
       after_script:
         - mkdir jars
         - cp build/libs/chino-java-3.1.1.jar jars/chino-java-3.1.1-java8.jar
         - cp build/libs/chino-java-3.1.1-javadoc.jar jars/chino-java-3.1.1-javadoc.jar
         - ls jars
-    - stage: test-jdk11
+    - stage: test-jdk11-report
       jdk: openjdk11
-#      # Prepare test reporter for CodeClimate
-#      before_script:
-#        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-#        - chmod +x ./cc-test-reporter
-#        - ./cc-test-reporter before-build --debug
-#      script: ./gradlew clean build test jacocoTestReport -i --stacktrace
-      script: ./gradlew clean build test -i --stacktrace
+      # Prepare test reporter for CodeClimate
+      before_script:
+        - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+        - chmod +x ./cc-test-reporter
+        - ./cc-test-reporter before-build --debug
+      script: ./gradlew clean build test jacocoTestReport -i --stacktrace
       after_script:
-#        - ./cc-test-reporter format-coverage --debug -t jacoco build/reports/jacoco/test/jacocoTestReport.xml
-#        - ./cc-test-reporter upload-coverage --debug
-        - cp build/libs/chino-java-3.1.1.jar jars/chino-java-3.1.1.jar
-        # Check that files from previous stage persisted. TODO: replace with upload to github release draft
-        - ls jars
-    - stage: GitHub Release
-      script: skip
-      deploy:
-        provider: releases
-        api_key: "$GITHUB_OAUTH_TOKEN"
-        file:
-          - "jars/chino-java-3.1.1-java8.jar"
-          - "jars/chino-java-3.1.1-javadoc.jar"
-          - "jars/chino-java-3.1.1.jar"
-        skip_cleanup: true
-        draft: true
+        - ./cc-test-reporter format-coverage --debug -t jacoco build/reports/jacoco/test/jacocoTestReport.xml
+        - ./cc-test-reporter upload-coverage --debug
