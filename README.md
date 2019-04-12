@@ -50,6 +50,7 @@ Other free Java distributions can be found, provided by Azul, IBM, Red Hat, Linu
 - [Support](#support)
 
 ## What's new
+([skip to next section](#setup))
 
 ### 3.2.0
 
@@ -59,11 +60,13 @@ The project now officially supports Java 11, which is the current LTS version. B
 is still granted, but developers should upgrade their Java version to keep up with the 
 [Java SE support roadmap](https://www.oracle.com/technetwork/java/java-se-support-roadmap.html).
 
-#### Bug fixes
+#### Bug fixes, test and docs
 
-Improved overall quality of tests.
+Improved overall quality of tests and javadoc.
 
-Fixed URL parsing in ChinoAPI, where sometimes a double slash could be found
+Fixed URL parsing in ChinoAPI, where sometimes a double slash at the end of the API host URL wouldn't be removed.
+
+Overall improvements and minor fixes.
 
 ### 3.1.0
 
