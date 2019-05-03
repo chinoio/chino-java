@@ -22,4 +22,8 @@ public abstract class ActivationRequest {
     public Boolean isActive() {
         return isActive ? true : null;
     }
+
+    public void resetActivationStatus() {
+        isActive = false;
+    }
 }
