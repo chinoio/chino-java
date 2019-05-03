@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 public abstract class ActivationRequest {
-    private boolean isActive = false;
+    private boolean mustActivate = false;
 
     /**
      * This method must be invoked during an update() API call.<br>
@@ -14,16 +14,16 @@ public abstract class ActivationRequest {
      * {@code "is_active": true}
      */
     public void activateResource() {
-        isActive = true;
+        mustActivate = true;
     }
 
     @JsonGetter("is_active")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public Boolean isActive() {
-        return isActive ? true : null;
+        return mustActivate ? true : null;
     }
 
     public void resetActivationStatus() {
-        isActive = false;
+        mustActivate = false;
     }
 }
