@@ -377,7 +377,10 @@ public class Blobs extends ChinoBaseAPI {
     }
 
     /**
-     * Delete a BLOB from Chino.io. This operation can not be undone.
+     * Delete a BLOB from Chino.io. This operation can not be undone.<br>
+     * <br>
+     * <b>This method has been deprecated since API version 3.2.1 and might be removed at any time.</b>
+     * It's strongly suggested to use {@link #delete(String)} instead.
      *
      * @param blobId the id of the BLOB to delete
      * @param force if true, the resource cannot be restored. Otherwise, it will only become inactive.
@@ -388,6 +391,7 @@ public class Blobs extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
+    @Deprecated
     public String delete(String blobId, boolean force) throws IOException, ChinoApiException {
         checkNotNull(blobId, "blob_id");
         return deleteResource("/blobs/"+blobId, force);
@@ -405,6 +409,7 @@ public class Blobs extends ChinoBaseAPI {
      */
     public String delete(String blobId) throws IOException, ChinoApiException {
         checkNotNull(blobId, "blob_id");
+        // 'force' parameter is ignored for BLOBs
         return deleteResource("/blobs/"+blobId, false);
     }
 

@@ -134,15 +134,32 @@ public class Applications extends ChinoBaseAPI {
     }
 
     /**
-     * It deletes the Application
+     * It deletes the Application.<br>
+     * <br>
+     * <b>This method has been deprecated since API version 3.2.1 and might be removed at any time.</b>
+     * It's strongly suggested to use {@link #delete(String)} instead.
+     *
      * @param applicationId the id of the Application
-     * @param force if true, the resource cannot be restored
+     * @param force ignored
      * @return a String with the result of the operation
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
+    @Deprecated
     public String delete(String applicationId, boolean force) throws IOException, ChinoApiException {
+        return delete(applicationId);
+    }
+
+    /**
+     * It deletes the Application
+     * @param applicationId the id of the Application
+     * @return a String with the result of the operation
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public String delete(String applicationId) throws IOException, ChinoApiException {
         checkNotNull(applicationId, "application_id");
-        return deleteResource("/auth/applications/"+applicationId, force);
+        // 'force' parameter is ignored for Applications
+        return deleteResource("/auth/applications/"+applicationId, false);
     }
 }

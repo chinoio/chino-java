@@ -191,6 +191,7 @@ public class Collections extends ChinoBaseAPI {
     public String removeDocument(String collectionId, String documentId)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
         checkNotNull(documentId, "document_id");
+        // 'force' parameter is ignored when deleting collections
         deleteResource("/collections/"+collectionId+"/documents/"+documentId, false);
         return SUCCESS_MSG;
     }
