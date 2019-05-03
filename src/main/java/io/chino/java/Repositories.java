@@ -113,9 +113,32 @@ public class Repositories extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public Repository update(String repositoryId, String description) throws IOException, ChinoApiException {
+        return update(false, repositoryId, description);
+    }
+
+    /**
+     * Update an existing {@link Repository}<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value will not be modified.
+     * @param repositoryId the id of the {@link Repository} on Chino.io
+     * @param description the new description of the Repository
+     *
+     * @return the updated {@link Repository}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Repository update(boolean activateResource, String repositoryId, String description) throws IOException, ChinoApiException {
         checkNotNull(repositoryId, "repository_id");
         checkNotNull(description, "description");
-        String createRepoRequest="{\"description\": \""+description+"\"}";
+        String descriptionField = String.format("\"description\": \"%s\"", description);
+        String isActiveField = activateResource
+                ? ",\n\"is_active\": true"
+                : "";
+        String createRepoRequest= "{\n" + descriptionField + isActiveField +"\n}";
         JsonNode createRepoRequestNode= mapper.readValue(createRepoRequest, JsonNode.class);
 
         JsonNode data = putResource("/repositories/"+repositoryId, createRepoRequestNode);
