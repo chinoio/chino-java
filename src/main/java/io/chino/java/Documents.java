@@ -284,8 +284,36 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public Document update(String documentId, HashMap content, boolean consistent) throws IOException, ChinoApiException {
+        return update(false, documentId, content, consistent);
+    }
+
+    /**
+     * Update a specific {@link Document} on Chino.io with new data (synchronous)<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value will not be modified.
+     * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
+     *                   e.g. {@link #list(String) list(schemaId)}
+     * @param content a {@link HashMap} with the content of the new Document.
+     *                The map's keys must match the fields of the Schema.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the update,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Document update(boolean activateResource, String documentId, HashMap content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
         CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(content);
+        if(activateResource)
+            createDocumentRequest.activateResource();
         String URL = "/documents/" + documentId + ((consistent) ? "?consistent=true" : "");
         JsonNode data = putResource(URL, createDocumentRequest);
         if(data!=null)
@@ -313,6 +341,28 @@ public class Documents extends ChinoBaseAPI {
     }
 
     /**
+     * Update a specific {@link Document} on Chino.io with new data.<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value will not be modified.
+     * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
+     *                   e.g. {@link #list(String) list(schemaId)}
+     * @param content a {@link HashMap} with the content of the new Document.
+     *                The map's keys must match the fields of the Schema.
+     *
+     * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Document update(boolean activateResource, String documentId, HashMap content) throws IOException, ChinoApiException {
+        return update(activateResource, documentId, content, false);
+    }
+
+    /**
      * Update a specific {@link Document} on Chino.io with new data (synchronous)
      *
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
@@ -331,8 +381,36 @@ public class Documents extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public Document update(String documentId, String content, boolean consistent) throws IOException, ChinoApiException {
+        return update(false, documentId, content, consistent);
+    }
+
+    /**
+     * Update a specific {@link Document} on Chino.io with new data (synchronous)<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value will not be modified.
+     * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
+     *                   e.g. {@link #list(String) list(schemaId)}
+     * @param content a {@link String} with the content of the new Document in JSON format.
+     *                The structure of the JSON must match the one of the Schema.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the update,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Document update(boolean activateResource, String documentId, String content, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(documentId, "document_id");
         CreateDocumentRequest createDocumentRequest = new CreateDocumentRequest(fromStringToHashMap(content));
+        if(activateResource)
+            createDocumentRequest.activateResource();
         String URL = "/documents/" + documentId + ((consistent) ? "?consistent=true" : "");
         JsonNode data = putResource(URL, createDocumentRequest);
         if(data!=null)
@@ -357,7 +435,30 @@ public class Documents extends ChinoBaseAPI {
      */
 
     public Document update(String documentId, String content) throws IOException, ChinoApiException {
-        return update(documentId, content, false);
+        return update(false, documentId, content, false);
+    }
+
+    /**
+     * Update a specific {@link Document} on Chino.io with new data.<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value will not be modified.
+     * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
+     *                   e.g. {@link #list(String) list(schemaId)}
+     * @param content a {@link String} with the content of the new Document in JSON format.
+     *                The structure of the JSON must match the one of the Schema.
+     *
+     * @return the metadata of the updated Document. <b>NOTE: the Document's content will NOT be returned.</b>
+     *         It can be set with {@link Document#setContent(HashMap)} or fetched from Chino.io with {@link #read(String) read(documentId)}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+
+    public Document update(boolean activateResource, String documentId, String content) throws IOException, ChinoApiException {
+        return update(activateResource, documentId, content, false);
     }
 
     /**
