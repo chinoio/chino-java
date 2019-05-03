@@ -3,6 +3,7 @@ package io.chino.java;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.chino.api.common.*;
 import okhttp3.MediaType;
 import okhttp3.Request;
@@ -282,6 +283,20 @@ public class ChinoBaseAPI {
         } else {
             throw new ChinoApiException(mapper.readValue(body, ErrorResponse.class));
         }
+    }
+
+    /**
+     * Modify the JSON body of an API call, adding the property:<br><br>
+     *  {@code "is_active": true}<br><br>
+     * that can be used to re-activate resources on Chino.io.
+     * If the {@link JsonNode} already has a "is_active" field, this method does nothing.
+     *
+     * @param requestBody the {@link JsonNode} that will be sent in the API call
+     */
+    public void activateResource(JsonNode requestBody) {
+        if (requestBody.has("is_active"))
+            return;
+        ((ObjectNode) requestBody).put("is_active", true);
     }
 
     //This function is static because there are some classes in io.chino.api that needs a mapper without instantiating a new ChinoBaseAPI()
