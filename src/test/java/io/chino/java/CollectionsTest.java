@@ -166,7 +166,7 @@ public class CollectionsTest extends ChinoBaseTest {
     }
 
     @Test
-    public void testActivate() throws IOException, ChinoApiException {
+    public void test_activate() throws IOException, ChinoApiException {
         Collection coll = test.create("test_activation");
         String id = coll.getCollectionId();
         // Set is_active = false
