@@ -117,9 +117,30 @@ public class Groups extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public Group update(String groupId, String groupName, HashMap attributes) throws IOException, ChinoApiException {
+        return update(false, groupId, groupName, attributes);
+    }
+
+    /**
+     * Update an existing {@link Group}<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value will not be modified.
+     * @param groupId the id of the Group
+     * @param groupName the name of the new Group
+     * @param attributes an HashMap of the new attributes
+     *
+     * @return the updated {@link Group}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Group update(boolean activateResource, String groupId, String groupName, HashMap attributes) throws IOException, ChinoApiException {
         checkNotNull(groupId, "group_id");
         CreateGroupRequest createGroupRequest=new CreateGroupRequest(groupName, attributes);
-
+        if (activateResource)
+            createGroupRequest.activateResource();
         JsonNode data = putResource("/groups/"+groupId, createGroupRequest);
         if(data!=null)
             return mapper.convertValue(data, GetGroupResponse.class).getGroup();

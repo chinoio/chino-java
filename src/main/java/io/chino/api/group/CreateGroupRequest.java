@@ -3,12 +3,13 @@ package io.chino.api.group;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.common.ActivationRequest;
 
 import java.util.HashMap;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "group_name", "attributes" })
-public class CreateGroupRequest {
+public class CreateGroupRequest extends ActivationRequest {
 
 	@JsonProperty("group_name")
 	private String groupName;
