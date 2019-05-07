@@ -48,18 +48,18 @@ public class Consents extends ChinoBaseAPI {
      */
     public ConsentList list(String userId, int offset, int limit) throws IOException, ChinoApiException {
         HashMap<String, String> params = new HashMap<>();
-        
+
         String userIdValue = (userId == null) ? "" : userId;
-        
+
         String offsetValue = (offset < 0) ? "0" : "" + offset,
                 limitValue = (limit < 0) ? "0" : "" + limit;
-        
+
         params.put("userId", userIdValue);
         params.put("offset", offsetValue);
         params.put("limit", limitValue);
-        
+
         JsonNode data = getResource("/consents", params);
-        
+
         if (data != null) {
             ConsentListWrapper wrapper = mapper.convertValue(data, ConsentListWrapper.class);
             return new ConsentList(wrapper);
@@ -67,7 +67,7 @@ public class Consents extends ChinoBaseAPI {
             return null;
         }
     }
-    
+
     /**
      * List all the available {@link Consent consents}. The results are paginated.
      * @param offset page offset of the results.
@@ -100,7 +100,7 @@ public class Consents extends ChinoBaseAPI {
     public ConsentList list() throws IOException, ChinoApiException {
         return list(null, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
     }
-    
+
     /**
      * Create a new {@link Consent} on Chino.io, passing a local {@link Consent}
      * object.
@@ -116,7 +116,7 @@ public class Consents extends ChinoBaseAPI {
         else
             return null;
     }
-    
+
     /**
      * Create a new {@link Consent} on Chino.io with the specified data and
      * maps the API response to a new {@link Consent} object.<br>
@@ -124,9 +124,9 @@ public class Consents extends ChinoBaseAPI {
      * Check
      * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the Consent Object.
-     * 
+     *
      * @see Consent#Consent(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.chino.api.consent.DataController, java.util.List) Consent() full constructor
-     * 
+     *
      * @param userId
      * @param description
      * @param policyUrl
@@ -151,13 +151,13 @@ public class Consents extends ChinoBaseAPI {
         checkNotNull(collectionMode, "collection_mode");
         checkNotNull(dataController, "data_controller");
         checkNotNull(purposes, "purposes");
-        
+
         return create(
                 new Consent(userId, description, policyUrl, policyVersion, collectionMode, dataController, purposes)
         );
-        
+
     }
-    
+
     /**
      * Create a new {@link Consent} on Chino.io with the specified data and
      * maps the API response to a new {@link Consent} object.<br>
@@ -165,9 +165,9 @@ public class Consents extends ChinoBaseAPI {
      * Check
      * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the Consent Object.
-     * 
+     *
      * @see Consent#Consent(io.chino.api.consent.Consent, io.chino.api.consent.DataController, java.util.List) Consent constructor by data_controller/purposes
-     * 
+     *
      * @param base the base {@link Consent} object
      * @param newDataController the new {@link DataController};
      * if {@code null}, the value will be copied from {@code base}.
@@ -187,7 +187,7 @@ public class Consents extends ChinoBaseAPI {
                 new Consent(base, newDataController, newPurposes)
         );
     }
-    
+
     /**
      * Create a new {@link Consent} on Chino.io with the specified data and
      * maps the API response to a new {@link Consent} object.<br>
@@ -195,9 +195,9 @@ public class Consents extends ChinoBaseAPI {
      * Check
      * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the Consent Object.
-     * 
+     *
      * @see Consent#Consent(io.chino.api.consent.Consent, java.lang.String)  Consent  constructor by user_id
-     * 
+     *
      * @param base the base {@link Consent} object
      * @param userId the new {@link User#getUserId()}  userId}. <b>Cannot be {@code null}</b>
      * @return the {@link Consent} object that was just created on Chino.io.
@@ -213,7 +213,7 @@ public class Consents extends ChinoBaseAPI {
                 new Consent(base, userId)
         );
     }
-    
+
     /**
      * Fetch the consent with the specified {@code consent_id}.
      * If there is a history for this {@link Consent} object, only the active
@@ -234,13 +234,13 @@ public class Consents extends ChinoBaseAPI {
             return null;
         }
     }
-    
+
     /**
      * Updates the {@link Consent} with matching {@code consentId};
      * the old version is kept in the Consent's history for future reference
      * and its {@link Consent#withdrawnDate withdrawn_date} field is set to a
      * non-null value.
-     * 
+     *
      * @see #history(java.lang.String) history()
      * @param consentId the consent_id of the {@link Consent} to update
      * @param consentData an instance of {@link Consent} containing the updated values
@@ -260,8 +260,8 @@ public class Consents extends ChinoBaseAPI {
         else
             return null;
     }
-    
-    
+
+
     /**
      * Fetch the history of the {@link Consent} with the specified {@code consentId}.
      * @param consentId the id of the consents in the consent history
@@ -275,23 +275,26 @@ public class Consents extends ChinoBaseAPI {
     public ConsentHistory history(String consentId) throws IOException, ChinoApiException {
         checkNotNull(consentId, "consent_id");
         JsonNode rawData = getResource("/consents/" + consentId + "/history");
-        
+
         if (rawData != null) {
-            ConsentListWrapper wrapper = mapper.convertValue(rawData, ConsentListWrapper.class);            
+            ConsentListWrapper wrapper = mapper.convertValue(rawData, ConsentListWrapper.class);
             return new ConsentHistory(wrapper);
         } else {
             return null;
         }
     }
-    
+
     /**
      * Withdraw the {@link Consent} with the specified {@code consentId}.
      * The consent's {@link Consent#withdrawnDate withdrawn_date} will be set
-     * to a non-null value and the object will no longer be active. 
+     * to a non-null value and the object will no longer be active.
      * Inactive Consents cannot be updated, but their history is available
      * on the server as a proof.
+     *
      * @param consentId id of the {@link Consent} to be withdrawn
+     *
      * @return the result {@link String}, as returned by the server.
+     *
      * @throws java.io.IOException request could not be executed
      * (but it might have arrived to the server).
      * @throws io.chino.api.common.ChinoApiException Chino.io
@@ -301,14 +304,17 @@ public class Consents extends ChinoBaseAPI {
         checkNotNull(consentId, "consent_id");
         return deleteResource("/consents/" + consentId, false);
     }
-    
+
     /**
      * Deletes the {@link Consent} with the specified {@code consentId} from
      * Chino.io servers. Consents are no more available after deletion.
      * <b>This feature only works with the test API at
      * <code>api.test.chino.io</code> and is not available in production.</b>
+     *
      * @param consentId id of the {@link Consent} to be deleted
+     *
      * @return the result {@link String}, as returned by the server.
+     *
      * @throws java.io.IOException request could not be executed
      * (but it might have arrived to the server).
      * @throws io.chino.api.common.ChinoApiException Chino.io
@@ -316,7 +322,8 @@ public class Consents extends ChinoBaseAPI {
      */
     public String delete(String consentId) throws IOException, ChinoApiException {
         checkNotNull(consentId, "consent_id");
-        // 'force' parameter is ignored for Consents
-        return deleteResource("/consents/" + consentId, false);
+        // 'force' parameter must be set to true to delete Consents.
+        // to send a request with force=false, please use method withdraw()
+        return deleteResource("/consents/" + consentId, true);
     }
 }
