@@ -316,6 +316,7 @@ public class Consents extends ChinoBaseAPI {
      */
     public String delete(String consentId) throws IOException, ChinoApiException {
         checkNotNull(consentId, "consent_id");
-        return deleteResource("/consents/" + consentId, true);
+        // 'force' parameter is ignored for Consents
+        return deleteResource("/consents/" + consentId, false);
     }
 }

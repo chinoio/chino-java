@@ -4,6 +4,7 @@ package io.chino.api.user;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.common.ActivationRequest;
 
 import java.util.HashMap;
 
@@ -13,7 +14,7 @@ import java.util.HashMap;
     "password",
     "attributes"
 })
-public class CreateUserRequest {
+public class CreateUserRequest extends ActivationRequest {
 
     @JsonProperty("username")
     private String username;

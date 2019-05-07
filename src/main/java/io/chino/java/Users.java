@@ -265,12 +265,14 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User updatePartial(String userId, HashMap attributes) throws IOException, ChinoApiException {
-        return updatePartial(userId, attributes, false);
+        return updatePartial(false, userId, attributes, false);
     }
 
     /**
      * Update some fields of a User.
      *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param userId the User's ID on Chino.io
      * @param attributes a {@link HashMap} with the new values of the User's attributes
      *
@@ -280,7 +282,49 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     @Nullable
+    public User updatePartial(boolean activateResource, String userId, HashMap attributes) throws IOException, ChinoApiException {
+        return updatePartial(activateResource, userId, attributes, false);
+    }
+
+    /**
+     * Update some fields of a User.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param attributes a {@link HashMap} with the new values of the User's attributes
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
     public User updatePartial(String userId, HashMap attributes, boolean consistent) throws IOException, ChinoApiException {
+        return updatePartial(false, userId, attributes, consistent);
+    }
+
+    /**
+     * Update some fields of a User.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param userId the User's ID on Chino.io
+     * @param attributes a {@link HashMap} with the new values of the User's attributes
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User updatePartial(boolean activateResource, String userId, HashMap attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
 
         CreateUserRequest createUserRequest= new CreateUserRequest();
@@ -291,7 +335,8 @@ public class Users extends ChinoBaseAPI {
             createUserRequest.setPassword((String) attributes.remove("password"));
         }
         createUserRequest.setAttributes(attributes);
-
+        if (activateResource)
+            createUserRequest.activateResource();
         String URL = "/users/" + userId + ((consistent) ? "?consistent=true" : "");
         JsonNode data = patchResource(URL, createUserRequest);
         if(data!=null)
@@ -313,7 +358,26 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User updatePartial(String userId, String attributes) throws IOException, ChinoApiException {
-        return updatePartial(userId, attributes, false);
+        return updatePartial(false, userId, attributes, false);
+    }
+
+
+    /**
+     * Update some fields of a User.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param userId the User's ID on Chino.io
+     * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User updatePartial(boolean activateResource, String userId, String attributes) throws IOException, ChinoApiException {
+        return updatePartial(activateResource, userId, attributes, false);
     }
 
     /**
@@ -321,6 +385,11 @@ public class Users extends ChinoBaseAPI {
      *
      * @param userId the User's ID on Chino.io
      * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
      *
      * @return the updated {@link User} object
      *
@@ -332,9 +401,34 @@ public class Users extends ChinoBaseAPI {
         checkNotNull(userId, "user_id");
         HashMap attrMap =  fromStringToHashMap(attributes);
 
-        return updatePartial(userId, attrMap, consistent);
+        return updatePartial(false, userId, attrMap, consistent);
     }
 
+    /**
+     * Update some fields of a User.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param userId the User's ID on Chino.io
+     * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User updatePartial(boolean activateResource, String userId, String attributes, boolean consistent) throws IOException, ChinoApiException {
+        checkNotNull(userId, "user_id");
+        HashMap attrMap =  fromStringToHashMap(attributes);
+
+        return updatePartial(activateResource, userId, attrMap, consistent);
+    }
 
     /**
      * Update a {@link User} object.
@@ -352,13 +446,14 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User update(String userId, String username, String password, HashMap attributes) throws IOException, ChinoApiException {
-        return update(userId, username, password, attributes, false);
+        return update(false, userId, username, password, attributes, false);
     }
-
 
     /**
      * Update a {@link User} object.
      *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param userId the User's ID on Chino.io
      * @param username the username of the User
      * @param password the password of the User
@@ -371,9 +466,62 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     @Nullable
+    public User update(boolean activateResource, String userId, String username, String password, HashMap attributes) throws IOException, ChinoApiException {
+        return update(activateResource, userId, username, password, attributes, false);
+    }
+
+    /**
+     * Update a {@link User} object.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes an HashMap with the new values of the User's attributes.
+     *                   You must provide <b><i> all </i></b> of the attributes that are defined for the User.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
     public User update(String userId, String username, String password, HashMap attributes, boolean consistent) throws IOException, ChinoApiException {
+        return update(false, userId, username, password, attributes, consistent);
+    }
+
+    /**
+     * Update a {@link User} object.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param userId the User's ID on Chino.io
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes an HashMap with the new values of the User's attributes.
+     *                   You must provide <b><i> all </i></b> of the attributes that are defined for the User.
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User update(boolean activateResource, String userId, String username, String password, HashMap attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
         CreateUserRequest createUserRequest= new CreateUserRequest(username, password, attributes);
+
+        if (activateResource)
+            createUserRequest.activateResource();
 
         String URL = "/users/"+userId + ((consistent) ? "?consistent=true" : "");
         JsonNode data = putResource(URL, createUserRequest);
@@ -398,7 +546,7 @@ public class Users extends ChinoBaseAPI {
      */
     @Nullable
     public User update(String userId, String username, String password, String attributes) throws IOException, ChinoApiException {
-        return update(userId, username, password, attributes, false);
+        return update(false, userId, username, password, attributes, false);
     }
 
     /**
@@ -415,9 +563,58 @@ public class Users extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     @Nullable
+    public User update(boolean activateResource, String userId, String username, String password, String attributes) throws IOException, ChinoApiException {
+        return update(activateResource, userId, username, password, attributes, false);
+    }
+
+    /**
+     * Update a {@link User} object.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the
+     *                   user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
     public User update(String userId, String username, String password, String attributes, boolean consistent) throws IOException, ChinoApiException {
+        return update(false, userId, username, password, attributes, consistent);
+    }
+
+    /**
+     * Update a {@link User} object.
+     *
+     * @param userId the User's ID on Chino.io
+     * @param username the username of the User
+     * @param password the password of the User
+     * @param attributes a JSON object (as a {@link String}) with the new values of the User's attributes
+     * @param consistent setting this flag to {@code true} will make the indexing synchronous with the creation of the
+     *                   user,
+     *                   i.e. search operations will be successful right after this method returns.
+     *                   However, this operation has a cost and can make the API call last for seconds before answering.
+     *                   Use only when it's really needed
+     *
+     * @return the updated {@link User} object
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    @Nullable
+    public User update(boolean activateResource, String userId, String username, String password, String attributes, boolean consistent) throws IOException, ChinoApiException {
         checkNotNull(userId, "user_id");
         CreateUserRequest createUserRequest= new CreateUserRequest(username, password, fromStringToHashMap(attributes));
+
+        if (activateResource)
+            createUserRequest.activateResource();
 
         String URL = "/users/"+userId + ((consistent) ? "?consistent=true" : "");
         JsonNode data = putResource(URL, createUserRequest);

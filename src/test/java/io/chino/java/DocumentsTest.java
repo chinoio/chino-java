@@ -252,6 +252,57 @@ public class   DocumentsTest extends ChinoBaseTest {
         test.delete(doc.getDocumentId(), true);
     }
 
+    @Test
+    public void testActivate() throws Exception {
+        Document doc1 = newDoc("testActivate1");
+        Document doc2 = newDoc("testActivate2");
+        String id1 = doc1.getDocumentId();
+        String id2 = doc2.getDocumentId();
+        // Set is_active = false
+        test.delete(id1, false);
+        test.delete(id2, false);
+        assertFalse("Failed to set Document 1 inactive", test.read(id1).getIsActive());
+        assertFalse("Failed to set Document 2 inactive", test.read(id2).getIsActive());
+
+        // Set is_active = true
+        HashMap<String, String> content1 = new HashMap<>();
+        content1.put("testMethod", "test_activation_updated");
+        test.update(true, id1, content1);      // method 1: (String, HashMap)
+        Document control1 = test.read(id1);
+
+        String content2 = "{" +
+                    "\"testMethod\": \"test_activation_updated\"" +
+                "}";
+        test.update(true, id2, content2);      // method 2: (String, String)
+        Document control2 = test.read(id2);
+
+        // Verify update
+        assertTrue("Failed to activate Document 1", control1.getIsActive());
+        assertNotEquals("Failed to update Document 1 after activation",
+                doc1.getContentAsHashMap().get("testMethod"),
+                control1.getContentAsHashMap().get("testMethod")
+        );
+        assertTrue("Failed to activate Document 2", control2.getIsActive());
+        assertNotEquals("Failed to update Document 2 after activation",
+                doc2.getContentAsHashMap().get("testMethod"),
+                control2.getContentAsHashMap().get("testMethod")
+        );
+        Exception[] errors = new Exception[2];
+        try {
+            test.delete(id1, true);
+            errors[0] = null;
+        } catch (IOException | ChinoApiException e1){
+            errors[0] = e1;
+        }
+        try {
+            test.delete(id2, true);
+        } catch (IOException | ChinoApiException e2){
+            errors[1] = e2;
+        }
+        if (errors[0] != null) throw errors[0];
+        if (errors[1] != null) throw errors[1];
+    }
+
 
     private Document newDoc(String methodName) throws IOException, ChinoApiException {
         HashMap<String, String> content = new HashMap<>();
