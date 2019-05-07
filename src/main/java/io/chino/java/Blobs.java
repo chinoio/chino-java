@@ -393,8 +393,7 @@ public class Blobs extends ChinoBaseAPI {
      */
     @Deprecated
     public String delete(String blobId, boolean force) throws IOException, ChinoApiException {
-        checkNotNull(blobId, "blob_id");
-        return deleteResource("/blobs/"+blobId, force);
+        return delete(blobId);
     }
 
     /**
