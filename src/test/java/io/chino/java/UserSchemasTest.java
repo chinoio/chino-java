@@ -157,4 +157,50 @@ public class UserSchemasTest extends ChinoBaseTest {
         fetchedList = test.list(offset, 10).getUserSchemas();
         assertEquals("Couldn't fetch all the UserSchemas!", userSchemas.length - offset, fetchedList.size());
     }
+
+    @Test
+    public void test_activate() throws IOException, ChinoApiException {
+        UserSchema us0 = test.create("test_activation0", TestClassStructure.class);
+        UserSchema us1 = test.create("test_activation1", TestClassStructure.class);
+        int iteration = -1;
+        for (UserSchema us : new UserSchema[] {us0, us1}) {
+            String id = us.getUserSchemaId();
+            // Set is_active = false
+            test.delete(id, false);
+            assertFalse("Failed to set inactive", test.read(id).getIsActive());
+            // Set is_active = true with different methods
+            doActivation(++iteration, id, us.getStructure());
+            UserSchema control = test.read(id);
+            // Verify update
+            assertTrue("Failed to activate", control.getIsActive());
+            assertNotEquals("Failed to update string attribute after activation",
+                    us.getDescription(),
+                    control.getDescription()
+            );
+            assertTrue("Failed to update integer attribute after activation",
+                    control.getDescription().endsWith(":" + iteration)
+            );
+
+            test.delete(id, true);
+        }
+    }
+
+    private void doActivation(int methodId, String userSchemaId, UserSchemaStructure struct) throws IOException, ChinoApiException {
+        switch (methodId) {
+            case 0:
+                UserSchemaRequest request = new UserSchemaRequest("test_activation_updated:" + methodId, struct);
+                test.update(true, userSchemaId,
+                        request
+                );
+                break;
+            case 1:
+                test.update(true, userSchemaId,
+                        "test_activation_updated:" + methodId,
+                        TestClassStructure.class
+                );
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid iteration index: " + methodId);
+        }
+    }
 }

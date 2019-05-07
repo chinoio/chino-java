@@ -11,10 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.*;
@@ -24,30 +21,30 @@ import static org.junit.Assert.*;
  * @author Andrea Arighi [andrea@chino.io]
  */
 public class ConsentsTest extends ChinoBaseTest {
-    
+
     private static ChinoAPI chino_admin;
     private static Consents test;
     private static ArrayList<Consent> createdObjects;
-    
+
     private static String userId1 = "mariorossi@mailmail.com",
             userId2 = "rossimario@mail.ml";
-    
+
     /**
     * User Id value for testDeleted* methods.
     */
     private String deletedUserId = "userIdDelete@mail.ml";
-    
+
     /**
      * consentId of the deleted Consent will be stored here.
      * Used for testDeleted* methods.
      */
     private String deletedConsentId = null;
-    
+
     private static DataController dcSample;
     private static Purpose pSample1, pSample2, pSample3;
     private static Consent consentSample1 = null,
             consentSample2 = null;
-   
+
     @BeforeClass
     public static void setUpClass() throws IOException, ChinoApiException {
         ChinoBaseTest.beforeClass();
@@ -56,9 +53,9 @@ public class ConsentsTest extends ChinoBaseTest {
         ChinoBaseTest.checkResourceIsEmpty(test.list().getConsents().isEmpty(), test);
 
         createdObjects = new ArrayList<>();
-        
+
         dcSample = new DataController("Chino.io", "example", "42 John Doe St.", "java-example@chino.io", "vat123456789", true);
-        
+
         pSample1 = new Purpose(true, "promo", "Send ads to mail and address");
         pSample2  = new Purpose(false, "third-party", "Send data to third party services");
         pSample3 = new Purpose(true, "internal", "Internal usage");
@@ -66,21 +63,21 @@ public class ConsentsTest extends ChinoBaseTest {
         purposes.add(pSample1);
         purposes.add(pSample2);
         purposes.add(pSample3);
-        
+
         // creating sample consent for "mariorossi@mailmail.com".
         // Local object, not on Chino.io
         consentSample1 = new Consent(userId1, "Consent sample created for testing - class ConsentsTest"  + " [" + TestConstants.JAVA + "]",
                 "https://www.chino.io/legal/privacy-policy", "v1.0", "web-form", dcSample, purposes);
         System.out.println(consentSample1.getConsentId());
-        
+
         purposes.remove(pSample1);
         purposes.remove(pSample2);
-        
+
         // creating sample consent for another user, "rossimario@mail.ml",
         // with different purposes. Local object, not on Chino.io
         consentSample2 = new Consent(new Consent(consentSample1, null, purposes), userId2);
     }
-    
+
     @Before
     @After
     public void deleteCreatedObjects() {
@@ -101,7 +98,7 @@ public class ConsentsTest extends ChinoBaseTest {
         int size = createdObjects.size() -  deletedObjects.size();
         if (size > 0)
             System.out.println(String.format("*** Unable to delete %s objects.***", size));
-        
+
         createdObjects.clear();
     }
 
@@ -111,7 +108,7 @@ public class ConsentsTest extends ChinoBaseTest {
     @Test
     public void testList_3args() throws Exception {
         System.out.println("list (3 args)");
-        
+
         int newValidConsents = 4;
         String userId = "userIdList3@mail.ml";
         for (int i = 0; i<newValidConsents; i++) {
@@ -119,14 +116,14 @@ public class ConsentsTest extends ChinoBaseTest {
                     test.create(consentSample1, userId)
             );
         }
-        
+
         createdObjects.add(
                 test.create(consentSample1, "ignoredUserId@mail.ml")
         );
         createdObjects.add(
                 test.create(consentSample1, "anotherIgnoredUserId@mail.ml")
         );
-        
+
         int totalListElements = 0;
         int limit = 2;
         for (int i=0; i < (newValidConsents + limit - 1)/limit; i++) {
@@ -151,7 +148,7 @@ public class ConsentsTest extends ChinoBaseTest {
     @Test
     public void testList_int_int() throws Exception {
         System.out.println("list (2 args)");
-        
+
         int newConsents = 7;
         String userId = "userIdList2@mail.ml";
         for (int i = 0; i<newConsents; i++) {
@@ -159,7 +156,7 @@ public class ConsentsTest extends ChinoBaseTest {
                     test.create(consentSample1, userId)
             );
         }
-        
+
         int totalListElements = 0;
         int limit = 2;
         for (int offset = 0; offset < newConsents; offset += limit) {
@@ -189,7 +186,7 @@ public class ConsentsTest extends ChinoBaseTest {
         createdObjects.addAll(
                 test.list(userId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT)
         );
-        
+
         // Tested method
         ConsentList results = test.list();
         assertEquals(createdObjects.size(), results.size());
@@ -208,7 +205,7 @@ public class ConsentsTest extends ChinoBaseTest {
         createdObjects.add(local);
         assertNotNull(local.getUserId());
         assertNotNull(local.getConsentId());
-        
+
         Consent fetched = test.list(userId, 0, 1).get(0);
         assertNotNull("Couldn't retrieve created object", fetched);
         assertNotNull("Retrieved object has no consentId", fetched.getConsentId());
@@ -222,7 +219,7 @@ public class ConsentsTest extends ChinoBaseTest {
     public void testCreate_7args() throws Exception {
         System.out.println("create (7 args)");
         System.out.println("(Tested during setUpClass)");
-        
+
         assertNotNull(consentSample1);
     }
 
@@ -232,7 +229,7 @@ public class ConsentsTest extends ChinoBaseTest {
     @Test
     public void testCreate_3args() throws Exception {
         System.out.println("create (3 args)");
-        
+
         String userId = "userIdCreate3Args@mail.ml";
         Consent base = new Consent(consentSample1, userId);
         DataController newDataController = new DataController("new company", "new contact", "new address", "new_email@mail.ml", "new VAT", true);
@@ -241,7 +238,7 @@ public class ConsentsTest extends ChinoBaseTest {
         // Test method
         Consent consent = test.create(consentSample2, newDataController, newPurposes);
         createdObjects.add(consent);
-        
+
         assertNotNull(consent.getConsentId());
         assertEquals(1, consent.getPurposes().size());
         assertNotNull(consent.getDataController());
@@ -262,12 +259,12 @@ public class ConsentsTest extends ChinoBaseTest {
     @Test
     public void testCreate_Consent_String() throws Exception {
         System.out.println("create (2 args)");
-        
+
         String userId = "userIdCreate2Args@mail.ml";
-        
+
         Consent consent1 = test.create(consentSample2, userId);
         createdObjects.add(consent1);
-        
+
         assertNotNull(consent1.getUserId());
         assertFalse(consent1.getUserId().isEmpty());
     }
@@ -280,10 +277,10 @@ public class ConsentsTest extends ChinoBaseTest {
         System.out.println("read");
 
         String userId = "userIdRead@mail.ml";
-        
+
         Consent consent1 = test.create(new Consent(consentSample2, userId));
         createdObjects.add(consent1);
-        
+
         assertNotNull("failed to read consent 1", test.read(consent1.getConsentId()));
     }
 
@@ -297,7 +294,7 @@ public class ConsentsTest extends ChinoBaseTest {
         System.out.println("update");
         String userId = "userIdCreate@mail.ml";
         Consent base = new Consent(consentSample1, userId);
-        
+
         Consent consentOld = test.create(base);
         createdObjects.add(consentOld);
         long waitingTime = 5;
@@ -313,14 +310,14 @@ public class ConsentsTest extends ChinoBaseTest {
         assertNotEquals(consentUpdated.getDataController(), updatedDataController);
         assertNotEquals(consentUpdated.getPurposes(), consentOld.getPurposes());
         TimeUnit.SECONDS.sleep(waitingTime);
-        
+
         System.out.println("history");
         // Test method (history)
         ConsentHistory history = test.history(consentOld.getConsentId());
         assertFalse(history.isEmpty());
         assertEquals(consentUpdated, history.getActiveConsent());
         assertEquals(consentOld.getConsentId(), history.getConsentId());
-        
+
         Consent consentOldInHistory = null;
         for (Consent c:history) {
             if (c.isWithdrawn()) {
@@ -334,7 +331,7 @@ public class ConsentsTest extends ChinoBaseTest {
             consentOldInHistory
         );
         assertEquals(consentOldInHistory, consentOld);
-        
+
         Consent test1 = history.getActiveConsentOnDate(consentOld.getInsertedDate());
         System.out.println("TEST1: inserted " + test1.getInsertedDate() + ", removed: " + test1.getWithdrawnDate());
         System.out.println(history.getActiveConsentOnDate(new Date(((long) 1000))));
@@ -352,7 +349,7 @@ public class ConsentsTest extends ChinoBaseTest {
         // get the Consent that is active now (i.e. consentUpdated)
         assertEquals(history.getActiveConsentOnDate(new Date()), consentUpdated);
     }
-    
+
     /**
      * Test of the Exception that should be thrown by
  {@link ConsentHistory#getActiveConsentOnDate(java.util.Date) getActiveConsentOnDate}
@@ -363,7 +360,7 @@ public class ConsentsTest extends ChinoBaseTest {
         String userId = "userIdhistory_findVersion_Exception@mail.ml";
         Consent created = test.create(consentSample1, userId);
         createdObjects.add(created);
-        
+
         ConsentHistory history = test.history(created.getConsentId());
         // this call should throw an Exception
         Calendar cal = Calendar.getInstance();
@@ -380,16 +377,16 @@ public class ConsentsTest extends ChinoBaseTest {
     @Test
     public void testWithdraw() throws Exception {
         System.out.println("withdraw");
-        
+
         String userId = "userIdWithdraw@mail.ml";
         test.create(consentSample1, userId);
         Consent c = test.list(userId, 0, 1).get(0);
         createdObjects.add(c);
-        
+
         // Test method
         test.withdraw(c.getConsentId());
         assertTrue(test.read(c.getConsentId()).isWithdrawn());
-        
+
         // Check that c is still returned by history() but that it's not recognized as 'active'
         ConsentHistory h = test.history(c.getConsentId());
         assertFalse(h.isEmpty());
@@ -398,42 +395,43 @@ public class ConsentsTest extends ChinoBaseTest {
     }
 
     /**
-     * Test of delete method, of class Consents.
+     * Prepare tests of delete() method of class Consents.
      */
     public void deleteInit() throws Exception {
-        System.out.println("delete");
         if (deletedConsentId != null)
             return;
-        
-        
+        // create a Consent that will be deleted
         Consent c = test.create(consentSample1, deletedUserId);
         createdObjects.add(c);
         deletedConsentId = c.getConsentId();
-        
-        // Test method
+        // Test delete() method
         test.delete(deletedConsentId);
         createdObjects.remove(c);
     }
-    
+
     @Test(expected = ChinoApiException.class)
-    public void testDeletedRead() throws Exception {
+    public void testRead_DeletedConsent() throws Exception {
         deleteInit();
-        System.out.println("delete (read)");
+        System.out.println("read deleted Consent (expect Exception)");
         test.read(deletedConsentId);
     }
-    
+
     @Test(expected = ChinoApiException.class)
-    public void testDeletedHistory() throws Exception {
+    public void testHistory_DeletedConsent() throws Exception {
         deleteInit();
-        System.out.println("delete (history)");
+        System.out.println("history of deleted Consent (expect Exception)");
         test.history(deletedConsentId);
     }
-    
+
     @Test
-    public void testDeletedList() throws Exception {
+    public void testList_DeletedConsents() throws Exception {
         deleteInit();
-        System.out.println("delete (list)");
-        assertTrue(test.list(deletedUserId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT).isEmpty());
+        System.out.println("list of Consents of a deleted User (expect empty list)");
+        List<Consent> ls = test.list(deletedUserId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT).getConsents();
+        assertTrue(
+                String.format("List of Consents is not empty for a deleted User. %s Consents found", ls.size()),
+                ls.isEmpty()
+        );
     }
-    
+
 }

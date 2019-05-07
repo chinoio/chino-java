@@ -147,21 +147,22 @@ public class UserSchemas extends ChinoBaseAPI {
     /**
      * Update the specified {@link UserSchema}
      *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param userSchemaId the id of the {@link UserSchema} on Chino.io
-     * @param description the new description for the UserSchema
-     * @param userSchemaStructure a {@link UserSchemaStructure} object which describes the new structure
-     *                            of the UserSchema.
+     * @param userSchemaRequest a {@link UserSchemaRequest} Object which contains the new description and the
+     *                          new structure of the UserSchema's fields
      *
      * @return the updated {@link UserSchema}
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public UserSchema update(String userSchemaId, String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
+    public UserSchema update(boolean activateResource, String userSchemaId, UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
-        checkNotNull(userSchemaStructure, "user_schema_structure");
-        UserSchemaRequest userSchemaRequest= new UserSchemaRequest(description, userSchemaStructure);
-
+        checkNotNull(userSchemaRequest, "user_schema_request");
+        if (activateResource)
+            userSchemaRequest.activateResource();
         JsonNode data = putResource("/user_schemas/"+userSchemaId, userSchemaRequest);
         if(data!=null)
             return getMapper().convertValue(data, GetUserSchemaResponse.class).getUserSchema();
@@ -180,13 +181,47 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-     public UserSchema update(String userSchemaId, UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
-         checkNotNull(userSchemaId, "user_schema_id");
-         checkNotNull(userSchemaRequest, "user_schema_request");
-         JsonNode data = putResource("/user_schemas/"+userSchemaId, userSchemaRequest);
-         if(data!=null)
-             return getMapper().convertValue(data, GetUserSchemaResponse.class).getUserSchema();
-         return null;
+    public UserSchema update(String userSchemaId, UserSchemaRequest userSchemaRequest) throws IOException, ChinoApiException {
+        return update(false, userSchemaId, userSchemaRequest);
+    }
+
+    /**
+     * Update the specified {@link UserSchema}
+     *
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     * @param description the new description for the UserSchema
+     * @param userSchemaStructure a {@link UserSchemaStructure} object which describes the new structure
+     *                            of the UserSchema.
+     *
+     * @return the updated {@link UserSchema}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public UserSchema update(String userSchemaId, String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
+        return update(false, userSchemaId, new UserSchemaRequest(description, userSchemaStructure));
+    }
+
+    /**
+     * Update the specified {@link UserSchema}
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     * @param description the new description for the UserSchema
+     * @param userSchemaStructure a {@link UserSchemaStructure} object which describes the new structure
+     *                            of the UserSchema.
+     *
+     * @return the updated {@link UserSchema}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public UserSchema update(boolean activateResource, String userSchemaId, String description, UserSchemaStructure userSchemaStructure) throws IOException, ChinoApiException {
+        checkNotNull(userSchemaId, "user_schema_id");
+        checkNotNull(userSchemaStructure, "user_schema_structure");
+
+        return update(activateResource, userSchemaId, new UserSchemaRequest(description, userSchemaStructure));
     }
 
     /**
@@ -204,15 +239,32 @@ public class UserSchemas extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public UserSchema update(String userSchemaId, String description, Class myClass) throws IOException, ChinoApiException {
+        return update(false, userSchemaId, description, myClass);
+    }
+
+    /**
+     * Update the specified {@link UserSchema}
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param userSchemaId the id of the {@link UserSchema} on Chino.io
+     * @param description the new description of the {@link UserSchema}
+     * @param myClass a Java {@link Class} that represents the new structure of the UserSchema.
+     *                Mark fields that need to be indexed with the annotation
+     *                {@link io.chino.api.common.indexed @indexed}.
+     *
+     * @return the updated {@link UserSchema}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public UserSchema update(boolean activateResource, String userSchemaId, String description, Class myClass) throws IOException, ChinoApiException {
         checkNotNull(userSchemaId, "user_schema_id");
         List<Field> fieldsList = returnFields(myClass);
         UserSchemaStructure userSchemaStructure = new UserSchemaStructure(fieldsList);
         UserSchemaRequest userSchemaRequest= new UserSchemaRequest(description, userSchemaStructure);
 
-        JsonNode data = putResource("/user_schemas/"+userSchemaId, userSchemaRequest);
-        if(data!=null)
-            return getMapper().convertValue(data, GetUserSchemaResponse.class).getUserSchema();
-        return null;
+        return update(activateResource, userSchemaId, userSchemaRequest);
     }
 
     /**

@@ -164,6 +164,33 @@ public class GroupsTest extends ChinoBaseTest {
 //        );
     }
 
+
+
+    @Test
+    public void testActivate() throws IOException, ChinoApiException {
+        Group group = test.create("test_activation", new HashMap());
+        String id = group.getGroupId();
+        // Set is_active = false
+        test.delete(id, false);
+        assertFalse("Failed to set inactive", test.read(id).getIsActive());
+        // Set is_active = true
+        HashMap<String, Object> attributes = new HashMap<>();
+        attributes.put("updated", true);
+        test.update(true, id, "test_activation_updated", attributes);
+        Group control = test.read(id);
+        // Verify update
+        assertTrue("Failed to activate", control.getIsActive());
+        assertNotEquals("Failed to update after activation",
+                group.getGroupName(),
+                control.getGroupName()
+        );
+        assertTrue("Failed to add attributes after activation",
+                control.getAttributes().has("updated")
+        );
+
+        test.delete(id, true);
+    }
+
     private static void assertUserIsIn(User user, Group group) throws IOException, ChinoApiException {
         User check = chino_admin.users.read(user.getUserId());
         List groups = check.getGroups();

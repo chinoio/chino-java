@@ -4,12 +4,13 @@ package io.chino.api.collection;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.common.ActivationRequest;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "name",
 })
-public class CreateCollectionRequest {
+public class CreateCollectionRequest extends ActivationRequest {
 
     @JsonProperty("name")
     private String name;

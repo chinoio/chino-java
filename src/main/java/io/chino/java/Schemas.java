@@ -154,23 +154,16 @@ public class Schemas extends ChinoBaseAPI {
      * Update an existing {@link Schema}
      *
      * @param schemaId the ID of the Schema to update
-     * @param description the new description of the Schema
-     * @param schemaStructure a {@link SchemaStructure} object that contains the new structure of the Schema
+     * @param schemaRequest a {@link SchemaStructure} object that contains the new description
+     *                      and structure of the Schema
      *
      * @return the updated {@link Schema}
      *
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public Schema update(String schemaId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
-        checkNotNull(schemaId, "schema_id");
-        SchemaRequest schemaRequest = new SchemaRequest(description, schemaStructure);
-
-        JsonNode data = putResource("/schemas/"+schemaId, schemaRequest);
-        if(data!=null)
-            return mapper.convertValue(data, GetSchemaResponse.class).getSchema();
-
-        return null;
+    public Schema update(String schemaId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
+        return update(false, schemaId, schemaRequest);
     }
 
     /**
@@ -185,13 +178,52 @@ public class Schemas extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public Schema update(String schemaId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
+    public Schema update(boolean activateResource, String schemaId, SchemaRequest schemaRequest) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
-        JsonNode data = putResource("/schemas/"+schemaId, schemaRequest);
-        if(data!=null)
+        if (activateResource) {
+            schemaRequest.activateResource();
+        }
+        JsonNode data = putResource("/schemas/" + schemaId, schemaRequest);
+        if (data != null)
             return mapper.convertValue(data, GetSchemaResponse.class).getSchema();
 
         return null;
+    }
+
+    /**
+     * Update an existing {@link Schema}
+     *
+     * @param schemaId the ID of the Schema to update
+     * @param description the new description of the Schema
+     * @param schemaStructure a {@link SchemaStructure} object that contains the new structure of the Schema
+     *
+     * @return the updated {@link Schema}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Schema update(String schemaId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
+        SchemaRequest schemaRequest = new SchemaRequest(description, schemaStructure);
+        return update(false, schemaId, schemaRequest);
+    }
+
+    /**
+     * Update an existing {@link Schema}
+     *
+     * @param schemaId the ID of the Schema to update
+     * @param description the new description of the Schema
+     * @param schemaStructure a {@link SchemaStructure} object that contains the new structure of the Schema
+     *
+     * @return the updated {@link Schema}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public Schema update(boolean activateResource, String schemaId, String description, SchemaStructure schemaStructure) throws IOException, ChinoApiException {
+        checkNotNull(schemaId, "schema_id");
+        SchemaRequest schemaRequest = new SchemaRequest(description, schemaStructure);
+        return update(activateResource, schemaId, schemaRequest);
     }
 
     /**
@@ -209,6 +241,24 @@ public class Schemas extends ChinoBaseAPI {
      * @see io.chino.api.common.indexed @indexed
      */
     public Schema update(String schemaId, String description, Class myClass) throws IOException, ChinoApiException {
+        return update(false, schemaId, description, myClass);
+    }
+
+    /**
+     * Update an existing {@link Schema}
+     *
+     * @param schemaId the ID of the Schema to update
+     * @param description the new description of the Schema
+     * @param myClass {@link Class} that represents the new structure of the {@link Schema}
+     *
+     * @return the updated {@link Schema}
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     *
+     * @see io.chino.api.common.indexed @indexed
+     */
+    public Schema update(boolean activateResource, String schemaId, String description, Class myClass) throws IOException, ChinoApiException {
         checkNotNull(schemaId, "schema_id");
         SchemaRequest schemaRequest = new SchemaRequest();
         schemaRequest.setDescription(description);
@@ -217,11 +267,7 @@ public class Schemas extends ChinoBaseAPI {
         schemaStructure.setFields(fieldsList);
         schemaRequest.setStructure(schemaStructure);
 
-        JsonNode data = putResource("/schemas/"+schemaId, schemaRequest);
-        if(data!=null)
-            return mapper.convertValue(data, GetSchemaResponse.class).getSchema();
-
-        return null;
+        return update(activateResource, schemaId, schemaRequest);
     }
 
     /**

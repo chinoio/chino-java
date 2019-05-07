@@ -3,6 +3,7 @@ package io.chino.api.userschema;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.common.ActivationRequest;
 
 /**
  * Contains all the parameters required for creation and update of {@link UserSchema UserSchemas}:
@@ -13,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({ "description", "structure" })
-public class UserSchemaRequest {
+public class UserSchemaRequest extends ActivationRequest {
 
 	@JsonProperty("description")
 	private String description;

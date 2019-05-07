@@ -4,6 +4,7 @@ package io.chino.api.document;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import io.chino.api.common.ActivationRequest;
 
 import java.util.HashMap;
 
@@ -11,7 +12,7 @@ import java.util.HashMap;
 @JsonPropertyOrder({
     "content"
 })
-public class CreateDocumentRequest {
+public class CreateDocumentRequest extends ActivationRequest {
 
     @JsonProperty("content")
     private HashMap content;

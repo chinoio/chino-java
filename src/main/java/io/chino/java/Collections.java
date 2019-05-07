@@ -32,7 +32,7 @@ public class Collections extends ChinoBaseAPI {
      *
      * @param offset the list offset (how many are skipped)
      * @param limit maximum number of results (must be below
-     *              {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     *          {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      *
      * @return A {@link GetCollectionsResponse} which wraps the {@link java.util.List} of {@link Collection Collections}
      *
@@ -73,7 +73,9 @@ public class Collections extends ChinoBaseAPI {
      */
     public Collection read(String collectionId) throws IOException, ChinoApiException{
         checkNotNull(collectionId, "collection_id");
-        JsonNode data = getResource("/collections/"+collectionId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        JsonNode data = getResource("/collections/" + collectionId, 0,
+                ChinoApiConstants.QUERY_DEFAULT_LIMIT
+        );
         if(data!=null)
             return mapper.convertValue(data, GetCollectionResponse.class).getCollection();
 
@@ -111,20 +113,45 @@ public class Collections extends ChinoBaseAPI {
      * @throws ChinoApiException server error
      */
     public GetCollectionResponse update(String collectionId, String name) throws IOException, ChinoApiException {
+        return update(false, collectionId, name);
+    }
+
+    /**
+     * Update the name of a {@link Collection}.<br>
+     * Use this method with {@code activateResource=true} to make sure that the resource is active when you update it.
+     * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
+     *
+     * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
+     *                         Otherwise, the value of is_active will not be modified.
+     * @param collectionId the id of the {@link Collection} to update
+     * @param name the new name of the {@link Collection}
+     *
+     * @return a {@link GetCollectionResponse} which wraps the updated Collection.
+     *
+     * @throws IOException data processing error
+     * @throws ChinoApiException server error
+     */
+    public GetCollectionResponse update(boolean activateResource, String collectionId, String name)
+            throws IOException, ChinoApiException
+    {
         checkNotNull(collectionId, "collection_id");
         CreateCollectionRequest collectionRequest = new CreateCollectionRequest(name);
+        if (activateResource)
+            collectionRequest.activateResource();
         JsonNode data = putResource("/collections/"+collectionId, collectionRequest);
         if(data!=null)
             return mapper.convertValue(data, GetCollectionResponse.class);
         return null;
     }
 
+
     /**
      * Get the {@link io.chino.api.document.Document Documents} in a Collection
      *
      * @param collectionId the id of the Collection
      * @param offset the list offset (how many are skipped)
-     * @param limit maximum number of results (must be below {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
+     * @param limit maximum number of results (must be below
+     *          {@link io.chino.api.common.ChinoApiConstants#QUERY_DEFAULT_LIMIT ChinoApiConstants.QUERY_DEFAULT_LIMIT})
      *
      * @return a {@link GetDocumentsResponse} which wraps the {@link java.util.List} of
      *          {@link io.chino.api.document.Document Documents}
@@ -132,7 +159,9 @@ public class Collections extends ChinoBaseAPI {
      * @throws IOException data processing error
      * @throws ChinoApiException server error
      */
-    public GetDocumentsResponse listDocuments(String collectionId, int offset, int limit)throws IOException, ChinoApiException {
+    public GetDocumentsResponse listDocuments(String collectionId, int offset, int limit)
+            throws IOException, ChinoApiException
+    {
         checkNotNull(collectionId, "collection_id");
         JsonNode data = getResource("/collections/"+collectionId+"/documents", offset, limit);
         if(data!=null)
@@ -153,7 +182,9 @@ public class Collections extends ChinoBaseAPI {
      */
     public GetDocumentsResponse listDocuments(String collectionId)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
-        JsonNode data = getResource("/collections/"+collectionId+"/documents", 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT);
+        JsonNode data = getResource("/collections/"+collectionId+"/documents", 0,
+                ChinoApiConstants.QUERY_DEFAULT_LIMIT
+        );
         if(data!=null)
             return mapper.convertValue(data, GetDocumentsResponse.class);
         return null;
@@ -191,6 +222,7 @@ public class Collections extends ChinoBaseAPI {
     public String removeDocument(String collectionId, String documentId)throws IOException, ChinoApiException {
         checkNotNull(collectionId, "collection_id");
         checkNotNull(documentId, "document_id");
+        // 'force' parameter is ignored when deleting collections
         deleteResource("/collections/"+collectionId+"/documents/"+documentId, false);
         return SUCCESS_MSG;
     }
@@ -211,5 +243,4 @@ public class Collections extends ChinoBaseAPI {
         checkNotNull(collectionId, "collection_id");
         return deleteResource("/collections/"+collectionId, force);
     }
-
 }
