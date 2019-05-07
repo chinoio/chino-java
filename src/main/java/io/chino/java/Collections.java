@@ -122,7 +122,7 @@ public class Collections extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param collectionId the id of the {@link Collection} to update
      * @param name the new name of the {@link Collection}
      *

@@ -293,7 +293,7 @@ public class Documents extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
      *                   e.g. {@link #list(String) list(schemaId)}
      * @param content a {@link HashMap} with the content of the new Document.
@@ -346,7 +346,7 @@ public class Documents extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
      *                   e.g. {@link #list(String) list(schemaId)}
      * @param content a {@link HashMap} with the content of the new Document.
@@ -390,7 +390,7 @@ public class Documents extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
      *                   e.g. {@link #list(String) list(schemaId)}
      * @param content a {@link String} with the content of the new Document in JSON format.
@@ -444,7 +444,7 @@ public class Documents extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param documentId the id of an existing {@link Document}. IDs can be retrieved using one of the 'list' methods,
      *                   e.g. {@link #list(String) list(schemaId)}
      * @param content a {@link String} with the content of the new Document in JSON format.

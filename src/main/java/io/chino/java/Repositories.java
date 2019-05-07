@@ -122,7 +122,7 @@ public class Repositories extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param repositoryId the id of the {@link Repository} on Chino.io
      * @param description the new description of the Repository
      *

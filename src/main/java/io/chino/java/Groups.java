@@ -126,7 +126,7 @@ public class Groups extends ChinoBaseAPI {
      * NOTE: this method can NOT be used to set the resource inactive: use {@link #delete(String, boolean)} instead.
      *
      * @param activateResource if true, the update method will set {@code "is_active": true} in the resource.
-     *                         Otherwise, the value will not be modified.
+     *                         Otherwise, the value of is_active will not be modified.
      * @param groupId the id of the Group
      * @param groupName the name of the new Group
      * @param attributes an HashMap of the new attributes
