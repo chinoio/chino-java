@@ -335,10 +335,8 @@ public class Users extends ChinoBaseAPI {
             createUserRequest.setPassword((String) attributes.remove("password"));
         }
         createUserRequest.setAttributes(attributes);
-
         if (activateResource)
             createUserRequest.activateResource();
-
         String URL = "/users/" + userId + ((consistent) ? "?consistent=true" : "");
         JsonNode data = patchResource(URL, createUserRequest);
         if(data!=null)
