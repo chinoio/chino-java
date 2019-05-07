@@ -68,19 +68,29 @@ public class UsersTest extends ChinoBaseTest {
         }
 
         // verify that login is enabled with new credentials
-        Application app = chino_admin.applications.create("test Application for checkPasswordTest" + "[" + TestConstants.JAVA + "]", "password", "", ClientType.PUBLIC);
+        Application app = chino_admin.applications.create(
+                "test Application for checkPasswordTest" + "[" + TestConstants.JAVA + "]",
+                "password",
+                "",
+                ClientType.PUBLIC
+        );
         ChinoAPI client = null;
         String token = null;
         try {
             client = new ChinoAPI(TestConstants.HOST);
-            token = client.auth.loginWithPassword(u.getUsername(), TestConstants.PASSWORD, app.getAppId()).getAccessToken();
+            token = client.auth.loginWithPassword(u.getUsername(), TestConstants.PASSWORD, app.getAppId())
+                    .getAccessToken();
 
-            assertFalse("Returned TRUE with wrong password", client.users.checkPassword("wrong password!"));
-            assertTrue("Returned FALSE with correct password", client.users.checkPassword(TestConstants.PASSWORD));
+            assertFalse("Returned TRUE with wrong password",
+                    client.users.checkPassword("wrong password!")
+            );
+            assertTrue("Returned FALSE with correct password",
+                    client.users.checkPassword(TestConstants.PASSWORD)
+            );
         } finally {
-            if (client != null && token == null)
+            if (client != null && token != null)
                 client.auth.logout(token, app.getAppId());
-            chino_admin.applications.delete(app.getAppId(), true);
+            chino_admin.applications.delete(app.getAppId());
         }
     }
 
@@ -209,7 +219,7 @@ public class UsersTest extends ChinoBaseTest {
                     appClient.auth.loginWithPassword(newUsername, newPassword, app.getAppId()).getAccessToken()
             );
         } finally {
-            chino_admin.applications.delete(app.getAppId(), true);
+            chino_admin.applications.delete(app.getAppId());
         }
     }
 
@@ -277,6 +287,72 @@ public class UsersTest extends ChinoBaseTest {
             assertNotNull("user not updated!", updated);
             assertEquals("user not updated!", newAttrs.test_integer, updated.getAttributesAsHashMap().get("test_integer"));
             old = updated;
+        }
+    }
+
+
+
+    @Test
+    public void test_activate() throws IOException, ChinoApiException {
+        User user0 = newUser("test_activation0");
+        User user1 = newUser("test_activation1");
+        User user2 = newUser("test_activation2");
+        int iteration = -1;
+        for (User usr : new User[] {user0, user1, user2}) {
+            String id = usr.getUserId();
+            // Set is_active = false
+            test.delete(id, false);
+            assertFalse("Failed to set inactive", test.read(id).getIsActive());
+            // Set is_active = true with different methods
+            doActivation(++iteration, id, usr.getUsername(), TestConstants.PASSWORD);
+            User control = test.read(id);
+            // Verify update
+            assertTrue("Failed to activate", control.getIsActive());
+            assertNotEquals("Failed to update string attribute after activation",
+                    usr.getAttributesAsHashMap().get("test_string"),
+                    control.getAttributesAsHashMap().get("test_string")
+            );
+            assertEquals("Failed to update integer attribute after activation",
+                    iteration,
+                    control.getAttributesAsHashMap().get("test_integer")
+            );
+
+            test.delete(id, true);
+        }
+    }
+
+    private void doActivation(int methodId, String userId, String username, String password) throws IOException, ChinoApiException {
+        UserSchemaStructureSample oldAttrs = (UserSchemaStructureSample) test.read(userId, UserSchemaStructureSample.class);
+        HashMap<String, Object> updatedAttributes = new HashMap<>();
+        updatedAttributes.put("test_string", "test_activate:updated");
+        updatedAttributes.put("test_integer", methodId);
+        switch (methodId) {
+            case 0:
+                test.updatePartial(true, userId,
+                        updatedAttributes,
+                        true
+                );
+                break;
+            case 1:
+                updatedAttributes.put("test_boolean", oldAttrs.test_boolean);
+                updatedAttributes.put("test_date", dateFormat.format(oldAttrs.test_date));
+                updatedAttributes.put("test_float", oldAttrs.test_float);
+                test.update(true, userId, username, password,
+                        updatedAttributes,
+                        true
+                );
+                break;
+            case 2:
+                updatedAttributes.put("test_boolean", oldAttrs.test_boolean);
+                updatedAttributes.put("test_date", dateFormat.format(oldAttrs.test_date));
+                updatedAttributes.put("test_float", oldAttrs.test_float);
+                test.update(true, userId, username, password,
+                        new ObjectMapper().writeValueAsString(updatedAttributes),
+                        true
+                );
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid iteration index: " + methodId);
         }
     }
 
