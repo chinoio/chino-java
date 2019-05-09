@@ -2,8 +2,6 @@
 package io.chino.api.common;
 
 
-import io.chino.java.BuildConfig;
-
 /**
  * Definition of constants that can be used to replace constant values in API calls
  */

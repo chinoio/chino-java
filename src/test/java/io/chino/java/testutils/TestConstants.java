@@ -1,7 +1,7 @@
 package io.chino.java.testutils;
 
+import io.chino.api.common.BuildConfig;
 import io.chino.api.user.User;
-import io.chino.java.BuildConfig;
 
 import java.io.FileReader;
 import java.io.IOException;

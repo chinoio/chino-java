@@ -1,4 +1,4 @@
-package io.chino.java;
+package io.chino.api.common;
 
 /** placeholder class */
 public final class BuildConfig
