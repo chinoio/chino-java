@@ -1,6 +1,8 @@
 package io.chino.java;
 
 import io.chino.api.common.LoggingInterceptor;
+import io.chino.api.common.UserAgentInterceptor;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
 import java.util.List;
@@ -15,6 +17,8 @@ public class ChinoAPI {
      * the version code of Chino.io API used by this SDK
      */
     public final static String API_VERSION = "v1";
+
+    static Interceptor userAgent = new UserAgentInterceptor();
 
     OkHttpClient client;
     public Applications applications;
@@ -152,7 +156,8 @@ public class ChinoAPI {
         return new OkHttpClient.Builder()
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS);
+            .readTimeout(30, TimeUnit.SECONDS)
+            .addInterceptor(userAgent);
     }
 
     OkHttpClient getHttpClient() {
@@ -163,7 +168,8 @@ public class ChinoAPI {
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS);
+                .readTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(userAgent);
 
         if (authInterceptor == null) {
             this.client = builder.build();

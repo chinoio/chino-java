@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static io.chino.java.ChinoAPI.userAgent;
+
 /**
  * Manage authentication of the Java clients with Chino.io API both as an admin or a OAuth2 {@link User}.
  */
@@ -290,6 +292,7 @@ public class Auth extends ChinoBaseAPI {
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(userAgent)
                 .build()
                 .newCall(request).execute();
 
