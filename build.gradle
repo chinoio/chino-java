@@ -19,7 +19,7 @@ apply plugin: 'jacoco'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 group = 'io.chino.library'
-version = '3.3.0'
+version = '3.3.1'
 description = "Java SDK for Chino.io API"
 
 JavaVersion latestSupportedLTS = JavaVersion.VERSION_11

@@ -9,7 +9,7 @@ Official Java wrapper for [**CHINO.io**](https://chino.io) API
  
 Full documentation:
  - [API docs](http://docs.chino.io)
- - [javadoc](https://jitpack.io/com/github/chinoio/chino-java/3.3.0/javadoc/io/chino/java/package-summary.html)
+ - [javadoc](https://jitpack.io/com/github/chinoio/chino-java/3.3.1/javadoc/io/chino/java/package-summary.html)
 
 For issues or questions, please contact [tech-support@chino.io](mailto:tech-support@chino.io).
 
@@ -51,6 +51,12 @@ Other free Java distributions can be found, provided by Azul, IBM, Red Hat, Linu
 
 ## What's new
 ([skip to next section](#setup))
+
+### 3.3.1
+
+Now it is possible to customize the User-Agent header, appending a `<client name>`. It will look like:
+
+    okhttp/3 chino-java/3.3.1(<client name>)
 
 ### 3.3.0
 
@@ -129,7 +135,7 @@ Edit your project's "pom.xml" and add this:
     <!-- other dependencies... -->
     <groupId>com.github.chinoio</groupId>
         <artifactId>chino-java</artifactId>
-    <version>3.3.0</version>
+    <version>3.3.1</version>
 </dependency>
 ```
 
@@ -146,7 +152,7 @@ allprojects {
 
 dependencies {
     // other dependencies...
-    compile 'com.github.chinoio:chino-java:3.3.0'
+    compile 'com.github.chinoio:chino-java:3.3.1'
 }
 ```
 
@@ -191,11 +197,11 @@ The Javadoc for this version of the SDK can be obtained:
 
         ./gradlew build javadoc
         
-    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.3.0-javadoc.jar`:
+    or the task `javadocJar`, that will package them inside a JAR in `build/libs/chino-java-3.3.1-javadoc.jar`:
         
         ./gradlew build javadocJar
 
-* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.3.0/javadoc/io/chino/java/package-summary.html)
+* from [jitpack.io](https://jitpack.io/com/github/chinoio/chino-java/3.3.1/javadoc/io/chino/java/package-summary.html)
 
     
 ## Usage
