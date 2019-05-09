@@ -11,22 +11,13 @@ import java.io.IOException;
  */
 public class UserAgentInterceptor implements Interceptor {
 
-    private final String clientName;
+    private String clientName;
 
     /**
      * Set the User-Agent header of the SDK.
      */
     public UserAgentInterceptor() {
         this.clientName = null;
-    }
-
-    /**
-     * Set the User-Agent header of the SDK.
-     * @param clientName a String describing the client, which will be appended
-     *                   to the default User-Agent header
-     */
-    public UserAgentInterceptor(String clientName) {
-        this.clientName = clientName;
     }
 
     @Override
@@ -39,9 +30,29 @@ public class UserAgentInterceptor implements Interceptor {
         return chain.proceed(request);
     }
 
-    private String getUserAgent() {
+    public String getUserAgent() {
         String base = ChinoApiConstants.USER_AGENT;
         if (clientName == null) return base;
         return base + String.format("(%s)", clientName);
+    }
+
+    /**
+     * Get the current client name.
+     *
+     * @return the client name, or an empty String if the current name is {@code null}
+     */
+    public String getClientName() {
+        if (clientName == null)
+            return "";
+        return clientName;
+    }
+
+    /**
+     * Update the client name in this {@link UserAgentInterceptor}.
+     *
+     * @param name the new client name. If null, the client name value will be removed from the "User-Agent" header.
+     */
+    public void updateClientName(String name) {
+        this.clientName = name;
     }
 }

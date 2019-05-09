@@ -2,7 +2,6 @@ package io.chino.java;
 
 import io.chino.api.common.LoggingInterceptor;
 import io.chino.api.common.UserAgentInterceptor;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class ChinoAPI {
      */
     public final static String API_VERSION = "v1";
 
-    static Interceptor userAgent = new UserAgentInterceptor();
+    static UserAgentInterceptor userAgent = new UserAgentInterceptor();
 
     OkHttpClient client;
     public Applications applications;
@@ -176,6 +175,33 @@ public class ChinoAPI {
         } else {
             this.client = builder.addNetworkInterceptor(authInterceptor).build();
         }
+    }
+
+    /**
+     * Append a client name to the "User-Agent" HTTP header.
+     *
+     * @param name the client name. If null, the appended value will be removed.
+     */
+    public void setClientName(String name) {
+        userAgent.updateClientName(name);
+    }
+
+    /**
+     * Get the client name which is sent within the "User-Agent" HTTP header.
+     *
+     * @return the current client name
+     */
+    public String getClientName() {
+        return userAgent.getClientName();
+    }
+
+    /**
+     * Get the content of the "User-Agent" HTTP header.
+     *
+     * @return the value which is written in the header.
+     */
+    public String getUserAgent() {
+        return userAgent.getUserAgent();
     }
 
     /**
