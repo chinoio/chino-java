@@ -69,6 +69,13 @@ dependencies {
     testRuntime "org.slf4j:slf4j-api:1.7.25"
 }
 
+sourceSets {
+    main.java {
+        // remove placeholder file from build
+        exclude '**/BuildConfig.java'
+    }
+}
+
 build {
     // generate file BuildConfig during build
     dependsOn 'generateBuildConfig'
