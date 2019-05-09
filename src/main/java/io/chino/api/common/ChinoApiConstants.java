@@ -2,6 +2,8 @@
 package io.chino.api.common;
 
 
+import io.chino.java.BuildConfig;
+
 /**
  * Definition of constants that can be used to replace constant values in API calls
  */
@@ -17,6 +19,11 @@ public class ChinoApiConstants {
 	public static final String DATA_TYPE_DATETIME="datetime";
 	public static final String DATA_TYPE_BASE64ENCODED="base64";
 	public static final String DATA_TYPE_BLOB="blob";
+
+    /**
+     * Default value of the User-Agent header
+     */
+	public static final String USER_AGENT = String.format("okhttp/3 chino-java/%s", BuildConfig.VERSION);
 	
 	/**
      * Query standard limit, default value is 100.
