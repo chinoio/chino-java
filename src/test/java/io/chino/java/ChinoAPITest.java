@@ -144,6 +144,20 @@ public class ChinoAPITest {
     }
 
     @Test
+    public void testUserAgent() {
+        ChinoAPI apiClient = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
+        String name = "SDK-tester";
+
+        apiClient.setClientName(name);
+        assertTrue("getUserAgent() not working", apiClient.getUserAgent().contains(name));
+        assertEquals("getClientName() not working", name, apiClient.getClientName());
+
+        apiClient.setClientName(null);
+        assertFalse("getUserAgent(null) not working", apiClient.getUserAgent().contains(name));
+        assertTrue("getClientName(null) not working", apiClient.getClientName().isEmpty());
+    }
+
+    @Test
     public void testAccessTokenClient() {
         // authenticate user
         String step = "initialize";
