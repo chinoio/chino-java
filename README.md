@@ -52,6 +52,12 @@ Other free Java distributions can be found, provided by Azul, IBM, Red Hat, Linu
 ## What's new
 ([skip to next section](#setup))
 
+### 3.3.1
+
+Now it is possible to customize the User-Agent header, appending a `<client name>`. It will look like:
+
+    okhttp/3 chino-java/3.3.1(<client name>)
+
 ### 3.3.0
 
 Added support to activate resources. When a resource is deactivated with `force=false`
