@@ -1,6 +1,7 @@
 package io.chino.java.testutils;
 
 import io.chino.api.user.User;
+import io.chino.java.BuildConfig;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -18,6 +19,7 @@ import java.util.Properties;
  */
 public class TestConstants {
 
+    public static final String SDK_VERSION = BuildConfig.VERSION;
     /**
      * The base URL of the Chino.io test API
      */

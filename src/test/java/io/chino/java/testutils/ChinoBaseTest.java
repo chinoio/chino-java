@@ -67,6 +67,7 @@ public class ChinoBaseTest {
         System.out.println("--- Test started ----------------------" + "\n" +
                            " ~ Java version: " + TestConstants.JAVA + "\n" +
                            " ~ Chino.io host: " + TestConstants.HOST + "\n" +
+                           " ~ SDK version: " + TestConstants.SDK_VERSION + "\n" +
                            "---------------------------------------");
         System.out.flush();
     }
