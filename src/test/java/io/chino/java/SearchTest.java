@@ -199,7 +199,7 @@ public class SearchTest extends ChinoBaseTest {
                 .buildSearch();
 
         GetUsersResponse response_limit = searchUsers.execute( 0, 1);
-        assertEquals(response_limit.getCount().intValue(), 1);
+        assertEquals(1, response_limit.getCount().intValue());
         int total = response_limit.getTotalCount();
 
         int half = total / 2 + 1;
@@ -226,7 +226,7 @@ public class SearchTest extends ChinoBaseTest {
                 .buildSearch();
 
         GetDocumentsResponse response_limit = searchDocs.execute( 0, 1);
-        assertEquals(response_limit.getCount().intValue(), 1);
+        assertEquals(1, response_limit.getCount().intValue());
         int total = response_limit.getTotalCount();
 
         int half = total / 2 + 1;

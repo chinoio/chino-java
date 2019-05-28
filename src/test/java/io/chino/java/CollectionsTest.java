@@ -167,19 +167,19 @@ public class CollectionsTest extends ChinoBaseTest {
 
     @Test
     public void test_activate() throws IOException, ChinoApiException {
-        Collection coll = test.create("test_activation");
-        String id = coll.getCollectionId();
+        Collection before = test.create("test_activation");
+        String id = before.getCollectionId();
         // Set is_active = false
         test.delete(id, false);
         assertFalse("Failed to set inactive", test.read(id).getIsActive());
         // Set is_active = true
         test.update(true, id, "test_activation_updated");
-        Collection control = test.read(id);
-        // Verify update
-        assertTrue("Failed to activate", control.getIsActive());
-        assertNotEquals("Failed to update after activation",
-                coll.getName(),
-                control.getName()
+        Collection after = test.read(id);
+        // Verify activation
+        assertTrue("Failed to update value of 'is_active'", after.getIsActive());
+        assertNotEquals("Failed to update values other than 'is_active'",
+                before.getName(),
+                after.getName()
         );
 
         test.delete(id, true);

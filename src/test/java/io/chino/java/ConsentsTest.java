@@ -109,9 +109,9 @@ public class ConsentsTest extends ChinoBaseTest {
     public void testList_3args() throws Exception {
         System.out.println("list (3 args)");
 
-        int newValidConsents = 4;
+        int newValidConsentCount = 4;
         String userId = "userIdList3@mail.ml";
-        for (int i = 0; i<newValidConsents; i++) {
+        for (int i = 0; i<newValidConsentCount; i++) {
             createdObjects.add(
                     test.create(consentSample1, userId)
             );
@@ -126,7 +126,7 @@ public class ConsentsTest extends ChinoBaseTest {
 
         int totalListElements = 0;
         int limit = 2;
-        for (int i=0; i < (newValidConsents + limit - 1)/limit; i++) {
+        for (int i=0; i < (newValidConsentCount + limit - 1)/limit; i++) {
             int offset = i;
             // Call method to be tested
             ConsentList results = test.list(userId, offset, limit);
@@ -139,7 +139,7 @@ public class ConsentsTest extends ChinoBaseTest {
             System.out.println();
             /**/
         }
-        assertEquals(newValidConsents, totalListElements);
+        assertEquals(newValidConsentCount, totalListElements);
     }
 
     /**
@@ -209,7 +209,7 @@ public class ConsentsTest extends ChinoBaseTest {
         Consent fetched = test.list(userId, 0, 1).get(0);
         assertNotNull("Couldn't retrieve created object", fetched);
         assertNotNull("Retrieved object has no consentId", fetched.getConsentId());
-        assertEquals(fetched.getUserId(), local.getUserId());
+        assertEquals(local.getUserId(), fetched.getUserId());
     }
 
     /**
@@ -306,9 +306,9 @@ public class ConsentsTest extends ChinoBaseTest {
         Consent updated = new Consent(consentOld, dcSample, newPurposes);
         // Test method (update)
         Consent consentUpdated = test.update(consentOld.getConsentId(), updated);
-        assertEquals(consentUpdated.getConsentId(), consentOld.getConsentId());
-        assertNotEquals(consentUpdated.getDataController(), updatedDataController);
-        assertNotEquals(consentUpdated.getPurposes(), consentOld.getPurposes());
+        assertEquals(consentOld.getConsentId(), consentUpdated.getConsentId());
+        assertNotEquals(updatedDataController, consentUpdated.getDataController());
+        assertNotEquals(consentOld.getPurposes(), consentUpdated.getPurposes());
         TimeUnit.SECONDS.sleep(waitingTime);
 
         System.out.println("history");
@@ -318,6 +318,7 @@ public class ConsentsTest extends ChinoBaseTest {
         assertEquals(consentUpdated, history.getActiveConsent());
         assertEquals(consentOld.getConsentId(), history.getConsentId());
 
+        // check that the withdrawn Consent is still comparable to the local instance
         Consent consentOldInHistory = null;
         for (Consent c:history) {
             if (c.isWithdrawn()) {
@@ -330,24 +331,24 @@ public class ConsentsTest extends ChinoBaseTest {
                     + String.format("\n(consent_id: %s", history.getConsentId()),
             consentOldInHistory
         );
-        assertEquals(consentOldInHistory, consentOld);
+        assertEquals(consentOld, consentOldInHistory);
 
         Consent test1 = history.getActiveConsentOnDate(consentOld.getInsertedDate());
         System.out.println("TEST1: inserted " + test1.getInsertedDate() + ", removed: " + test1.getWithdrawnDate());
         System.out.println(history.getActiveConsentOnDate(new Date(((long) 1000))));
         Consent test2 = history.getActiveConsentOnDate(new Date());
         System.out.println("TEST2: inserted " + test2.getInsertedDate() + ", removed: " + test2.getWithdrawnDate());
-        assertEquals(history.getActiveConsentOnDate(consentOld.getInsertedDate()), consentOld);
-        assertEquals(history.getActiveConsentOnDate(consentUpdated.getInsertedDate()), consentUpdated);
+        assertEquals(consentOld, history.getActiveConsentOnDate(consentOld.getInsertedDate()));
+        assertEquals(consentUpdated, history.getActiveConsentOnDate(consentUpdated.getInsertedDate()));
         // get the Consent that was active right before consentUpdated (i.e. consentOld)
         Calendar beforeUpdate = Calendar.getInstance();
         beforeUpdate.setTime(consentUpdated.getInsertedDate());
         beforeUpdate.add(Calendar.SECOND,  (int) -(waitingTime / 2));
-        assertEquals(history.getActiveConsentOnDate(beforeUpdate.getTime()), consentOld);
+        assertEquals(consentOld, history.getActiveConsentOnDate(beforeUpdate.getTime()));
         // get the Consent that was active before consentOld was created (i.e. null)
         assertNull(history.getActiveConsentOnDate(new Date(0)));
         // get the Consent that is active now (i.e. consentUpdated)
-        assertEquals(history.getActiveConsentOnDate(new Date()), consentUpdated);
+        assertEquals(consentUpdated, history.getActiveConsentOnDate(new Date()));
     }
 
     /**

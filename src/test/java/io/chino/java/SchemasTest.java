@@ -54,7 +54,7 @@ public class SchemasTest extends ChinoBaseTest {
 
         /* READ */
         Schema r = test.read(c_class.getSchemaId());
-        assertEquals("schemas.read returned an unexpected object: " + r.toString(), c_class, r);
+        assertEquals("schemas.read() returned an unexpected object: " + r.toString(), c_class, r);
 
         /* UPDATE */
         String newDesc = "Updated Schema";

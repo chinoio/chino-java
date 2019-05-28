@@ -85,12 +85,11 @@ public class   DocumentsTest extends ChinoBaseTest {
 
             variant = "2 params";
             List<Document> docsList = test.list(SCHEMA_ID, true).getDocuments();
-            assertTrue(
-                    docsList.contains(doc)
-            );
-            assertEquals(
-                    docsList.get(0).getContentAsHashMap(),
-                    doc.getContentAsHashMap()
+            assertTrue(docsList.contains(doc));
+            assertEquals( "Wrong Document found in list(). Maybe some old Document was not deleted?\n"
+                            + docsList.get(0).getRepositoryId(),
+                    doc.getContentAsHashMap(),
+                    docsList.get(0).getContentAsHashMap()
             );
 
             variant = "3 params - expected 1 document";
@@ -117,34 +116,43 @@ public class   DocumentsTest extends ChinoBaseTest {
     @Test
     public void testCreateRead_async() throws IOException, ChinoApiException {
         // create hashmap / read
-        Document docHM = newDoc("testCreateReadUpdate_async");
-        Document check = test.read(docHM.getDocumentId());
-        assertEquals( "Different content than expected was read in fetched Document (created with HashMap)",
-                docHM.getContentAsHashMap(),
-                check.getContentAsHashMap()
+        Document local = newDoc("testCreateReadUpdate_async");
+        Document read_HashMap = test.read(local.getDocumentId());
+        assertEquals( "Different content found after read() (created with HashMap)",
+                local.getContentAsHashMap(),
+                read_HashMap.getContentAsHashMap()
         );
 
         // create json string / read
-        String jsonContent = new ObjectMapper().writeValueAsString(docHM.getContentAsHashMap());
-        Document docStr = test.create(SCHEMA_ID, jsonContent);
-        docStr = test.read(docStr.getDocumentId()); // fetch content
-        assertEquals( "Different content than expected was read in fetched Document (created with JSON String)",
-                docStr.getContentAsHashMap(),
-                check.getContentAsHashMap()        // must have the same content as docStr
+        String localJson = new ObjectMapper().writeValueAsString(local.getContentAsHashMap());
+        String id = test.create(SCHEMA_ID, localJson).getDocumentId();
+
+        // fetch content - test read and method getContentAsHashMap()
+        Document read_String = test.read(id);
+        assertEquals( "Different content found after read() (created with JSON String)",
+                // must have the same content as docStr
+                local.getContentAsHashMap(),
+                read_String.getContentAsHashMap()
+        );
+        assertEquals( "Different content between two read() Documents",
+                // must have the same content as docStr
+                read_HashMap.getContentAsHashMap(),
+                read_String.getContentAsHashMap()
         );
 
         // read and map to class
         MappedDocument docMapped = (MappedDocument) test.read(
-                docHM.getDocumentId(),
+                local.getDocumentId(),
                 MappedDocument.class
         );
         assertEquals( "Mapped document doesn't contain the right values",
-                docHM.getContentAsHashMap().get("testMethod"),
+                local.getContentAsHashMap().get("testMethod"),
                 docMapped.testMethod
         );
 
-        clear(docHM);
-        clear(docStr);
+        clear(local);
+        clear(read_String);
+        clear(read_HashMap);
     }
 
     @Test
@@ -154,28 +162,28 @@ public class   DocumentsTest extends ChinoBaseTest {
         String methodName = "testCreateRead_sync";
         content.put("testMethod", methodName);
 
-        Document docHM = test.create(SCHEMA_ID, content, true);
-        docHM.setContent(content);
-        Document check = test.read(docHM.getDocumentId());
-        assertEquals( "Different content than expected was read in fetched Document (created with HashMap)",
-                docHM.getContentAsHashMap(),
+        Document local = test.create(SCHEMA_ID, content, true);
+        local.setContent(content);
+        Document check = test.read(local.getDocumentId());
+        assertEquals( "Different content found after read()  (created with HashMap)",
+                local.getContentAsHashMap(),
                 check.getContentAsHashMap()
         );
 
         // create json string / read
-        String jsonContent = new ObjectMapper().writeValueAsString(docHM.getContentAsHashMap());
+        String jsonContent = new ObjectMapper().writeValueAsString(local.getContentAsHashMap());
         DocumentsSearch search = (DocumentsSearch) chino_admin.search.documents(SCHEMA_ID)
                 .with("testMethod", EQUALS, methodName)
                 .buildSearch();
 
         Document docStr = test.create(SCHEMA_ID, jsonContent, true);
-        docStr.setContent(docHM.getContentAsHashMap());
+        docStr.setContent(local.getContentAsHashMap());
         GetDocumentsResponse result = search.execute();
         assertTrue(
                 result.getDocuments().contains(docStr)
         );
 
-        clear(docHM);
+        clear(local);
         clear(docStr);
     }
 
@@ -194,8 +202,8 @@ public class   DocumentsTest extends ChinoBaseTest {
                 doc.getContentAsHashMap()
         );
         assertEquals( "read document and updated version do not match",
-                check.getContentAsHashMap(),
-                content
+                content,
+                check.getContentAsHashMap()
         );
 
         newName += "_String";
@@ -209,8 +217,8 @@ public class   DocumentsTest extends ChinoBaseTest {
                 doc.getContentAsHashMap()
         );
         assertEquals( "read document and updated version do not match",
-                check.getContentAsHashMap(),
-                content
+                content,
+                check.getContentAsHashMap()
         );
 
         test.delete(doc.getDocumentId(), true);
@@ -231,8 +239,8 @@ public class   DocumentsTest extends ChinoBaseTest {
                 doc.getContentAsHashMap()
         );
         assertEquals( "read document and updated version do not match",
-                check.getContentAsHashMap(),
-                content
+                content,
+                check.getContentAsHashMap()
         );
 
         newName += "_String";
@@ -268,24 +276,24 @@ public class   DocumentsTest extends ChinoBaseTest {
         HashMap<String, String> content1 = new HashMap<>();
         content1.put("testMethod", "test_activation_updated");
         test.update(true, id1, content1);      // method 1: (String, HashMap)
-        Document control1 = test.read(id1);
+        Document read1 = test.read(id1);
 
         String content2 = "{" +
                     "\"testMethod\": \"test_activation_updated\"" +
                 "}";
         test.update(true, id2, content2);      // method 2: (String, String)
-        Document control2 = test.read(id2);
+        Document read2 = test.read(id2);
 
         // Verify update
-        assertTrue("Failed to activate Document 1", control1.getIsActive());
+        assertTrue("Failed to activate Document 1", read1.getIsActive());
         assertNotEquals("Failed to update Document 1 after activation",
                 doc1.getContentAsHashMap().get("testMethod"),
-                control1.getContentAsHashMap().get("testMethod")
+                read1.getContentAsHashMap().get("testMethod")
         );
-        assertTrue("Failed to activate Document 2", control2.getIsActive());
+        assertTrue("Failed to activate Document 2", read2.getIsActive());
         assertNotEquals("Failed to update Document 2 after activation",
                 doc2.getContentAsHashMap().get("testMethod"),
-                control2.getContentAsHashMap().get("testMethod")
+                read2.getContentAsHashMap().get("testMethod")
         );
         Exception[] errors = new Exception[2];
         try {

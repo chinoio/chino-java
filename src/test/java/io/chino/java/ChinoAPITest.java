@@ -150,6 +150,7 @@ public class ChinoAPITest {
 
         apiClient.setClientName(name);
         assertTrue("getUserAgent() not working", apiClient.getUserAgent().contains(name));
+
         assertEquals("getClientName() not working", name, apiClient.getClientName());
 
         apiClient.setClientName(null);

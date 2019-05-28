@@ -43,7 +43,7 @@ public class UserSchemasTest extends ChinoBaseTest {
 
         /* READ */
         UserSchema r = test.read(c.getUserSchemaId());
-        assertEquals("userSchemas.read returned an unexpected object: " + r.toString(), c, r);
+        assertEquals("userSchemas.read() returned an unexpected object: " + r.toString(), c, r);
 
         /* UPDATE */
         String newDesc = "Updated description for UserSchema"  + " [" + TestConstants.JAVA + "]";

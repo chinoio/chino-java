@@ -82,7 +82,7 @@ public class BlobsTest extends ChinoBaseTest {
         String filename;
 
         // check default chunk size
-        assertEquals("Wrong value for default chunk size", Blobs.getDefaultChunkSize(), 1024*1024);
+        assertEquals("Wrong value for default chunk size", 1024*1024, Blobs.getDefaultChunkSize());
 
         // with InputStream
         filename = blobFileName.replace(".jpg", "_big.jpg");

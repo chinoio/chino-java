@@ -32,36 +32,33 @@ public class ApplicationsTest extends ChinoBaseTest {
     @Test
     public void testCRUD_List0args() throws IOException, ChinoApiException {
         // create
-        Application app = test.create(TestConstants.APP_NAME + " - authcode", "password", "");
-        assertNotNull("Create - 1st app null", app);
-        localApps.add(app);
+        Application local = test.create(TestConstants.APP_NAME + " - authcode", "password", "");
+        assertNotNull("Create - 1st app null", local);
+        localApps.add(local);
 
-        app = test.create(TestConstants.APP_NAME + " - password, public", "password", "", ClientType.PUBLIC);
-        assertNotNull("Create - 2nd app null", app);
-        localApps.add(app);
+        local = test.create(TestConstants.APP_NAME + " - password, public", "password", "", ClientType.PUBLIC);
+        assertNotNull("Create - 2nd app null", local);
+        localApps.add(local);
 
-        app = test.create(TestConstants.APP_NAME + " - password, confidential", "password", "", ClientType.CONFIDENTIAL);
-        assertNotNull( "Create - 3rd app null", app);
-        localApps.add(app);
+        local = test.create(TestConstants.APP_NAME + " - password, confidential", "password", "", ClientType.CONFIDENTIAL);
+        assertNotNull( "Create - 3rd app null", local);
+        localApps.add(local);
 
         // list (0 args)
         LinkedList<Application> fetchedApps = new LinkedList<>(test.list().getApplications());
         assertEquals(localApps.size(), fetchedApps.size());
 
         // update
-        String appId = app.getAppId();
-        Application updatedApp = test.update(app.getAppId(), TestConstants.APP_NAME + " - updated", "password", "");
+        String appId = local.getAppId();
+        Application updatedApp = test.update(local.getAppId(), TestConstants.APP_NAME + " - updated", "password", "");
         assertNotNull(updatedApp);
-        assertEquals(updatedApp.getAppId(), appId);
-        assertNotEquals(updatedApp.getAppName(), app.getAppName());
+        assertEquals(appId, updatedApp.getAppId());
+        assertNotEquals(local.getAppName(), updatedApp.getAppName());
 
         // read
         Application readApp = test.read(appId);
-        assertEquals(readApp.getAppId(), appId);
-//        assertEquals(readApp.getAppName(), updatedApp.getAppName());
-//        assertEquals(readApp.getGrantType(), updatedApp.getGrantType());
-//        assertEquals(readApp.getRedirectUrl(), updatedApp.getRedirectUrl());
-        assertEquals(readApp, updatedApp);
+        assertEquals(appId, readApp.getAppId());
+        assertEquals(updatedApp, readApp);
 
         // delete
         if (test.delete(readApp.getAppId(), true).equals("success")) {
@@ -88,7 +85,7 @@ public class ApplicationsTest extends ChinoBaseTest {
         LinkedList<Application> fetchedApps = new LinkedList<>(test.list(0,limit).getApplications());
 
         assertNotNull(fetchedApps);
-        assertEquals(fetchedApps.size(), limit);
+        assertEquals(limit, fetchedApps.size());
 
         success("Applications list(int, int)");
     }
