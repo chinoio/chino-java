@@ -26,7 +26,7 @@ JavaVersion latestSupportedLTS = JavaVersion.VERSION_11
 JavaVersion minimumSupportedVersion = JavaVersion.VERSION_1_8
 if(JavaVersion.current() != latestSupportedLTS) {
     System.err.println(
-            String.format("(chino-java) WARNING: Java %s detected, but the current supported LTS version is Java %s." +
+            String.format("(chino-java) WARNING: Java %s detected, but the current supported LTS version is Java %s. " +
                     "Please consider upgrading to get all the latest security updates.",
                     JavaVersion.current(),
                     latestSupportedLTS
