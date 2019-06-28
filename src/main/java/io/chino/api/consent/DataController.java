@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.Objects;
 
 /**
@@ -64,7 +65,7 @@ public class DataController {
     /**
      * Create and initializes a new {@link DataController}.
      * Check
-     * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
+     * <a href="https://console.test.chino.io/docs/v1/#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the "data_controller" object
      * in a Consent.
      * @param company
