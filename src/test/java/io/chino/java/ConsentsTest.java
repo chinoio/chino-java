@@ -11,6 +11,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -30,8 +31,8 @@ public class ConsentsTest extends ChinoBaseTest {
             userId2 = "rossimario@mail.ml";
 
     /**
-    * User Id value for testDeleted* methods.
-    */
+     * User Id value for testDeleted* methods.
+     */
     private String deletedUserId = "userIdDelete@mail.ml";
 
     /**
@@ -327,9 +328,9 @@ public class ConsentsTest extends ChinoBaseTest {
             }
         }
         assertNotNull(
-            "Could not find a withdrawn Consent in history"
-                    + String.format("\n(consent_id: %s", history.getConsentId()),
-            consentOldInHistory
+                "Could not find a withdrawn Consent in history"
+                        + String.format("\n(consent_id: %s)", history.getConsentId()),
+                consentOldInHistory
         );
         assertEquals(consentOld, consentOldInHistory);
 
@@ -353,8 +354,8 @@ public class ConsentsTest extends ChinoBaseTest {
 
     /**
      * Test of the Exception that should be thrown by
- {@link ConsentHistory#getActiveConsentOnDate(java.util.Date) getActiveConsentOnDate}
- in class {@link ConsentHistory}.
+     * {@link ConsentHistory#getActiveConsentOnDate(java.util.Date) getActiveConsentOnDate} in class
+     * {@link ConsentHistory}.
      */
     @Test(expected = IllegalArgumentException.class)
     public void testHistory_getActiveConsentOnDate_Exception() throws IOException, ChinoApiException {
@@ -373,7 +374,7 @@ public class ConsentsTest extends ChinoBaseTest {
     /**
      * Test of withdraw method, of class Consents.
      * Also, test of {@link ConsentHistory#getActiveConsentOnDate(java.util.Date) getActiveConsentOnDate},
- of class {@link ConsentHistory}.
+     * of class {@link ConsentHistory}.
      */
     @Test
     public void testWithdraw() throws Exception {
@@ -392,7 +393,11 @@ public class ConsentsTest extends ChinoBaseTest {
         ConsentHistory h = test.history(c.getConsentId());
         assertFalse(h.isEmpty());
         assertNull(h.getActiveConsent());
-        assertNull(h.getActiveConsentOnDate(new Date()));
+        Date now = new Date();
+        assertNull("Found a consent after withdrawn date " +
+                        "(Current date is " + new SimpleDateFormat("dd/MM/yyyy HH.mm.ss").format(now) + ")",
+                h.getActiveConsentOnDate(now)
+        );
     }
 
     /**

@@ -22,7 +22,7 @@ public class ConsentHistory extends ConsentList {
     }
     
     /**
-     * Get the {@link Consent#consentId consent_id} of the Consents in this
+     * Get the {@link Consent#getConsentId() consent_id} of the Consents in this
      * history.
      * @return a {@link String} containing the consent_id, or {@code null}
      * if the history is empty.
@@ -71,7 +71,7 @@ public class ConsentHistory extends ConsentList {
         if (previousConsent == null)
             return null;
         
-        if (previousConsent.getWithdrawnDate() != null && !previousConsent.getWithdrawnDate().after(date))
+        if (previousConsent.getWithdrawnDate() != null && previousConsent.getWithdrawnDate().before(date))
             // the previous consent must still be active on the date passed as a parameter
             return null;
         
