@@ -1,6 +1,7 @@
 package io.chino.java.testutils;
 
 import io.chino.api.common.ChinoApiException;
+import io.chino.java.ChinoAPITest;
 import io.chino.java.ChinoBaseAPI;
 import okhttp3.OkHttpClient;
 import org.junit.After;
@@ -26,7 +27,44 @@ public class ChinoBaseTest {
     private static ChinoBaseAPI test = null;
 
     private static boolean continueTests = true;
+    /**
+     * This flag is set to false after the first run,
+     * it is used to print out the test heading with the Java version
+     * in such a way that it is only displayed once.
+     */
+    private static boolean firstRun = true;
+    /**
+     * This flag can be set to true by subclasses
+     * that handle the deletion of test objects.
+     */
+    private static boolean skipDelete = false;
     private static String errorMsg = "init() method not called";
+
+    /**
+     * The name of the current test class, always a subclass of {@link ChinoBaseTest}.
+     * The value is set inside {@link #init(ChinoBaseAPI)}.
+     */
+    private static String className = null;
+
+    /**
+     * Set the current class name in {@link ChinoBaseTest}.
+     * The value will be reset to {@code null} by method {@link #afterClass()}
+     *
+     * @param testClass a subclass of {@link ChinoBaseTest}
+     */
+    protected static void runClass(Class<? extends ChinoBaseTest> testClass) {
+        className = testClass.getSimpleName();
+    }
+
+    /**
+     * Use this method to run the tests in {@link ChinoAPITest}.
+     */
+    public static void runChinoApiTest() throws IOException, ChinoApiException {
+        className = ChinoAPITest.class.getSimpleName();
+        ChinoBaseTest.beforeClass();
+        // override username and password used by this test
+        TestConstants.init(TestConstants.USERNAME, TestConstants.PASSWORD);
+    }
 
 
     /**
@@ -35,7 +73,9 @@ public class ChinoBaseTest {
      * @param testedAPIClient the {@link ChinoBaseAPI} that will be used to perform the tests.
      * @return the API client that has been set for this instance
      */
-    public static <APIClient extends ChinoBaseAPI> APIClient init(APIClient testedAPIClient) {
+    public static <APIClient extends ChinoBaseAPI, TestClass extends Class<? extends ChinoBaseTest>>
+        APIClient init(APIClient testedAPIClient)
+    {
 
         errorMsg = "no errors";
         test = testedAPIClient;
@@ -64,11 +104,24 @@ public class ChinoBaseTest {
             TestConstants.HOST = host;
         }
         System.out.println();
-        System.out.println("--- Test started ----------------------" + "\n" +
-                           " ~ Java version: " + TestConstants.JAVA + "\n" +
-                           " ~ Chino.io host: " + TestConstants.HOST + "\n" +
-                           " ~ SDK version: " + TestConstants.SDK_VERSION + "\n" +
-                           "---------------------------------------");
+        if (firstRun) {
+            String automatedTestStatus = TestConstants.FORCE_DELETE_ALL_ON_TESTS
+                    ? "ALLOWED - the account will be cleaned up."
+                    : "NOT ALLOWED - In order to run the test, set automated_test=allow in the environment.";
+            System.out.println(
+                    hr("CHINO.IO JAVA SDK TEST") + "\n" +
+                    " ~ Java version       : " + TestConstants.JAVA + "\n" +
+                    " ~ Chino.io host      : " + TestConstants.HOST + "\n" +
+                    " ~ SDK version        : " + TestConstants.SDK_VERSION + "\n" +
+                    " ~ Delete all objects : " + automatedTestStatus + "\n" +
+                    hr());
+            firstRun = false;
+        } else {
+            System.out.flush();
+            System.out.println(hr(className));
+            System.out.println();
+        }
+
         System.out.flush();
     }
 
@@ -79,7 +132,7 @@ public class ChinoBaseTest {
 
         if (!continueTests) {
             System.err.println(errorMsg);
-            throw new RuntimeException(errorMsg);
+            System.exit(1);
         }
     }
 
@@ -94,19 +147,33 @@ public class ChinoBaseTest {
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
-        System.out.println("Force-deleting objects is enabled. Java version will not be considered.");
-        new DeleteAll().deleteAll(test);
+        System.out.println();
+        System.out.print("Cleaning up test account... ");
+        // reset static flags
         errorMsg =  "init() method not called";
         continueTests = true;
-        test = null;
+        className = null;
+        // delete test objects
+        try {
+            if (! skipDelete)
+                new DeleteAll().deleteAll(test);
+            else
+                skipDelete = false;
+        } finally {
+            test = null;
+        }
         System.gc();
+        System.out.println("Done.");
+        System.out.println(hr());
+        System.out.println();
     }
 
 
     /**
      * Handles test interruption when there are instances of a Chino.io resource
      * on the customer's Chino.io API account. If {@link TestConstants#FORCE_DELETE_ALL_ON_TESTS} is
-     * set to {@code true}, the test won't be interrupted and all the objects on the Chino.io account will be deleted.<br>
+     * set to {@code true}, the test won't be interrupted and all the objects on the Chino.io account
+     * will be deleted.<br>
      * <br>
      * Example:<br><br>
      * <code>
@@ -119,17 +186,20 @@ public class ChinoBaseTest {
      * @param resourceAPIClient the API client that will be eventually used to delete all the objects of that kind if
      * {@link TestConstants#FORCE_DELETE_ALL_ON_TESTS} is set to {@code true}.
      */
-    protected static void checkResourceIsEmpty(boolean resourceIsEmpty, ChinoBaseAPI resourceAPIClient) throws IOException, ChinoApiException {
+    protected static void checkResourceIsEmpty(boolean resourceIsEmpty, ChinoBaseAPI resourceAPIClient)
+            throws IOException, ChinoApiException
+    {
         String resourceName = resourceAPIClient.getClass().getSimpleName();
 
         Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
 
         if (! resourceIsEmpty) {
             if (! TestConstants.FORCE_DELETE_ALL_ON_TESTS) {
-                System.err.println("WARNING: this account has " + resourceName + " stored. If you run the tests they will be deleted.");
-            System.err.println("To hide this message, set 'chino.test.automated=allow' in src/test/res/test.properties and re-run the tests.");
+                System.err.println("WARNING: this account has " + resourceName + " stored. " +
+                        "If you run the tests they will be deleted.");
+            System.err.println("To hide this message, set 'automated_test' in your environment variables " +
+                    "and re-run the tests.");
             } else {
-                System.out.println("chino.test.automated=allow: every object will be deleted.");
                 new DeleteAll().deleteAll(resourceAPIClient);
                 continueTests = true;
                 System.out.flush();
@@ -140,9 +210,8 @@ public class ChinoBaseTest {
         continueTests = resourceIsEmpty;
 
         if (!continueTests) {
-            errorMsg = resourceName + " were found on your account. " +
-                    "If you don't want to delete all your " + resourceName + ", consider using another account for testing. " +
-                    "Otherwise, set 'automated_test=allow' in your environment and rerun the tests.";
+            errorMsg = "Unable to delete " + resourceName + ". Test session will be" +
+                    " stopped.";
         } else {
             errorMsg = "no errors";
         }
@@ -150,5 +219,44 @@ public class ChinoBaseTest {
 
     protected static void success(String testName) {
         System.out.println(testName + " test OK");
+    }
+
+    /**
+     * Call this method <b>before</b> calling {@link #afterClass() ChinoBaseTest.afterClass()}.<br>
+     * When this method is called, {@link #afterClass()} will behave as if the subclass
+     * already deleted the objects used for the test.
+     */
+    public static void skipDelete() {
+        ChinoBaseTest.skipDelete = true;
+    }
+
+    /**
+     * Used in print statements to generate a separator line, with max length of
+     * {@link TestConstants#OUTPUT_MAX_LENGTH OUTPUT_MAX_LENGTH} and an optional title.
+     *
+     * @param text an optional title for the separator
+     *
+     * @return a String (without '\n')
+     */
+    public static String hr(String text) {
+        String title = "";
+        if (text != null && !text.isEmpty()) {
+            title = String.format(" %s ", text);
+        }
+        StringBuilder separator = new StringBuilder("---" + title);
+        while (separator.length() < TestConstants.OUTPUT_MAX_LENGTH) {
+            separator.append("-");
+        }
+        return separator.toString();
+    }
+
+    /**
+     * Used in print statements to generate a separator line,
+     * with length of {@link TestConstants#OUTPUT_MAX_LENGTH OUTPUT_MAX_LENGTH}.
+     *
+     * @return a String (without '\n')
+     */
+    public static String hr() {
+        return hr(null);
     }
 }

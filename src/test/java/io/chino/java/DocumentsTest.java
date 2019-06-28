@@ -25,7 +25,7 @@ import java.util.List;
 import static io.chino.api.search.FilterOperator.EQUALS;
 import static org.junit.Assert.*;
 
-public class   DocumentsTest extends ChinoBaseTest {
+public class DocumentsTest extends ChinoBaseTest {
 
     private static ChinoAPI chino_admin;
     private static Documents test;
@@ -34,6 +34,7 @@ public class   DocumentsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(DocumentsTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.documents);
@@ -59,15 +60,17 @@ public class   DocumentsTest extends ChinoBaseTest {
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
         new DeleteAll().deleteAll(chino_admin);
+        ChinoBaseTest.skipDelete();  // already deleted all the objects, it would be redundant
+        ChinoBaseTest.afterClass();
     }
 
     @Test
     public void testToString_setContent() throws IOException, ChinoApiException {
         Document doc = newDoc("testToString_setContent");
 
-        System.out.println("-- toString() ---------------");
+        System.out.println(hr("toString()"));
         System.out.println(doc.toString());
-        System.out.println("-- END ----------------------");
+        System.out.println(hr("END"));
 
         clear(doc);
     }

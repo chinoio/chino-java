@@ -122,8 +122,8 @@ public class ChinoAPI {
         }
 
         // fix version number
-        if (normalizedHostUrl.endsWith("/")) {
-            // remove trailing '/' (if any)
+        while (normalizedHostUrl.endsWith("/")) {
+            // remove trailing '/' (if any) - if more than one is there, removes all of them.
             normalizedHostUrl = normalizedHostUrl.replaceFirst("/$", "");
         }
         if (!normalizedHostUrl.endsWith(API_VERSION)) {

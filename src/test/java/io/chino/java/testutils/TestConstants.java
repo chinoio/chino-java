@@ -20,6 +20,7 @@ import java.util.Properties;
 public class TestConstants {
 
     public static final String SDK_VERSION = BuildConfig.VERSION;
+    public static final int OUTPUT_MAX_LENGTH = 40;
     /**
      * The base URL of the Chino.io test API
      */

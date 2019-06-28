@@ -33,6 +33,7 @@ public class UsersTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ChinoBaseTest.runClass(UsersTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.users);
