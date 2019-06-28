@@ -65,6 +65,19 @@ public class TestConstants {
      * Read from property chino.test.force_all
      */
     public static boolean FORCE_ALL_TESTS;
+    /**
+     * If true, certain tests that only must be executed against test API will not be run.
+     * set this to true only if (in this order):
+     * <ol>
+     *     <li> the HOST contains '//api.chino.io', OR</li>
+     *     <li> the property chino.test.host.is_prod=true, OR</li>
+     *     <li> the environment variable chino.test.host.is_prod=true</li>
+     * </ul>
+     *
+     * Read from property chino.test.host.is_prod
+     */
+    public static boolean PRODUCTION_ENV = false;
+
     static Properties testProperties = null;
 
     /**
@@ -138,6 +151,16 @@ public class TestConstants {
                 testProperties.getProperty(
                         "chino.test.force_all",
                         System.getenv("chino.test.force_all")
+                )).toLowerCase().equals("true");
+
+        // set this to true only if (in this order):
+        //   1) the HOST contains '//api.chino.io', OR
+        //   2) the property chino.test.host.is_prod=true, OR
+        //   2) the environment variable chino.test.host.is_prod=true
+        PRODUCTION_ENV = HOST.contains("//api.chino.io") || String.valueOf(
+                testProperties.getProperty(
+                        "chino.test.host.is_prod",
+                        System.getenv("chino.test.host.is_prod")
                 )).toLowerCase().equals("true");
 
         JAVA = testProperties.getProperty("chino.test.java.version", System.getProperty("java.version"));

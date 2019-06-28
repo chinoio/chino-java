@@ -105,13 +105,14 @@ public class ChinoBaseTest {
         }
         System.out.println();
         if (firstRun) {
+            String isProduction = TestConstants.PRODUCTION_ENV ? " [PRODUCTION ENVIRONMENT]" : "";
             String automatedTestStatus = TestConstants.FORCE_DELETE_ALL_ON_TESTS
                     ? "ALLOWED - the account will be cleaned up."
                     : "NOT ALLOWED - In order to run the test, set automated_test=allow in the environment.";
             System.out.println(
                     hr("CHINO.IO JAVA SDK TEST") + "\n" +
                     " ~ Java version       : " + TestConstants.JAVA + "\n" +
-                    " ~ Chino.io host      : " + TestConstants.HOST + "\n" +
+                    " ~ Chino.io host      : " + TestConstants.HOST + isProduction + "\n" +
                     " ~ SDK version        : " + TestConstants.SDK_VERSION + "\n" +
                     " ~ Delete all objects : " + automatedTestStatus + "\n" +
                     hr());
@@ -147,18 +148,21 @@ public class ChinoBaseTest {
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
-        System.out.println();
-        System.out.print("Cleaning up test account... ");
         // reset static flags
         errorMsg =  "init() method not called";
         continueTests = true;
         className = null;
         // delete test objects
         try {
-            if (! skipDelete)
+            if (! skipDelete) {
+                System.out.println();
+                System.out.print("Cleaning up test account... ");
                 new DeleteAll().deleteAll(test);
-            else
+            } else {
+                // skip delete operation, but reset static field for the next class.
+                System.out.print("Terminating test... ");
                 skipDelete = false;
+            }
         } finally {
             test = null;
         }
