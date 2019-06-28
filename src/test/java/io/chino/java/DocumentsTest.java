@@ -150,9 +150,8 @@ public class   DocumentsTest extends ChinoBaseTest {
                 docMapped.testMethod
         );
 
-        clear(local);
+        clear(local);  // same ID of read_HashMap
         clear(read_String);
-        clear(read_HashMap);
     }
 
     @Test
