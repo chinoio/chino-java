@@ -8,7 +8,7 @@
 Official Java wrapper for [**CHINO.io**](https://chino.io) API
  
 Full documentation:
- - [API docs](http://docs.chino.io)
+ - [API docs](http://console.test.chino.io/docs/v1)
  - [javadoc](https://jitpack.io/com/github/chinoio/chino-java/3.3.1/javadoc/io/chino/java/package-summary.html)
 
 For issues or questions, please contact [tech-support@chino.io](mailto:tech-support@chino.io).
@@ -255,7 +255,7 @@ The Java SDK implements all the features that are offered by **Chino.io API**.
 The package `io.chino.java` contains everything you need to work with this SDK;
 we provide an overview of how it can be used.
 
-*For more detail about our API, refer to the [full Chino.io docs](https://docs.chino.io/)*
+*For more detail about our API, refer to the [full Chino.io docs](https://console.test.chino.io/docs/v1)*
  
 ### The ChinoAPI client
 ***Note:*** Check out [ChinoAPITest.java](https://github.com/chinoio/chino-java/blob/develop/src/test/java/io/chino/java/ChinoAPITest.java)
@@ -271,7 +271,7 @@ Use the test "host_url" `https://api.test.chino.io` during development - test sa
 However, with this client most of the operations won't be available: you need to authenticate first. 
 There are two authentication options:
 
-* Authenticate with **customer credentials** (found on Chino.io console). Only for admin access - [Learn more](https://docs.chino.io/#header-application-developers)
+* Authenticate with **customer credentials** (found on Chino.io console). Only for admin access - [Learn more](https://console.test.chino.io/docs/v1#header-application-developers)
     ```Java
     ChinoAPI chino = new ChinoAPI(<host_url>, <customer_id>, <customer_key>);
     ```
@@ -288,7 +288,7 @@ chino.setBearerToken(<bearer_token>);
 ```
     
 ### Users `io.chino.java.Users` and UserSchemas `io.chino.java.UserSchemas`
-API clients for managing UserSchemas and Users. [*See full docs*](https://docs.chino.io/#applications)
+API clients for managing UserSchemas and Users. [*See full docs*](https://console.test.chino.io/docs/v1#applications)
 
 A **User** on Chino.io represents a person and is bound to a **username & password** pair, which can be used to log in to
 [Applications](#applications-iochinojavaapplications) and get access tokens. In the User object can be stored
@@ -311,7 +311,7 @@ Use the following methods:
 
 
 ### Auth `io.chino.java.Auth`
-API client for User authentication. [*See full docs*](https://docs.chino.io/#user-authentication)
+API client for User authentication. [*See full docs*](https://console.test.chino.io/docs/v1#user-authentication)
 
 Auth works together with [Applications](#applications-iochinojavaapplications) to provide
 OAuth2 authentication to Users. [Read more about Chino.io and OAuth2](https://chino.io/tutorials/tutorial-auth)
@@ -332,7 +332,7 @@ The `LoggedUser` object contains an **access_token** (a.k.a. bearer token) and a
 stored in the `chino` client after the method returns and used to authenticate the API calls.
 
 ### Applications `io.chino.java.Applications`
-API client for User authentication and management of OAuth2 clients. [*See full docs*](https://docs.chino.io/#applications)
+API client for User authentication and management of OAuth2 clients. [*See full docs*](https://console.test.chino.io/docs/v1#applications)
 
 Applications on Chino.io implement the "client credentials grant" of OAuth2. [Read more about Chino.io and OAuth2](https://chino.io/tutorials/tutorial-auth)
 
@@ -353,13 +353,13 @@ Applications can be of two types:
 
 
 ### Groups `io.chino.java.Groups`
-API client for creating and managing Groups. [*See full docs*](https://docs.chino.io/#groups)
+API client for creating and managing Groups. [*See full docs*](https://console.test.chino.io/docs/v1#groups)
 
 Groups can be used to collect Users regardless of their UserSchema, can have attributes and can be granted 
 [Permissions](#permissions-iochinojavapermissions) over other resources.
 
 ### Permissions `io.chino.java.Permissions`
-API client to manage access Permissions of Users to the resources. [*See full docs*](https://docs.chino.io/#permissions)
+API client to manage access Permissions of Users to the resources. [*See full docs*](https://console.test.chino.io/docs/v1#permissions)
 
 **- new Permissions interface**:
 
@@ -445,20 +445,20 @@ public class RevokeAuthorization {
 ```
 
 ### Repositories `io.chino.java.Repositories`
-API client for management of Repositories. [*See full docs*](https://docs.chino.io/#repositories)
+API client for management of Repositories. [*See full docs*](https://console.test.chino.io/docs/v1#repositories)
 
 Repositories act as containers for [Schemas](#schemas-iochinojavaschemas).
  
 
 ### Schemas `io.chino.java.Schemas`
-API client for management of Schemas. [*See full docs*](https://docs.chino.io/#schemas)
+API client for management of Schemas. [*See full docs*](https://console.test.chino.io/docs/v1#schemas)
 
 Schemas define the structure of [Documents](#documents-iochinojavadocuments),
 i.e. the name and type of their attributes and which ones are indexed for
 [Search](#search-iochinojavasearch).
 
 ### Documents `io.chino.java.Documents`
-API client for management of Documents. [*See full docs*](https://docs.chino.io/#documents)
+API client for management of Documents. [*See full docs*](https://console.test.chino.io/docs/v1#documents)
 
 Documents are used on Chino.io to store sensitive information. Learn more about Documents in the [tutorial](https://chino.io/tutorials/tutorial-docs).
 
@@ -472,7 +472,7 @@ Use the following methods:
 - `update(<document_id>, <content>, <consistent>)`
 
 ### BLOBs `io.chino.java.Blobs`
-API client for binary file (BLOB) upload. [*See full docs*](https://docs.chino.io/#blobs)
+API client for binary file (BLOB) upload. [*See full docs*](https://console.test.chino.io/docs/v1#blobs)
 
 **- deprecated methods**:
 
@@ -487,7 +487,7 @@ The following functions are deprecated and will be removed soon:
 - `delete(<blob_id>, <force>)`
 
 ### Search `io.chino.java.Search`
-API client to perform search operations on Chino.io resources. [*See full docs*](https://docs.chino.io/#search-api)
+API client to perform search operations on Chino.io resources. [*See full docs*](https://console.test.chino.io/docs/v1#search-api)
 
 **- new Search interface**:
 
@@ -648,7 +648,7 @@ Documents docs = chino.search.where("test_integer").gt(123).and("test_date").eq(
 
 ### Collections `io.chino.java.Collections`
 API client to manage Collections of [Documents](#documents-iochinojavadocuments).
-[*See full docs*](https://docs.chino.io/#blobs)
+[*See full docs*](https://console.test.chino.io/docs/v1#blobs)
 
 ## Testing
 With the SDK are included some JUnit tests, that are used for continuous integration.
@@ -665,7 +665,8 @@ If you know what you are doing, you can launch tests with Gradle:
     chino.test.customer_key=<your-chino-io-customer-key>
     chino.test.automated=allow
     ```
-    Write your id/key and set `chino.test.automated=allow` to enable testing.
+    Write your id/key and set `chino.test.automated=allow` to enable testing. You can also set `automated_test=allow`
+    in your environment variables to enable testing.
     **WARNING: this allows the test suite to delete everything on the account you use to test.**
 
 1. `cd` into the repository's root.

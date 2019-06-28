@@ -38,6 +38,7 @@ public class PermissionsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(PermissionsTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.permissions);
@@ -219,8 +220,8 @@ public class PermissionsTest extends ChinoBaseTest {
         List<Permission> perms = test.readPermissions(u).getPermissions();
         for (Permission p : perms) {
             if (ResourceType.fromString(p.getResourceType()).equals(ResourceType.REPOSITORY)) {
-                assertEquals(p.getManagePermissions(), grantPerms.getManagePermissions());
-                assertEquals(p.getAuthorizePermissions(), grantPerms.getAuthorizePermissions());
+                assertEquals(grantPerms.getManagePermissions(), p.getManagePermissions());
+                assertEquals(grantPerms.getAuthorizePermissions(), p.getAuthorizePermissions());
                 break;
             }
         }
@@ -238,8 +239,8 @@ public class PermissionsTest extends ChinoBaseTest {
         perms = test.readPermissions(u).getPermissions();
         for (Permission p : perms) {
             if (ResourceType.fromString(p.getResourceType()).equals(ResourceType.REPOSITORY)) {
-                assertNotEquals(p.getManagePermissions(), grantPerms.getManagePermissions());
-                assertNotEquals(p.getAuthorizePermissions(), grantPerms.getAuthorizePermissions());
+                assertNotEquals(grantPerms.getManagePermissions(), p.getManagePermissions());
+                assertNotEquals(grantPerms.getAuthorizePermissions(), p.getAuthorizePermissions());
                 break;
             }
         }

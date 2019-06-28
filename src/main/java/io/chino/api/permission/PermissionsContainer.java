@@ -19,7 +19,7 @@ import java.util.List;
  * </pre>
  *
  * For more information about the Permission format, visit the
- * <a href="https://docs.chino.io/#permissions">Permissions</a> page on the Chino.io API docs.
+ * <a href="https://console.test.chino.io/docs/v1#permissions">Permissions</a> page on the Chino.io API docs.
  *
  * @see Permissions.Type
  */

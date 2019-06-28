@@ -26,6 +26,7 @@ public class SchemasTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(SchemasTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.schemas);
@@ -54,7 +55,7 @@ public class SchemasTest extends ChinoBaseTest {
 
         /* READ */
         Schema r = test.read(c_class.getSchemaId());
-        assertEquals("schemas.read returned an unexpected object: " + r.toString(), c_class, r);
+        assertEquals("schemas.read() returned an unexpected object: " + r.toString(), c_class, r);
 
         /* UPDATE */
         String newDesc = "Updated Schema";

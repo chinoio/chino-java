@@ -3,9 +3,7 @@ package io.chino.java;
 import io.chino.api.common.ChinoApiException;
 import io.chino.api.repository.Repository;
 import io.chino.java.testutils.ChinoBaseTest;
-import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,6 +19,7 @@ public class RepositoriesTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(RepositoriesTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.repositories);
@@ -125,10 +124,5 @@ public class RepositoriesTest extends ChinoBaseTest {
         );
 
         test.delete(id, true);
-    }
-
-    @AfterClass
-    public static void afterClass() throws IOException, ChinoApiException {
-        new DeleteAll().deleteAll(test);
     }
 }

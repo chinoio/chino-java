@@ -13,7 +13,6 @@ import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,6 +35,7 @@ public class SearchTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(SearchTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         ChinoBaseTest.init(chino_admin.search);
@@ -102,11 +102,6 @@ public class SearchTest extends ChinoBaseTest {
         @JsonProperty("internal_id")
         @indexed
         public int internal_id;
-    }
-
-    @AfterClass
-    public static void afterClass() throws IOException, ChinoApiException {
-        ChinoBaseTest.afterClass();
     }
 
     @Test
@@ -199,7 +194,7 @@ public class SearchTest extends ChinoBaseTest {
                 .buildSearch();
 
         GetUsersResponse response_limit = searchUsers.execute( 0, 1);
-        assertEquals(response_limit.getCount().intValue(), 1);
+        assertEquals(1, response_limit.getCount().intValue());
         int total = response_limit.getTotalCount();
 
         int half = total / 2 + 1;
@@ -226,7 +221,7 @@ public class SearchTest extends ChinoBaseTest {
                 .buildSearch();
 
         GetDocumentsResponse response_limit = searchDocs.execute( 0, 1);
-        assertEquals(response_limit.getCount().intValue(), 1);
+        assertEquals(1, response_limit.getCount().intValue());
         int total = response_limit.getTotalCount();
 
         int half = total / 2 + 1;

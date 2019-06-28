@@ -122,7 +122,7 @@ public class Consents extends ChinoBaseAPI {
      * maps the API response to a new {@link Consent} object.<br>
      * <br>
      * Check
-     * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
+     * <a href="https://console.test.chino.io/docs/v1/#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the Consent Object.
      *
      * @see Consent#Consent(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, io.chino.api.consent.DataController, java.util.List) Consent() full constructor
@@ -163,7 +163,7 @@ public class Consents extends ChinoBaseAPI {
      * maps the API response to a new {@link Consent} object.<br>
      * <br>
      * Check
-     * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
+     * <a href="https://console.test.chino.io/docs/v1/#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the Consent Object.
      *
      * @see Consent#Consent(io.chino.api.consent.Consent, io.chino.api.consent.DataController, java.util.List) Consent constructor by data_controller/purposes
@@ -193,7 +193,7 @@ public class Consents extends ChinoBaseAPI {
      * maps the API response to a new {@link Consent} object.<br>
      * <br>
      * Check
-     * <a href="https://docs.chino.io//#consent-management">Chino.io API documentation</a>
+     * <a href="https://console.test.chino.io/docs/v1/#consent-management">Chino.io API documentation</a>
      * to learn more about the parameters of the Consent Object.
      *
      * @see Consent#Consent(io.chino.api.consent.Consent, java.lang.String)  Consent  constructor by user_id
