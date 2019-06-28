@@ -112,39 +112,43 @@ public class ChinoAPI {
      * @return the polished URL with {@link #API_VERSION} code and without trailing '/'
      */
     private static String normalizeApiUrl(String hostUrl) {
+        String normalizedHostUrl = hostUrl;
+
         // force https
-        if (hostUrl.startsWith("http://")) {
-            if (hostUrl.contains(".chino.io")) {
-                hostUrl = hostUrl.replace("http://", "https://");
-            } else {
-                System.err.println(
-                        ">> WARNING:\n" +
-                        ">> You are using Chino API over HTTP.\n" +
-                        ">> The API will work as usual, but HTTPS is strongly recommended."
-                );
-                System.err.flush();
+        if (normalizedHostUrl.startsWith("http://")) {
+            if (normalizedHostUrl.contains(".chino.io")) {
+                normalizedHostUrl = normalizedHostUrl.replace("http://", "https://");
             }
         }
 
-        // check version is specified
-        if (hostUrl.contains(API_VERSION)) {
-            while (hostUrl.endsWith("/")) {
-                // remove trailing '/' (if any)
-                hostUrl = hostUrl.replaceFirst("/$", "");
-            }
-        } else {
-            String errString = "\"" + hostUrl + "\": Chino API version not specified. Allowed values: %s";
-            StringBuilder versions = new StringBuilder("[");
-            for (String v : getAvailableVersions()) {
-                versions.append("\"").append(v).append("\"");
-            }
-            versions.append("]");
-            throw new IllegalArgumentException(
-                    String.format(errString, versions.toString())
-            );
+        // fix version number
+        while (normalizedHostUrl.endsWith("/")) {
+            // remove trailing '/' (if any) - if more than one is there, removes all of them.
+            normalizedHostUrl = normalizedHostUrl.replaceFirst("/$", "");
+        }
+        if (!normalizedHostUrl.endsWith(API_VERSION)) {
+            normalizedHostUrl += "/v1";
         }
 
-        return hostUrl;
+//        // check version is specified
+//        if (hostUrl.contains(API_VERSION)) {
+//            while (hostUrl.endsWith("/")) {
+//                // remove trailing '/' (if any)
+//                hostUrl = hostUrl.replaceFirst("/$", "");
+//            }
+//        } else {
+//
+//            String errString = "\"" + hostUrl + "\": Chino API version not specified. Allowed values: %s";
+//            StringBuilder versions = new StringBuilder("[");
+//            for (String v : getAvailableVersions()) {
+//                versions.append("\"").append(v).append("\"");
+//            }
+//            versions.append("]");
+//            throw new IllegalArgumentException(
+//                    String.format(errString, versions.toString())
+//            );
+//        }
+        return normalizedHostUrl;
     }
 
     /**

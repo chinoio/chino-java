@@ -96,7 +96,7 @@ public class Applications extends ChinoBaseAPI {
      * i.e. the authentication method.
      * @param redirectUrl (used only with the "authorization-code" method)
      * @param clientType either {@link ClientType#CONFIDENTIAL} or {@link ClientType#PUBLIC}.
-     * See <a href="https://docs.chino.io/#header-client-types">Chino.io API Docs</a>
+     * See <a href="https://console.test.chino.io/docs/v1#header-client-types">Chino.io API Docs</a>
      * to learn more about client types.
      * @return an {@link Application} object
      * @throws IOException data processing error

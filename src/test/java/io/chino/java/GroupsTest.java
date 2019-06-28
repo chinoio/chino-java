@@ -27,6 +27,7 @@ public class GroupsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(GroupsTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.groups);

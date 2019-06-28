@@ -9,7 +9,6 @@ import io.chino.api.document.Document;
 import io.chino.api.repository.Repository;
 import io.chino.api.schema.SchemaStructure;
 import io.chino.java.testutils.ChinoBaseTest;
-import io.chino.java.testutils.DeleteAll;
 import io.chino.java.testutils.TestConstants;
 import org.junit.*;
 
@@ -42,10 +41,10 @@ public class BlobsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ChinoBaseTest.runClass(BlobsTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.blobs);
-        ChinoBaseTest.beforeClass();
 
         // Create a repository and a Schema for the Blob's Document
         boolean isClean = true;
@@ -67,6 +66,28 @@ public class BlobsTest extends ChinoBaseTest {
         SchemaStructure s = new SchemaStructure(fields);
         SCHEMA_ID = chino_admin.schemas.create(REPO_ID,
                 "This schema is used for Documents that store BLOBs in BlobsTest", s).getSchemaId();
+    }
+
+    @AfterClass
+    public static void tearDownClass() throws Exception {
+        // cleanup leftovers
+        if(blobId != null)
+            try {
+                chino_admin.blobs.delete(blobId);
+                blobId = null;
+            } catch (IOException | ChinoApiException e) {
+                System.err.println("ERROR! Blob not deleted: " + blobId);
+            }
+
+        for (String fileName : outputFiles) {
+            File outputFile = new File(fileName);
+            if (outputFile.exists())
+                if (outputFile.delete()) {
+                    System.out.println("Deleted: " + outputFile.getPath());
+                }
+        }
+
+        ChinoBaseTest.afterClass();
     }
 
     @Before
@@ -124,7 +145,9 @@ public class BlobsTest extends ChinoBaseTest {
         sourceStream.close();
     }
 
-    private void runTestUploadGetDelete(Object source, String filename) throws IOException, ChinoApiException, NoSuchAlgorithmException {
+    private void runTestUploadGetDelete(Object source, String filename)
+            throws IOException, ChinoApiException, NoSuchAlgorithmException
+    {
         /* UPLOAD */
         CommitBlobUploadResponse res_upload;
 
@@ -232,27 +255,5 @@ public class BlobsTest extends ChinoBaseTest {
         File outputFile = new File(outputFilePath);
         if (outputFile.exists())
             outputFile.delete();
-    }
-
-    @AfterClass
-    public static void tearDownClass() throws Exception {
-        // cleanup leftovers
-        if(blobId != null)
-            try {
-                chino_admin.blobs.delete(blobId);
-                blobId = null;
-            } catch (IOException | ChinoApiException e) {
-                System.err.println("Blob not deleted: " + blobId);
-            }
-
-        for (String fileName : outputFiles) {
-            File outputFile = new File(fileName);
-            if (outputFile.exists())
-                if (outputFile.delete()) {
-                    System.out.println("Deleted: " + outputFile.getPath());
-                }
-        }
-
-        new DeleteAll().deleteAll(chino_admin.documents);
     }
 }

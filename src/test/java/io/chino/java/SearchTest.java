@@ -13,7 +13,6 @@ import io.chino.api.user.GetUsersResponse;
 import io.chino.api.user.User;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -36,6 +35,7 @@ public class SearchTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(SearchTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         ChinoBaseTest.init(chino_admin.search);
@@ -102,11 +102,6 @@ public class SearchTest extends ChinoBaseTest {
         @JsonProperty("internal_id")
         @indexed
         public int internal_id;
-    }
-
-    @AfterClass
-    public static void afterClass() throws IOException, ChinoApiException {
-        ChinoBaseTest.afterClass();
     }
 
     @Test

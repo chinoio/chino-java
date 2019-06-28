@@ -37,6 +37,7 @@ public class AuthTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(AuthTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(new ChinoAPI(TestConstants.HOST).auth);
@@ -96,6 +97,8 @@ public class AuthTest extends ChinoBaseTest {
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
         new DeleteAll().deleteAll(chino_admin);
+        ChinoBaseTest.skipDelete();
+        ChinoBaseTest.afterClass();
     }
 
     @Before

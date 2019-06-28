@@ -21,6 +21,7 @@ public class ApplicationsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void setUpClass() throws Exception {
+        ChinoBaseTest.runClass(ApplicationsTest.class);
         ChinoBaseTest.beforeClass();
         ChinoAPI chino_customer = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_customer.applications);

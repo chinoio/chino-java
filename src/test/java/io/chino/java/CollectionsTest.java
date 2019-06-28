@@ -7,7 +7,6 @@ import io.chino.api.document.Document;
 import io.chino.api.schema.SchemaStructure;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -27,6 +26,7 @@ public class CollectionsTest extends ChinoBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException, ChinoApiException {
+        ChinoBaseTest.runClass(CollectionsTest.class);
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.collections);
@@ -190,11 +190,6 @@ public class CollectionsTest extends ChinoBaseTest {
         content.put("title", docTitle);
 
         return chino_admin.documents.create(SCHEMA_ID, content);
-    }
-
-    @AfterClass
-    public static void afterClass() throws IOException, ChinoApiException {
-        ChinoBaseTest.afterClass();
     }
 
 }

@@ -3,18 +3,18 @@ package io.chino.java;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.chino.api.common.ChinoApiConstants;
 import io.chino.api.common.ChinoApiException;
+import io.chino.api.common.Pair;
 import io.chino.api.document.Document;
 import io.chino.api.group.Group;
 import io.chino.api.permission.*;
 import io.chino.api.user.User;
-import io.chino.api.common.Pair;
 
 import java.io.IOException;
 
 /**
  * Manage access Permissions over Chino.io resources.
  * For instructions about how to use the Permissions system, visit the
- * <a href="https://docs.chino.io/#permissions">Permissions</a> page on
+ * <a href="https://console.test.chino.io/docs/v1#permissions">Permissions</a> page on
  * the Chino.io API docs.
  *
  * @see PermissionsRequest

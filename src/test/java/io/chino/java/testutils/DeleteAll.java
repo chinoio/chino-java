@@ -17,7 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class DeleteAll {
-    
+
     /**
      * Delete all objects created during this test suite.
      */
@@ -192,10 +192,11 @@ public class DeleteAll {
                 groups = chino.groups.list().getGroups();
             }
         } else if (apiClient instanceof Auth) {
-            return;
+            // nothing to delete for Auth
         } else {
-            throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() +
-                    ") is not supported.");
+            if (apiClient != null)
+                throw new UnsupportedOperationException("deleteAll(" + apiClient.getClass().getSimpleName() +
+                        ") is not supported.");
         }
     }
 
