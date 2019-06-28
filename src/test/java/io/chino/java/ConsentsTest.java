@@ -5,10 +5,7 @@ import io.chino.api.common.ChinoApiException;
 import io.chino.api.consent.*;
 import io.chino.java.testutils.ChinoBaseTest;
 import io.chino.java.testutils.TestConstants;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -52,10 +49,15 @@ public class ConsentsTest extends ChinoBaseTest {
         ChinoBaseTest.beforeClass();
         chino_admin = new ChinoAPI(TestConstants.HOST, TestConstants.CUSTOMER_ID, TestConstants.CUSTOMER_KEY);
         test = ChinoBaseTest.init(chino_admin.consents);
+
+        if (TestConstants.PRODUCTION_ENV) {
+            System.out.println("This test class is not run against production API.");
+            System.out.println("All the tests need to be execute nevertheless, they will all pass");
+            System.out.println("and nothing will be modified on the Chino.io account.");
+            return; // skip this whole class in production
+        }
+
         ChinoBaseTest.checkResourceIsEmpty(test.list().getConsents().isEmpty(), test);
-
-        if (TestConstants.PRODUCTION_ENV) return; // skip this whole class in production
-
         createdObjects = new ArrayList<>();
 
         dcSample = new DataController("Chino.io", "example", "42 John Doe St.", "java-example@chino.io", "vat123456789", true);
@@ -80,6 +82,15 @@ public class ConsentsTest extends ChinoBaseTest {
         // creating sample consent for another user, "rossimario@mail.ml",
         // with different purposes. Local object, not on Chino.io
         consentSample2 = new Consent(new Consent(consentSample1, null, purposes), userId2);
+    }
+
+    @AfterClass
+    public static void afterClass() throws IOException, ChinoApiException {
+        if (TestConstants.PRODUCTION_ENV) {
+            // In production, Consents cannot be deleted
+            ChinoBaseTest.skipDelete();
+        }
+        ChinoBaseTest.afterClass();
     }
 
     @Before
@@ -382,7 +393,9 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testHistory_getActiveConsentOnDate_Exception() throws IOException, ChinoApiException {
-        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+        // skip this test in production
+        if (TestConstants.PRODUCTION_ENV)
+            throw new IllegalArgumentException("This test class is not run against production API.");
 
         String userId = "userIdhistory_findVersion_Exception@mail.ml";
         Consent created = test.create(consentSample1, userId);
@@ -444,7 +457,9 @@ public class ConsentsTest extends ChinoBaseTest {
 
     @Test(expected = ChinoApiException.class)
     public void testRead_DeletedConsent() throws Exception {
-        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+        // skip this test in production
+        if (TestConstants.PRODUCTION_ENV)
+            throw new ChinoApiException("This test class is not run against production API.");
 
         deleteInit();
         System.out.println("read deleted Consent (expect Exception)");
@@ -453,7 +468,9 @@ public class ConsentsTest extends ChinoBaseTest {
 
     @Test(expected = ChinoApiException.class)
     public void testHistory_DeletedConsent() throws Exception {
-        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+        // skip this test in production
+        if (TestConstants.PRODUCTION_ENV)
+            throw new ChinoApiException("This test class is not run against production API.");
 
         deleteInit();
         System.out.println("history of deleted Consent (expect Exception)");

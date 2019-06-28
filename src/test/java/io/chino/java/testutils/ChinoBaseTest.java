@@ -147,18 +147,21 @@ public class ChinoBaseTest {
 
     @AfterClass
     public static void afterClass() throws IOException, ChinoApiException {
-        System.out.println();
-        System.out.print("Cleaning up test account... ");
         // reset static flags
         errorMsg =  "init() method not called";
         continueTests = true;
         className = null;
         // delete test objects
         try {
-            if (! skipDelete)
+            if (! skipDelete) {
+                System.out.println();
+                System.out.print("Cleaning up test account... ");
                 new DeleteAll().deleteAll(test);
-            else
+            } else {
+                // skip delete operation, but reset static field for the next class.
+                System.out.print("Terminating test... ");
                 skipDelete = false;
+            }
         } finally {
             test = null;
         }
