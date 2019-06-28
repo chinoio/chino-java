@@ -679,10 +679,13 @@ If you know what you are doing, you can launch tests with Gradle:
 
 2. Launch the `test` task with:
         
-        gradle test -i -Pchino.test.customer_id=<your ID> -Pchino.test.customer_key=<your KEY> -Pchino.test.automated=<allow>
+        gradle test -i -Pchino.test.customer_id=<your ID> -Pchino.test.customer_key=<your KEY> -Pchino.test.automated=allow
 
 3. You can also add ` -Pchino.test.host=<path.to.host>` in order to run tests against a custom host.
-Default test host is `https://api.test.chino.io/v1`. **Remember to append `/v1` to the host argument.**
+Default test host is `https://api.test.chino.io/v1`. 
+
+Finally, if you are running against a **production environment**, you must set `-Pchino.test.host.is_prod=true`. 
+This is done automatically if the host name contains `//api.chino.io`.
     
 After every test, all the related object will be deleted.
 (E.g. after running the `ApplicationsTest` test class, every existing *Application* on the account will be lost forever.)

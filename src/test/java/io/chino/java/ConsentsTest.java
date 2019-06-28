@@ -54,6 +54,8 @@ public class ConsentsTest extends ChinoBaseTest {
         test = ChinoBaseTest.init(chino_admin.consents);
         ChinoBaseTest.checkResourceIsEmpty(test.list().getConsents().isEmpty(), test);
 
+        if (TestConstants.PRODUCTION_ENV) return; // skip this whole class in production
+
         createdObjects = new ArrayList<>();
 
         dcSample = new DataController("Chino.io", "example", "42 John Doe St.", "java-example@chino.io", "vat123456789", true);
@@ -83,6 +85,8 @@ public class ConsentsTest extends ChinoBaseTest {
     @Before
     @After
     public void deleteCreatedObjects() {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this whole class in production
+
         ArrayList<Consent> deletedObjects = new ArrayList<>();
         for (Consent c:createdObjects) {
             try {
@@ -109,6 +113,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testList_3args() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("list (3 args)");
 
         int newValidConsentCount = 4;
@@ -149,6 +155,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testList_int_int() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("list (2 args)");
 
         int newConsents = 7;
@@ -178,6 +186,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testList_0args() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("list (no args)");
         int newConsents = 5;
         String userId = "userIdList0@mail.ml";
@@ -199,6 +209,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testCreate_Consent() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("create");
         String userId = "userIdCreate@mail.ml";
         Consent base = new Consent(consentSample1, userId);
@@ -219,6 +231,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testCreate_7args() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("create (7 args)");
         System.out.println("(Tested during setUpClass)");
 
@@ -230,6 +244,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testCreate_3args() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("create (3 args)");
 
         String userId = "userIdCreate3Args@mail.ml";
@@ -260,6 +276,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testCreate_Consent_String() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("create (2 args)");
 
         String userId = "userIdCreate2Args@mail.ml";
@@ -276,6 +294,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testRead() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("read");
 
         String userId = "userIdRead@mail.ml";
@@ -293,6 +313,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testUpdate_History() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("update");
         String userId = "userIdCreate@mail.ml";
         Consent base = new Consent(consentSample1, userId);
@@ -360,6 +382,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test(expected = IllegalArgumentException.class)
     public void testHistory_getActiveConsentOnDate_Exception() throws IOException, ChinoApiException {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         String userId = "userIdhistory_findVersion_Exception@mail.ml";
         Consent created = test.create(consentSample1, userId);
         createdObjects.add(created);
@@ -379,6 +403,8 @@ public class ConsentsTest extends ChinoBaseTest {
      */
     @Test
     public void testWithdraw() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         System.out.println("withdraw");
 
         String userId = "userIdWithdraw@mail.ml";
@@ -418,6 +444,8 @@ public class ConsentsTest extends ChinoBaseTest {
 
     @Test(expected = ChinoApiException.class)
     public void testRead_DeletedConsent() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         deleteInit();
         System.out.println("read deleted Consent (expect Exception)");
         test.read(deletedConsentId);
@@ -425,6 +453,8 @@ public class ConsentsTest extends ChinoBaseTest {
 
     @Test(expected = ChinoApiException.class)
     public void testHistory_DeletedConsent() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         deleteInit();
         System.out.println("history of deleted Consent (expect Exception)");
         test.history(deletedConsentId);
@@ -432,6 +462,8 @@ public class ConsentsTest extends ChinoBaseTest {
 
     @Test
     public void testList_DeletedConsents() throws Exception {
+        if (TestConstants.PRODUCTION_ENV) return; // skip this test in production
+
         deleteInit();
         System.out.println("list of Consents of a deleted User (expect empty list)");
         List<Consent> ls = test.list(deletedUserId, 0, ChinoApiConstants.QUERY_DEFAULT_LIMIT).getConsents();
